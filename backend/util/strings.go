@@ -1,6 +1,9 @@
 package util
 
-import "strings"
+import (
+	"strings"
+	"time"
+)
 
 /*
 * TRIM SPACES IN STRINGS
@@ -25,3 +28,13 @@ func FindStringInSplice(source map[string]string, value string) bool {
 
 	return false
 }
+
+/*
+* PARSE STRING DATE TO RFC3339 LAYOUT time.Time
+* @params
+* value string
+*/
+func parseDate(value string) (time.Time, error) {
+	layout := time.RFC3339[:len(value)]
+	return time.Parse(layout, value)
+ }
