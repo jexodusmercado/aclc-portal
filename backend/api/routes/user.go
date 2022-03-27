@@ -24,9 +24,16 @@ func NewUserRoute(
 
 //Setup -> setups user routes
 func (u UserRoute) Setup() {
-    user := u.Handler.Gin.Group("/auth")
+    auth := u.Handler.Gin.Group("/auth")
     {
-        user.POST("/register", u.Controller.CreateUser)
-        user.POST("/login", u.Controller.LoginUser)
+        auth.POST("/register", u.Controller.CreateUser)
+        auth.POST("/login", u.Controller.LoginUser)
+    }
+
+    user := u.Handler.Gin.Group("/users")
+    {
+        user.GET("/", u.Controller.GetUsers)
+        user.GET("/:id", u.Controller.GetUser)
+        user.PATCH("/:id", u.Controller.UpdateUser)
     }
 }

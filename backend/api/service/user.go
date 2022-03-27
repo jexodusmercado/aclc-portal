@@ -18,11 +18,25 @@ func NewUserService(repo repository.UserRepository) UserService {
 
 //Save -> saves users entity
 func (u UserService) CreateUser(user models.UserRegister) error {
-    return u.repo.CreateUser(user)
+    return u.repo.Create(user)
 }
 
 //Login -> Gets validated user
 func (u UserService) LoginUser(user models.UserLogin) (*models.User, error) {
-    return u.repo.LoginUser(user)
+    return u.repo.Login(user)
+}
 
+// Update -> calls postrepo update method
+func (u UserService) Update(user models.User) error {
+    return u.repo.Update(user)
+}
+
+// Find -> calls post repo find method
+func (u UserService) Find(user models.User) (models.User, error) {
+    return u.repo.Find(user)
+}
+
+//FindAll -> calls post repo find all method
+func (u UserService) FindAll(user models.User, keyword string) (*[]models.User, int64, error) {
+    return u.repo.FindAll(user, keyword)
 }

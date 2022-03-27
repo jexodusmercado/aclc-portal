@@ -6,7 +6,9 @@ import (
     "portal/models"
     "portal/util"
     "net/http"
+    "strconv"
     "time"
+	"fmt"
 
     "github.com/gin-gonic/gin"
     "github.com/golang-jwt/jwt"
@@ -28,21 +30,27 @@ func NewUserController(s service.UserService) UserController {
 func (u *UserController) CreateUser(c *gin.Context) {
     var user models.UserRegister
     if err := c.ShouldBind(&user); err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, "Inavlid Json Provided")
+        fmt.Println(err)
+        util.ErrorJSON(c, http.StatusBadRequest, err)
         return
     }
 
-	if err := util.FindStringInSplice(constants.USER_TYPE, user.Type); !err {
-		util.ErrorJSON(c, http.StatusBadRequest, "Invalid user type")
-        return
-	}
+    year, month, day := time.Time.Date(user.Birthday)
 
-    hashPassword, _ := util.HashPassword(user.Password)
-    user.Password = hashPassword
+    fmt.Println(year)
+    fmt.Println(int(month))
+    fmt.Println(day)
+
+    generatedPassword := user.LastName
+
+    hashPassword, _ := util.HashPassword(generatedPassword)
+    user.Password 	= hashPassword
+	user.Type 		= constants.USER_TYPE[user.Type]
 
     err := u.service.CreateUser(user)
     if err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, "Failed to create user")
+		fmt.Println(err)
+        util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
         return
     }
 
@@ -54,12 +62,12 @@ func (u *UserController) LoginUser(c *gin.Context) {
     var user models.UserLogin
     var hmacSampleSecret []byte
     if err := c.ShouldBindJSON(&user); err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, "Invalid Json Provided")
+        util.ErrorJSON(c, http.StatusBadRequest, err)
         return
     }
     dbUser, err := u.service.LoginUser(user)
     if err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, "Invalid Login Credentials")
+        util.ErrorJSON(c, http.StatusBadRequest, err)
         return
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -69,7 +77,7 @@ func (u *UserController) LoginUser(c *gin.Context) {
 
     tokenString, err := token.SignedString(hmacSampleSecret)
     if err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, "Failed to get token")
+        util.ErrorJSON(c, http.StatusBadRequest, err)
         return
     }
     response := &util.Response{
@@ -78,4 +86,93 @@ func (u *UserController) LoginUser(c *gin.Context) {
         Data:    tokenString,
     }
     c.JSON(http.StatusOK, response)
+}
+
+// GetUsers : GetUsers controller
+func (u UserController) GetUsers(c *gin.Context) {
+    var users models.User
+
+    keyword := c.Query("keyword")
+
+    data, total, err := u.service.FindAll(users, keyword)
+
+    if err != nil {
+        util.ErrorJSON(c, http.StatusBadRequest, err)
+        return
+    }
+    respArr := make([]map[string]interface{}, 0, 0)
+
+    for _, n := range *data {
+        resp := n.ResponseMap()
+        respArr = append(respArr, resp)
+    }
+
+    c.JSON(http.StatusOK, &util.Response{
+        Success: true,
+        Message: "Post result set",
+        Data: map[string]interface{}{
+            "rows":       respArr,
+            "total_rows": total,
+        }})
+}
+
+//GetUser : get user by id
+func (u *UserController) GetUser(c *gin.Context) {
+    idParam := c.Param("id")
+    id, err := strconv.ParseUint(idParam, 10, 64) //type conversion string to int64
+    if err != nil {
+        util.ErrorJSON(c, http.StatusBadRequest, err)
+        return
+    }
+    var user models.User
+    user.ID = uint(id)
+    foundUser, err := u.service.Find(user)
+    if err != nil {
+        util.ErrorJSON(c, http.StatusBadRequest, err)
+        return
+    }
+    response := foundUser.ResponseMap()
+
+    c.JSON(http.StatusOK, &util.Response{
+        Success: true,
+        Message: "Result set of Post",
+        Data:    &response})
+
+}
+
+//UpdatePost : get update by id
+func (u UserController) UpdateUser(c *gin.Context) {
+    idParam := c.Param("id")
+
+    id, err := strconv.ParseUint(idParam, 10, 64)
+
+    if err != nil {
+        util.ErrorJSON(c, http.StatusBadRequest, err)
+        return
+    }
+    var user models.User
+    user.ID = uint(id)
+
+    userRecord, err := u.service.Find(user)
+    if err != nil {
+        util.ErrorJSON(c, http.StatusBadRequest, err)
+        return
+    }
+
+    if err := c.ShouldBindJSON(&userRecord); err != nil {
+        util.ErrorJSON(c, http.StatusBadRequest, err)
+        return
+    }
+
+    if err := u.service.Update(userRecord); err != nil {
+        util.ErrorJSON(c, http.StatusBadRequest, err)
+        return
+    }
+    response := userRecord.ResponseMap()
+
+    c.JSON(http.StatusOK, &util.Response{
+        Success: true,
+        Message: "Successfully Updated Post",
+        Data:    response,
+    })
 }
