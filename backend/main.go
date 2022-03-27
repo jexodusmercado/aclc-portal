@@ -35,6 +35,13 @@ func main() {
     classroomRoute      := routes.NewClassroomRoute(classroomController, router)
     classroomRoute.Setup()
 
+    //subject
+    subjectRepository   := repository.NewSubjectRepository(db)
+    subjectService      := service.NewSubjectService(subjectRepository)
+    subjectController   := controller.NewSubjectController(subjectService)
+    subjectRoute        := routes.NewSubjectRoute(subjectController, router)
+    subjectRoute.Setup()
+
     // migrating User model to datbase table
     if err := db.DB.AutoMigrate(&models.User{}, &models.Classroom{}, &models.Subject{}); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
         if err := db.DB.First(&models.Subject{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
@@ -51,8 +58,8 @@ func main() {
                     IsActive:       true,
                 },
                 {
-                    Name:           "Science",
-                    SubjectCode:    "SC100",
+                    Name:           "English",
+                    SubjectCode:    "EN101",
                     IsActive:       true,
                 },
             }
