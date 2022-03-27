@@ -13,7 +13,7 @@ type Subject struct {
     IsActive  	bool	`json:"is_active"`
 }
 
-//TableName -> returns the table name of Classroom Model
+//TableName -> returns the table name of Subject Model
 func (subject *Subject) TableName() string {
     return "subject"
 }

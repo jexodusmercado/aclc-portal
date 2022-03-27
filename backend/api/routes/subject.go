@@ -24,11 +24,11 @@ func NewSubjectRoute(
 
 //Setup -> setups user routes
 func (c SubjectRoute) Setup() {
-    classroom := c.Handler.Gin.Group("/classrooms")
+    subjects := c.Handler.Gin.Group("/subjects")
     {
-		classroom.GET("/", c.Controller.GetSubjects)
-		classroom.GET("/:id", c.Controller.GetSubject)
-        classroom.POST("/create", c.Controller.CreateSubject)
+		subjects.GET("/", c.Controller.GetSubjects)
+		subjects.GET("/:id", c.Controller.GetSubject)
+        subjects.POST("/create", c.Controller.CreateSubject)
     }
 
 }
