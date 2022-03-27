@@ -1,19 +1,18 @@
 package models
 import (
     "gorm.io/gorm"
-    "fmt"
     // "time"
 )
 
 //Classroom -> Classroom struct to save user on database
 type Classroom struct {
     gorm.Model
-	SubjectID  uint	   `json:"subject_id"`
-    Title      string  `gorm:"size:200" json:"title"`
-    Body       string  `gorm:"size:3000" json:"body"`
-    IsActive   bool    `json:"is_active"`
+	SubjectID  uint	    `json:"subject_id"`
+    Title      string   `gorm:"size:200" json:"title"`
+    Body       string   `gorm:"size:3000" json:"body"`
+    IsActive   bool     `json:"is_active"`
     Subject    Subject
-	// Users     []User	`gorm:"many2many:user_classrooms;"`
+    Users      []*User  `gorm:"many2many:user_class"`
 }
 
 //TableName -> returns the table name of Classroom Model
@@ -31,8 +30,6 @@ type ClassroomCreation struct {
 //ResponseMap -> response map method of User
 func (classroom *Classroom) ResponseMap() map[string]interface{} {
     resp := make(map[string]interface{})
-    
-    fmt.Println(classroom)
 
     resp["id"]          = classroom.ID
     resp["subject_id"]  = classroom.SubjectID
@@ -41,6 +38,7 @@ func (classroom *Classroom) ResponseMap() map[string]interface{} {
     resp["created_at"]  = classroom.CreatedAt
     resp["updated_at"]  = classroom.UpdatedAt
     resp["subject"]     = classroom.Subject
+    resp["users"]       = classroom.Users
 
     return resp
 }

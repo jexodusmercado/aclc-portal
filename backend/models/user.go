@@ -15,7 +15,7 @@ type User struct {
     Birthday    time.Time       `json:"birthday"`
 	Type	    string	        `json:"type"`
     IsActive    bool            `json:"is_active"`
-    // Classrooms  []Classroom    `gorm:"many2many:user_classrooms;"`
+    Classrooms  []*Classroom    `gorm:"many2many:user_class;"`
 }
 
 //TableName -> returns the table name of User Model
@@ -25,8 +25,14 @@ func (user *User) TableName() string {
 
 //UserLogin -> Request Binding for User Login
 type UserLogin struct {
-    Username string `form:"username" binding:"required,numeric"`
-    Password string `form:"password" binding:"required"`
+    Username string `form:"username" json:"username" binding:"required"`
+    Password string `form:"password" json:"password" binding:"required"`
+}
+
+//AddUserClass -> request binding for AddUserClass
+type AddUserClass struct {
+    UserID      uint `form:"user_id" json:"user_id" binding:"required"`
+    ClassroomID uint `form:"classroom_id" json:"classroom_id" binding:"required"`
 }
 
 //UserRegister -> Request Binding for User Register
@@ -56,7 +62,7 @@ func (user *User) ResponseMap() map[string]interface{} {
     resp["first_name"]  = user.FirstName
     resp["last_name"]   = user.LastName
     resp["is_active"]   = user.IsActive
-    // resp["classrooms"]  = user.Classrooms
+    resp["classrooms"]  = user.Classrooms
     resp["created_at"]  = user.CreatedAt
     resp["updated_at"]  = user.UpdatedAt
 
