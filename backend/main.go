@@ -7,6 +7,9 @@ import (
     "portal/api/service"
     "portal/infrastructure"
     "portal/models"
+
+    "gorm.io/gorm"
+    "errors"
 )
 
 func init() {
@@ -17,19 +20,44 @@ func main() {
 
     router := infrastructure.NewGinRouter() //router has been initialized and configured
     db := infrastructure.NewDatabase() // databse has been initialized and configured
-    postRepository := repository.NewPostRepository(db) // repository are being setup
-    postService := service.NewPostService(postRepository) // service are being setup
-    postController := controller.NewPostController(postService) // controller are being set up
-    postRoute := routes.NewPostRoute(postController, router) // post routes are initialized
-    postRoute.Setup() // post routes are being setup
 	
-	// add up these 
-	userRepository := repository.NewUserRepository(db)
-	userService := service.NewUserService(userRepository)
-	userController := controller.NewUserController(userService)
-	userRoute := routes.NewUserRoute(userController, router)
-	userRoute.Setup()
+	// user
+	userRepository  := repository.NewUserRepository(db) // repository are being setup
+	userService     := service.NewUserService(userRepository) // service are being setup
+	userController  := controller.NewUserController(userService) // controller are being set up
+	userRoute       := routes.NewUserRoute(userController, router) // user routes are initialized
+	userRoute.Setup() // user routes are being setup
 
-    db.DB.AutoMigrate(&models.Post{}, &models.User{}) // migrating Post model to datbase table
+    //classroom
+    classroomRepository := repository.NewClassroomRepository(db)
+    classroomService    := service.NewClassroomService(classroomRepository)
+    classroomController := controller.NewClassroomController(classroomService)
+    classroomRoute      := routes.NewClassroomRoute(classroomController, router)
+    classroomRoute.Setup()
+
+    // migrating User model to datbase table
+    if err := db.DB.AutoMigrate(&models.User{}, &models.Classroom{}, &models.Subject{}); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
+        if err := db.DB.First(&models.Subject{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+            //Insert seed data
+            seedSubject := []models.Subject{
+                {
+                    Name:           "Science",
+                    SubjectCode:    "SC100",
+                    IsActive:       true,
+                },
+                {
+                    Name:           "Filipino",
+                    SubjectCode:    "FP101",
+                    IsActive:       true,
+                },
+                {
+                    Name:           "Science",
+                    SubjectCode:    "SC100",
+                    IsActive:       true,
+                },
+            }
+            db.DB.Create(&seedSubject)
+        }
+    }
     router.Gin.Run(":8000") //server started on 8000 port
 }
