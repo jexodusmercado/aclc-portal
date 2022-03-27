@@ -5,8 +5,9 @@ import (
     "portal/models"
     "portal/util"
 	
+    "gorm.io/gorm/clause"
     "errors"
-    "fmt"
+    "log"
 )
 
 //UserRepository -> UserRepository resposible for accessing database
@@ -31,8 +32,6 @@ func (u UserRepository) Create(user models.UserRegister) error {
 		return errors.New("Email already exist")
 	}
 
-    fmt.Println(user)
-
     dbUser.Email 		= user.Email
     dbUser.FirstName 	= user.FirstName
     dbUser.LastName 	= user.LastName
@@ -48,11 +47,13 @@ func (u UserRepository) Create(user models.UserRegister) error {
 //LoginUser -> method for returning user
 func (u UserRepository) Login(user models.UserLogin) (*models.User, error) {
 
+
+
     var dbUser models.User
     username := user.Username
     password := user.Password
 
-    err := u.db.DB.Where("email = ?", username).First(&dbUser).Error
+    err := u.db.DB.Where("username = ?", username).First(&dbUser).Error
     if err != nil {
         return nil, err
     }
@@ -71,12 +72,12 @@ func (u UserRepository) FindAll(user models.User, keyword string) (*[]models.Use
     var users []models.User    
     var totalRows int64 = 0
 
-    queryBuilder := u.db.DB.Order("created_at desc").Model(&models.User{})
+    queryBuilder := u.db.DB.Preload("Classrooms.Subject").Preload(clause.Associations).Order("created_at desc").Model(&models.User{})
 
     if keyword != "" {
         queryKeyword := "%" + keyword + "%"
         queryBuilder = queryBuilder.Where(
-            u.db.DB.Where("user.title LIKE ? ", queryKeyword))
+            u.db.DB.Where("user.first_name LIKE ? OR user.last_name LIKE ? ", queryKeyword, queryKeyword))
     }
 
     err := queryBuilder.
@@ -91,6 +92,8 @@ func (u UserRepository) Find(user models.User) (models.User, error) {
     var users models.User
     err := u.db.DB.
         Debug().
+        Preload("Classrooms.Subject").
+        Preload(clause.Associations).
         Model(&models.User{}).
         Where(&user).
         Take(&users).Error
@@ -100,4 +103,29 @@ func (u UserRepository) Find(user models.User) (models.User, error) {
 //Update -> Method for updating Post
 func (u UserRepository) Update(user models.User) error {
     return u.db.DB.Save(&user).Error
+}
+
+
+func (u UserRepository) AddUserToClassroom(user models.User, classroom models.Classroom) error {
+    var users models.User
+    var classrooms models.Classroom
+    err := u.db.DB.
+        Debug().
+        Model(&models.User{}).
+        Where(&user).
+        Take(&users).Error
+    if err != nil {
+        log.Fatalf(err.Error())
+    }
+
+    err = u.db.DB.
+        Debug().
+        Model(&models.Classroom{}).
+        Where(&classroom).
+        Take(&classrooms).Error
+    if err != nil {
+        log.Fatalf(err.Error())
+    }
+
+    return u.db.DB.Model(&users).Association("Classrooms").Append(&classrooms)
 }

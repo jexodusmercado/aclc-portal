@@ -35,5 +35,6 @@ func (u UserRoute) Setup() {
         user.GET("/", u.Controller.GetUsers)
         user.GET("/:id", u.Controller.GetUser)
         user.PATCH("/:id", u.Controller.UpdateUser)
+        user.POST("/classroom", u.Controller.AddUsertoClassroom)
     }
 }

@@ -3,6 +3,8 @@ package repository
 import (
     "portal/infrastructure"
     "portal/models"
+
+    "gorm.io/gorm/clause"
 )
 
 //ClassroomRepository -> Classroom responsible for accessing database
@@ -36,7 +38,7 @@ func (c ClassroomRepository) FindAll(classroom models.Classroom, keyword string)
     var classrooms []models.Classroom
     var totalRows int64 = 0
 
-    queryBuilder := c.db.DB.Joins("Subject").Order("created_at desc").Model(&models.Classroom{})
+    queryBuilder := c.db.DB.Joins("Subject").Preload(clause.Associations).Order("created_at desc").Model(&models.Classroom{})
 
     if keyword != "" {
         queryKeyword := "%" + keyword + "%"
@@ -57,6 +59,7 @@ func (u ClassroomRepository) Find(classroom models.Classroom) (models.Classroom,
     err := u.db.DB.
         Debug().
 		Joins("Subject").
+        Preload(clause.Associations).
         Model(&models.Classroom{}).
         Where(&classroom).
         Take(&classrooms).Error

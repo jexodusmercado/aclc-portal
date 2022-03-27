@@ -40,3 +40,8 @@ func (u UserService) Find(user models.User) (models.User, error) {
 func (u UserService) FindAll(user models.User, keyword string) (*[]models.User, int64, error) {
     return u.repo.FindAll(user, keyword)
 }
+
+//Adding Users to classroom -> saves many2many relations from users to classroom
+func (u UserService) AddUserToClassroom(user models.User, classroom models.Classroom) error {
+    return u.repo.AddUserToClassroom(user, classroom)
+}

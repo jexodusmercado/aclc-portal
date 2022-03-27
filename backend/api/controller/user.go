@@ -8,7 +8,6 @@ import (
     "net/http"
     "strconv"
     "time"
-	"fmt"
 
     "github.com/gin-gonic/gin"
     "github.com/golang-jwt/jwt"
@@ -30,18 +29,13 @@ func NewUserController(s service.UserService) UserController {
 func (u *UserController) CreateUser(c *gin.Context) {
     var user models.UserRegister
     if err := c.ShouldBind(&user); err != nil {
-        fmt.Println(err)
         util.ErrorJSON(c, http.StatusBadRequest, err)
         return
     }
 
     year, month, day := time.Time.Date(user.Birthday)
 
-    fmt.Println(year)
-    fmt.Println(int(month))
-    fmt.Println(day)
-
-    generatedPassword := user.LastName
+    generatedPassword := user.LastName+strconv.Itoa(year)+strconv.Itoa(int(month))+strconv.Itoa(day)
 
     hashPassword, _ := util.HashPassword(generatedPassword)
     user.Password 	= hashPassword
@@ -49,7 +43,6 @@ func (u *UserController) CreateUser(c *gin.Context) {
 
     err := u.service.CreateUser(user)
     if err != nil {
-		fmt.Println(err)
         util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
         return
     }
@@ -60,11 +53,14 @@ func (u *UserController) CreateUser(c *gin.Context) {
 //LoginUser : Generates JWT Token for validated user
 func (u *UserController) LoginUser(c *gin.Context) {
     var user models.UserLogin
+
     var hmacSampleSecret []byte
     if err := c.ShouldBindJSON(&user); err != nil {
+
         util.ErrorJSON(c, http.StatusBadRequest, err)
         return
     }
+
     dbUser, err := u.service.LoginUser(user)
     if err != nil {
         util.ErrorJSON(c, http.StatusBadRequest, err)
@@ -80,6 +76,7 @@ func (u *UserController) LoginUser(c *gin.Context) {
         util.ErrorJSON(c, http.StatusBadRequest, err)
         return
     }
+
     response := &util.Response{
         Success: true,
         Message: "Token generated sucessfully",
@@ -175,4 +172,29 @@ func (u UserController) UpdateUser(c *gin.Context) {
         Message: "Successfully Updated Post",
         Data:    response,
     })
+}
+
+//AddUsertoClassroom : add from user to classroom
+func (u *UserController) AddUsertoClassroom(c *gin.Context) {
+    var post        models.AddUserClass
+    var user        models.User
+    var classroom   models.Classroom
+    if err := c.ShouldBind(&post); err != nil {
+        util.ErrorJSON(c, http.StatusBadRequest, err)
+        return
+    }
+
+    user.ID         = post.UserID
+    classroom.ID    = post.ClassroomID
+
+    if err := u.service.AddUserToClassroom(user, classroom); err != nil {
+        util.ErrorJSON(c, http.StatusBadRequest, err)
+        return
+    }
+
+    c.JSON(http.StatusOK, &util.Response{
+        Success: true,
+        Message: "Successfully Updated Post",
+    })
+
 }
