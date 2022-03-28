@@ -9,7 +9,7 @@ type ClassroomService struct {
     repo repository.ClassroomRepository
 }
 
-//NewClassroomService : get injected user repo
+//NewClassroomService : get injected classroom repo
 func NewClassroomService(repo repository.ClassroomRepository) ClassroomService {
     return ClassroomService{
         repo: repo,
@@ -21,7 +21,7 @@ func (u ClassroomService) CreateClassroom(classroom models.ClassroomCreation) er
     return u.repo.Create(classroom)
 }
 
-// Update -> calls postrepo update method
+// Update -> calls class room update method
 func (u ClassroomService) Update(classroom models.Classroom) error {
     return u.repo.Update(classroom)
 }

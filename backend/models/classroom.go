@@ -13,6 +13,7 @@ type Classroom struct {
     IsActive   bool     `json:"is_active"`
     Subject    Subject
     Users      []*User  `gorm:"many2many:user_class"`
+    Posts      []*Post
 }
 
 //TableName -> returns the table name of Classroom Model
@@ -39,6 +40,7 @@ func (classroom *Classroom) ResponseMap() map[string]interface{} {
     resp["updated_at"]  = classroom.UpdatedAt
     resp["subject"]     = classroom.Subject
     resp["users"]       = classroom.Users
+    resp["posts"]       = classroom.Posts
 
     return resp
 }

@@ -38,7 +38,7 @@ func (c ClassroomRepository) FindAll(classroom models.Classroom, keyword string)
     var classrooms []models.Classroom
     var totalRows int64 = 0
 
-    queryBuilder := c.db.DB.Joins("Subject").Preload(clause.Associations).Order("created_at desc").Model(&models.Classroom{})
+    queryBuilder := c.db.DB.Preload("Subject").Preload("Posts.User").Preload(clause.Associations).Order("created_at desc").Model(&models.Classroom{})
 
     if keyword != "" {
         queryKeyword := "%" + keyword + "%"
