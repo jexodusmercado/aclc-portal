@@ -3,6 +3,7 @@ package routes
 import (
     "portal/api/controller"
     "portal/infrastructure"
+	"portal/middleware"
 )
 
 //SubjectRoute -> Route for user module
@@ -26,6 +27,7 @@ func NewSubjectRoute(
 func (c SubjectRoute) Setup() {
     subjects := c.Handler.Gin.Group("/subjects")
     {
+		subjects.Use(middleware.Authenticate())
 		subjects.GET("/", c.Controller.GetSubjects)
 		subjects.GET("/:id", c.Controller.GetSubject)
         subjects.POST("/create", c.Controller.CreateSubject)

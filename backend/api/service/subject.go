@@ -21,7 +21,7 @@ func (s SubjectService) CreateSubject(subject models.SubjectCreation) error {
     return s.repo.Create(subject)
 }
 
-// Update -> calls postrepo update method
+// Update -> calls subject update method
 func (s SubjectService) Update(subject models.Subject) error {
     return s.repo.Update(subject)
 }
@@ -31,7 +31,7 @@ func (s SubjectService) FindAll(subject models.Subject, keyword string) (*[]mode
     return s.repo.FindAll(subject, keyword)
 }
 
-// Find -> calls post repo find method
+// Find -> calls subject repo find method
 func (u SubjectService) Find(subject models.Subject) (models.Subject, error) {
     return u.repo.Find(subject)
 }
