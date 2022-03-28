@@ -47,8 +47,6 @@ func (u UserRepository) Create(user models.UserRegister) error {
 //LoginUser -> method for returning user
 func (u UserRepository) Login(user models.UserLogin) (*models.User, error) {
 
-
-
     var dbUser models.User
     username := user.Username
     password := user.Password

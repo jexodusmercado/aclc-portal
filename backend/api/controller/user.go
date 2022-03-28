@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"os"
 	"portal/constants"
     "portal/api/service"
     "portal/models"
@@ -8,6 +9,7 @@ import (
     "net/http"
     "strconv"
     "time"
+    "fmt"
 
     "github.com/gin-gonic/gin"
     "github.com/golang-jwt/jwt"
@@ -54,7 +56,8 @@ func (u *UserController) CreateUser(c *gin.Context) {
 func (u *UserController) LoginUser(c *gin.Context) {
     var user models.UserLogin
 
-    var hmacSampleSecret []byte
+    hmacSampleSecret := []byte(os.Getenv("JWT_SECRET"))
+
     if err := c.ShouldBindJSON(&user); err != nil {
 
         util.ErrorJSON(c, http.StatusBadRequest, err)
@@ -66,9 +69,11 @@ func (u *UserController) LoginUser(c *gin.Context) {
         util.ErrorJSON(c, http.StatusBadRequest, err)
         return
     }
+
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-        "user": dbUser,
-        "exp":  time.Now().Add(time.Minute * 15).Unix(),
+        "UserID"    : dbUser.ID,
+        "FirstName" : dbUser.FirstName,
+        "LastName"  : dbUser.LastName,
     })
 
     tokenString, err := token.SignedString(hmacSampleSecret)
@@ -82,12 +87,17 @@ func (u *UserController) LoginUser(c *gin.Context) {
         Message: "Token generated sucessfully",
         Data:    tokenString,
     }
+
     c.JSON(http.StatusOK, response)
 }
 
 // GetUsers : GetUsers controller
 func (u UserController) GetUsers(c *gin.Context) {
     var users models.User
+    currentUser := c.MustGet("currentUser").(models.User)
+
+    fmt.Println("currentUser")
+    fmt.Println(currentUser)
 
     keyword := c.Query("keyword")
 

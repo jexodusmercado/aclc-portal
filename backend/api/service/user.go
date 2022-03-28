@@ -26,7 +26,7 @@ func (u UserService) LoginUser(user models.UserLogin) (*models.User, error) {
     return u.repo.Login(user)
 }
 
-// Update -> calls postrepo update method
+// Update -> calls user update method
 func (u UserService) Update(user models.User) error {
     return u.repo.Update(user)
 }
