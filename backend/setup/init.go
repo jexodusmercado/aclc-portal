@@ -39,8 +39,16 @@ func InitializeServices(router infrastructure.GinRouter) {
     subjectRoute        := routes.NewSubjectRoute(subjectController, router)
     subjectRoute.Setup()
 
+    //posts
+    postRepository   := repository.NewPostRepository(db)
+    postService      := service.NewPostService(postRepository)
+    postController   := controller.NewPostController(postService)
+    postRoute        := routes.NewPostRoute(postController, router)
+    postRoute.Setup()
+
+
     // migrating User model to datbase table
-    if err := db.DB.AutoMigrate(&models.User{}, &models.Classroom{}, &models.Subject{}); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
+    if err := db.DB.AutoMigrate(&models.User{}, &models.Classroom{}, &models.Subject{}, &models.Post{}); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
         if err := db.DB.First(&models.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
             layout := time.RFC3339[:len("1994-12-17")]
             t, err := time.Parse(layout, "1994-12-17")
