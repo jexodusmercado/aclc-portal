@@ -3,6 +3,7 @@ package routes
 import (
     "portal/api/controller"
     "portal/infrastructure"
+    "portal/middleware"
 )
 
 //UserRoute -> Route for user module
@@ -32,7 +33,8 @@ func (u UserRoute) Setup() {
 
     user := u.Handler.Gin.Group("/users")
     {
-        user.GET("/", u.Controller.GetUsers)
+        user.Use(middleware.Authenticate())
+        user.GET("", u.Controller.GetUsers)
         user.GET("/:id", u.Controller.GetUser)
         user.PATCH("/:id", u.Controller.UpdateUser)
         user.POST("/classroom", u.Controller.AddUsertoClassroom)

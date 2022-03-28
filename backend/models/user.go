@@ -16,6 +16,7 @@ type User struct {
 	Type	    string	        `json:"type"`
     IsActive    bool            `json:"is_active"`
     Classrooms  []*Classroom    `gorm:"many2many:user_class;"`
+    Posts       []*Post
 }
 
 //TableName -> returns the table name of User Model
