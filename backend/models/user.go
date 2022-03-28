@@ -15,8 +15,9 @@ type User struct {
     Birthday    time.Time       `json:"birthday"`
 	Type	    string	        `json:"type"`
     IsActive    bool            `json:"is_active"`
-    Classrooms  []*Classroom    `gorm:"many2many:user_class;"`
-    Posts       []*Post
+    Subjects    []*Subject      `gorm:"many2many:user_subjects;"`
+    // Classrooms  []*Classroom    `gorm:"many2many:user_class;"`
+    // Posts       []*Post
 }
 
 //TableName -> returns the table name of User Model
@@ -63,7 +64,6 @@ func (user *User) ResponseMap() map[string]interface{} {
     resp["first_name"]  = user.FirstName
     resp["last_name"]   = user.LastName
     resp["is_active"]   = user.IsActive
-    resp["classrooms"]  = user.Classrooms
     resp["created_at"]  = user.CreatedAt
     resp["updated_at"]  = user.UpdatedAt
 
