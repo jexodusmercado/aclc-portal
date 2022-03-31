@@ -7,12 +7,13 @@ import (
 //Subject -> Subject struct to save user on database
 type Subject struct {
     gorm.Model
-    Name    	    string	`gorm:"size:200" json:"name"`
-	Code	        string 	`gorm:"unique" json:"code"`
-    Unit            uint    `json:"unit"`
-    YearLevelID     uint    `json:"year_level_id"`
-    SchoolYearID    uint    `json:"school_year_id"`
-    IsActive  	    bool	`json:"is_active"`
+    Name    	    string	   `gorm:"size:200" json:"name"`
+	Code	        string 	   `gorm:"unique" json:"code"`
+    Unit            uint       `json:"unit"`
+    YearLevelID     uint       `json:"year_level_id"`
+    SchoolYearID    uint       `json:"school_year_id"`
+    IsActive  	    bool	   `json:"is_active"`
+    Users           []*User    `gorm:"many2many:user_subjects;"`
 }
 
 //TableName -> returns the table name of Subject Model
@@ -24,6 +25,7 @@ func (subject *Subject) TableName() string {
 type SubjectCreation struct {
 	Name 		    string  `form:"name" binding:"required"`
     Code	        string  `form:"code" binding:"required"`
+    Unit	        uint    `form:"unit" binding:"required"`
     YearLevelID     uint    `form:"year_level_id" binding:"required"`
     SchoolYearID    uint    `form:"school_year_id" binding:"required"`
 }

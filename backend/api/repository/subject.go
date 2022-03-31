@@ -24,14 +24,16 @@ func (s SubjectRepository) Create(subject models.SubjectCreation) error {
 
     var dbSubject models.Subject
 
-	err := s.db.DB.Where("subject_code = ?", subject.SubjectCode).First(&dbSubject).Error
+	err := s.db.DB.Where("code = ?", subject.Code).First(&dbSubject).Error
 	if err == nil {
 		return errors.New("Subject code already exist")
 	}
 
     dbSubject.Name	 		= subject.Name
-    dbSubject.Body 			= subject.Body
-    dbSubject.SubjectCode 	= subject.SubjectCode
+    dbSubject.Code 	        = subject.Code
+    dbSubject.Unit          = subject.Unit
+    dbSubject.YearLevelID   = subject.YearLevelID
+    dbSubject.SchoolYearID  = subject.SchoolYearID
     dbSubject.IsActive 		= true
 
     return s.db.DB.Create(&dbSubject).Error

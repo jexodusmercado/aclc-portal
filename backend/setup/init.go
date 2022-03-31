@@ -48,7 +48,18 @@ func InitializeServices(router infrastructure.GinRouter) {
 
 
     // migrating User model to datbase table
-    if err := db.DB.AutoMigrate(&models.User{}, &models.Classroom{}, &models.Subject{}, &models.Post{}); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
+    if err := db.DB.AutoMigrate(
+        &models.User{}, 
+        &models.Classroom{}, 
+        &models.Subject{}, 
+        &models.Post{},
+        &models.Class{},
+        &models.Course{},
+        &models.Faculty{},
+        &models.SchoolYear{},
+        &models.StudentGrade{},
+        &models.YearLevel{},
+    ); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
         if err := db.DB.First(&models.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
             layout := time.RFC3339[:len("1994-12-17")]
             t, err := time.Parse(layout, "1994-12-17")
@@ -71,14 +82,6 @@ func InitializeServices(router infrastructure.GinRouter) {
                     Type: "admin",
                 },
                 {
-                    FirstName: "Exo",
-                    LastName: "Mercado",
-                    Username: "11223344",
-                    Password: hashPassword,
-                    Birthday: t,
-                    Type: "teacher",
-                },
-                {
                     FirstName: "Aza",
                     LastName: "Lansangan",
                     Username: "44332211",
@@ -95,17 +98,20 @@ func InitializeServices(router infrastructure.GinRouter) {
             seedSubject := []models.Subject{
                 {
                     Name:           "Science",
-                    SubjectCode:    "SC100",
+                    Code:           "SC100",
+                    Unit:           4,
                     IsActive:       true,
                 },
                 {
                     Name:           "Filipino",
-                    SubjectCode:    "FP101",
+                    Code:           "FP101",
+                    Unit:           2,
                     IsActive:       true,
                 },
                 {
                     Name:           "English",
-                    SubjectCode:    "EN101",
+                    Code:           "EN101",
+                    Unit:           2,
                     IsActive:       true,
                 },
             }
