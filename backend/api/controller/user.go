@@ -66,7 +66,7 @@ func (u *UserController) LoginUser(c *gin.Context) {
 
     dbUser, err := u.service.LoginUser(user)
     if err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
+        util.CustomErrorJson(c, http.StatusForbidden, "Username/password is incorrect.")
         return
     }
 
@@ -85,10 +85,12 @@ func (u *UserController) LoginUser(c *gin.Context) {
     response := &util.Response{
         Success: true,
         Message: "Token generated sucessfully",
-        Data:    tokenString,
-    }
+        Data:   map[string]interface{}{
+            "token": tokenString,
+            "user": dbUser.ResponseMap(),
+    }}
 
-    c.JSON(http.StatusOK, response)
+    util.SuccessJSON(c, http.StatusOK, response)
 }
 
 // GetUsers : GetUsers controller
