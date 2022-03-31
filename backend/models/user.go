@@ -63,6 +63,7 @@ func (user *User) ResponseMap() map[string]interface{} {
     resp["birthday"]    = user.Birthday
     resp["first_name"]  = user.FirstName
     resp["last_name"]   = user.LastName
+    resp["type"]        = user.Type
     resp["is_active"]   = user.IsActive
     resp["created_at"]  = user.CreatedAt
     resp["updated_at"]  = user.UpdatedAt
