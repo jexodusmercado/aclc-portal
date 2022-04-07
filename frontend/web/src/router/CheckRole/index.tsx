@@ -12,10 +12,12 @@ const CheckRole : React.FC<Props> = ({type}) => {
 
     if(auth) {
         if(user.type !== type){
-            return <Navigate to="/authenticating"/>
+            return <Navigate to="/"/>
         }
-    }
+        
+        return <Outlet/>;
 
+    }
 
     return <Outlet/>;
 }

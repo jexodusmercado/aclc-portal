@@ -1,50 +1,52 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import StudentLogin from 'pages/Student/Auth/Login'
+import SignIn from 'pages/Auth/Login'
 import PrivateRoute from 'router/PrivateRoute'
 import AdminDashboard from 'pages/Admin/Dashboard'
-import Authenticating from 'router/Authenticating'
-import AdminLayout from 'pages/Admin/Layout'
+import Layout from 'components/Layout'
 import CheckRole from 'router/CheckRole'
-import UsersDashboard from 'pages/Admin/Dashboard/Users'
+import FacultyIndex from 'pages/Admin/Dashboard/Faculty'
+import DepartmentIndex from 'pages/Admin/Dashboard/Department'
 
 const CustomRoute = () => {
     return (
         <Routes>
-            <Route path="/" element={<StudentLogin />}/>
-            <Route path="authenticating" element={<Authenticating />}/>
+            <Route path="/" element={<SignIn />}/>
 
             <Route element={<PrivateRoute />}>
 
-                <Route path="dashboard">
-
+                <Route element={<Layout/>}>
                     {/* ADMIN */}
                     <Route element={<CheckRole type='admin' />} >
-                        <Route path="admin" element={<AdminLayout />}>
-                            <Route path="home" element={<AdminDashboard/>} />
-                            <Route path="users" element={<UsersDashboard />} />
+                        <Route path="dashboard">
+                            <Route index element={<AdminDashboard/>} />
+
+                            {/* Department */}
+                            <Route path='department'>
+                                <Route index element={<DepartmentIndex />} />
+                            </Route>
+                            
+                            {/* Faculty */}
+                            <Route path="faculty">
+                                <Route index element={<FacultyIndex />} />
+                            </Route>
 
                             <Route path="*" element={<>404</>} />
                         </Route>
                     </Route>
 
-                    {/* STUDENT */}
+                    {/*
                     <Route element={<CheckRole type='student' />} >
-                        <Route path="student" element={<AdminLayout />}>
-                            <Route path="home" element={<AdminDashboard/>} />
+                            <Route index element={<AdminDashboard/>} />
 
                             <Route path="*" element={<>404</>} />
-                        </Route>
                     </Route>
                     
-                    {/* FACULTY */}
                     <Route element={<CheckRole type='faculty' />} >
-                        <Route path="faculty" element={<AdminLayout />}>
-                            <Route path="home" element={<AdminDashboard/>} />
+                            <Route index element={<AdminDashboard/>} />
 
                             <Route path="*" element={<>404</>} />
-                        </Route>
-                    </Route>
+                    </Route> */}
 
                 </Route>
             </Route>

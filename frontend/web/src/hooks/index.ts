@@ -1,5 +1,4 @@
-import { DependencyList, EffectCallback, useEffect, useLayoutEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { DependencyList, EffectCallback, useEffect, useRef } from "react";
 
 export const usePrevious = <T>(value?: T): T | undefined => {
     const ref = useRef<T>();
@@ -37,8 +36,7 @@ export const useUpdateEffect = (effect: EffectCallback, deps?: DependencyList) =
   }, deps)
 }
 
-export const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect
+export const useIsomorphicLayoutEffect = useEffect;
 
 
 export * from './auth'

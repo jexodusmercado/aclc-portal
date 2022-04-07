@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import ACLCLogo from 'assets/images/aclc.jpeg'
+import Alert from 'components/Alert'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -7,9 +8,9 @@ import { classNames } from 'utility'
 import { useDispatch } from 'react-redux'
 import { loginRequest } from 'redux/auth/action'
 import { ExclamationCircleIcon } from '@heroicons/react/solid'
-import { useEffectOnce, useUpdateEffect, useUserAuthenticated, useUserError } from 'hooks'
-import Alert from 'components/Alert'
+import { useEffectOnce, useIsomorphicLayoutEffect, useUpdateEffect, useUserAuthenticated, useUserError } from 'hooks'
 import { useNavigate } from 'react-router-dom'
+
 type FormData = {
     username: string
     password: string
@@ -20,7 +21,7 @@ const loginSchema = yup.object({
     password: yup.string().trim().required('*Password is required')
 }).required()
 
-const FacultyLogin = () => {
+const SignIn = () => {
     const [showError, setShowError] = useState<boolean>(false)
     const dispatch  = useDispatch()
     const error     = useUserError()
@@ -43,9 +44,15 @@ const FacultyLogin = () => {
 
     useEffectOnce(() => {
         if(auth){
-            navigate('/authenticating')
+            navigate('/dashboard')
         }
     })
+
+    useIsomorphicLayoutEffect(() => {
+        if(auth){
+            navigate('/dashboard')
+        }
+    },[auth])
 
     useUpdateEffect(() => {
         if(error.status !== 0){
@@ -53,9 +60,6 @@ const FacultyLogin = () => {
         }
     }, [error])
 
-  
-
-    
     return (
         <>
             <div className="h-screen flex">
@@ -159,4 +163,4 @@ const FacultyLogin = () => {
     )
 }
 
-export default FacultyLogin
+export default SignIn

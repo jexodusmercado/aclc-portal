@@ -1,4 +1,4 @@
-import { MailIcon, CheckCircleIcon, ChevronRightIcon } from '@heroicons/react/solid'
+import { MailIcon, CheckCircleIcon } from '@heroicons/react/solid'
 import React from 'react'
 import { classNames } from 'utility'
 

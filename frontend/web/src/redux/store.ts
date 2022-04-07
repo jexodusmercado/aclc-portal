@@ -5,18 +5,12 @@ import { persistStore, persistReducer } from 'redux-persist';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import rootSaga from './sagas';
-import rootReducer, { AppState } from './reducers';
+import rootReducer from './reducers';
 
 const persistConfig = {
     key: "root",
     version: 1,
     storage: storage,
-    whitelist: ['Auth'],
-    migration: (state: AppState, currentVersion: 1 ) => {
-        const { Auth } = state
-        let newState = Auth
-        return Promise.resolve(newState)
-      }
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

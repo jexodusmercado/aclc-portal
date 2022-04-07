@@ -9,15 +9,15 @@ const Authenticating = () => {
 
     if(auth) {
         if(user.type === 'admin'){
-            return <Navigate to="/dashboard/admin/home" state={{ from: location }} />
+            return <Navigate to="/dashboard" state={{ from: location }} />
         }
 
         if(user.type === 'student'){
-            return <Navigate to="/dashboard/student/home" state={{ from: location }} />
+            return <Navigate to="/dashboard" state={{ from: location }} />
         }
 
         if(user.type === 'faculty'){
-            return <Navigate to="/dashboard/faculty/home" state={{ from: location }} />
+            return <Navigate to="/dashboard" state={{ from: location }} />
         }
     }
 

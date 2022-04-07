@@ -11,7 +11,7 @@ function* LoginActionType({ payload }: types.LoginAction) {
         console.log(response)
 
         if(response.data.data.token){
-            localStorage.setItem('tk', response.data.data.token)
+            yield localStorage.setItem('tk', response.data.data.token)
 
             yield put({
                 type: types.LOGIN_SUCCESS,

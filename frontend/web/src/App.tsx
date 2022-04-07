@@ -1,4 +1,3 @@
-import React from 'react';
 import CustomRoute from 'router/Routes';
 
 function App() {

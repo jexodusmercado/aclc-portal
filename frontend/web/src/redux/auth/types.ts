@@ -24,7 +24,6 @@ export const initialState = {
         },
         authenticated   : false,
         loading         : false,
-
     }
 }
 
