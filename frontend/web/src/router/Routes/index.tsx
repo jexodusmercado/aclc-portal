@@ -7,6 +7,7 @@ import Layout from 'components/Layout'
 import CheckRole from 'router/CheckRole'
 import FacultyIndex from 'pages/Admin/Dashboard/Faculty'
 import DepartmentIndex from 'pages/Admin/Dashboard/Department'
+import DepartmentForm from 'pages/Admin/Dashboard/Department/DepartmentForm'
 
 const CustomRoute = () => {
     return (
@@ -24,6 +25,7 @@ const CustomRoute = () => {
                             {/* Department */}
                             <Route path='department'>
                                 <Route index element={<DepartmentIndex />} />
+                                <Route path="create" element={<DepartmentForm />} />
                             </Route>
                             
                             {/* Faculty */}

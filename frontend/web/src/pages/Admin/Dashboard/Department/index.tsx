@@ -5,6 +5,7 @@ import { IDepartment } from 'interfaces'
 import CardContainer from 'components/CardContainer'
 import SelectInputText from 'components/SearchInputText'
 import DepartmentTable from './Components/Tables'
+import { Link } from 'react-router-dom'
 // import SelectMenu from 'components/SelectMenu'
 // import { List } from 'interfaces'
 
@@ -65,10 +66,10 @@ const DepartmentIndex = () => {
                 </h3>
 
                 <div className='ml-auto space-x-3'>
-                    <button className='button-primary'>
+                    <Link to="/dashboard/department/create" className='button-primary'>
                         <PlusCircleIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                         Add Department
-                    </button>
+                    </Link>
                     <button className='button-primary'>
                         <DownloadIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                         Download CSV

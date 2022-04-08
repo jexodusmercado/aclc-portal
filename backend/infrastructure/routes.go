@@ -19,7 +19,7 @@ func NewGinRouter() GinRouter {
 
     config := cors.DefaultConfig()
 
-    config.AllowOrigins = []string{"http://localhost:3000"}
+    config.AllowOrigins = []string{"http://localhost:3001"}
 
     httpRouter.GET("/", func(c *gin.Context) {
         c.JSON(http.StatusOK, gin.H{"data": "Up and Running..."})

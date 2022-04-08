@@ -9,14 +9,13 @@ import { List } from 'interfaces'
 
 interface Props {
     lists: List[]
-    take: (value: List) => void
     selected: List
     setSelected: React.Dispatch<React.SetStateAction<List>>
     name?: string
     className?: string
 }
 
-const SelectMenu: React.FC<Props> = ({selected, setSelected, lists, take, name, className}) => {
+const SelectMenu: React.FC<Props> = ({selected, setSelected, lists, name, className}) => {
 
     return (
         <Listbox value={selected} onChange={setSelected}>
