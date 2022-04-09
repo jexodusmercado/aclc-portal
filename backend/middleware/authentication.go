@@ -26,8 +26,12 @@ func Authenticate() gin.HandlerFunc {
 		tokenString := authHeader[len(BEARER_SCHEMA):]
 
 		fmt.Println(tokenString)
+		fmt.Println(authHeader)
 
 		token, err := util.ValidateToken(util.TrimSpaces(tokenString))
+		fmt.Println("token")
+		fmt.Println(token)
+		fmt.Println(err)
 		if token.Valid {
 			claims, ok := token.Claims.(jwt.MapClaims)
 			if !ok {

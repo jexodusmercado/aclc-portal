@@ -70,7 +70,7 @@ func (u UserRepository) FindAll(user models.User, keyword string) (*[]models.Use
     var users []models.User    
     var totalRows int64 = 0
 
-    queryBuilder := u.db.DB.Preload("Classrooms.Subject").Preload(clause.Associations).Order("created_at desc").Model(&models.User{})
+    queryBuilder := u.db.DB.Preload(clause.Associations).Order("created_at desc").Model(&models.User{})
 
     if keyword != "" {
         queryKeyword := "%" + keyword + "%"

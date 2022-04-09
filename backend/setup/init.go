@@ -59,6 +59,7 @@ func InitializeServices(router infrastructure.GinRouter) {
         &models.SchoolYear{},
         &models.StudentGrade{},
         &models.YearLevel{},
+        &models.Department{},
     ); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
         if err := db.DB.First(&models.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
             layout := time.RFC3339[:len("1994-12-17")]

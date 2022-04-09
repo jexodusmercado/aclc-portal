@@ -2,7 +2,7 @@ package infrastructure
 
 import (
     "fmt"
-    // "os"
+    "os"
     // "time"
     "gorm.io/driver/mysql"
     "gorm.io/gorm"
@@ -15,17 +15,18 @@ type Database struct {
 
 //NewDatabase : intializes and returns mysql db
 func NewDatabase() Database {
-    // USER := os.Getenv("DB_USER")
-    // PASS := os.Getenv("DB_PASSWORD")
-    // HOST := os.Getenv("DB_HOST")
-    // DBNAME := os.Getenv("DB_NAME")
-    // PORT := os.Getenv("DB_PORT")
+    USER := os.Getenv("DB_USER")
+    PASS := os.Getenv("DB_PASSWORD")
+    HOST := os.Getenv("DB_HOST")
+    DBNAME := os.Getenv("DB_NAME")
+    PORT := os.Getenv("DB_PORT")
 
-    USER := "root"
-    PASS := "root"
-    HOST :="localhost"
-    PORT := "4000"
-    DBNAME := "aclcportal"
+    // USER := "root"
+    // PASS := "root"
+    // HOST :="localhost"
+    // PORT := 4000
+    // DBNAME := "aclcportal"
+    // PORT :=8000
 
     URL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", USER, PASS, 
     HOST, PORT, DBNAME)

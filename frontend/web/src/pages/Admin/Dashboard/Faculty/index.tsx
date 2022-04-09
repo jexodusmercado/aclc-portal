@@ -25,7 +25,7 @@ const FacultyIndex = () => {
     const [checked, setChecked]                         = useState<boolean>(false)
     const [selected, setSelected]                       = useState<List>({id:0, name:'Select..'})
     const [indeterminate, setIndeterminate]             = useState<boolean>(false)
-    const [selectedDepartment, setSelectedDepartment]   = useState<IFaculty[]>([])
+    const [selectedFaculty, setSelectedFaculty]         = useState<IFaculty[]>([])
     const checkbox                                      = useRef<HTMLInputElement | null>(null)
 
 
@@ -35,22 +35,22 @@ const FacultyIndex = () => {
 
 
     useIsomorphicLayoutEffect(() => {
-        const isIndeterminate = selectedDepartment.length > 0 && selectedDepartment.length < FacultyPeople.length
-        setChecked(selectedDepartment.length === FacultyPeople.length)
+        const isIndeterminate = selectedFaculty.length > 0 && selectedFaculty.length < FacultyPeople.length
+        setChecked(selectedFaculty.length === FacultyPeople.length)
         setIndeterminate(isIndeterminate)
         if(checkbox.current){
             checkbox.current.indeterminate = isIndeterminate
         }
-      }, [selectedDepartment])
+      }, [selectedFaculty])
     
     const toggleAll = () => {
-        setSelectedDepartment(checked || indeterminate ? [] : FacultyPeople)
+        setSelectedFaculty(checked || indeterminate ? [] : FacultyPeople)
         setChecked(!checked && !indeterminate)
         setIndeterminate(false)
     }
 
     const handleClear = () => {
-        setSelectedDepartment([]);
+        setSelectedFaculty([]);
         setSelected({id:0, name:'Select..'})
     }
     
@@ -64,7 +64,7 @@ const FacultyIndex = () => {
                 </h3>
 
                 <div className='ml-auto space-x-3'>
-                    <Link to="/dashboard/department/create" className='button-primary'>
+                    <Link to="/dashboard/faculty/create" className='button-primary'>
                         <PlusCircleIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                         Add Faculty
                     </Link>
@@ -90,7 +90,7 @@ const FacultyIndex = () => {
             </CardContainer>
 
             {/* TABLE */}
-            <DepartmentTable checkbox={checkbox} departments={FacultyPeople} state={selectedDepartment} setState={setSelectedDepartment} checked={checked} toggleAll={toggleAll}/>
+            <DepartmentTable checkbox={checkbox} departments={FacultyPeople} state={selectedFaculty} setState={setSelectedFaculty} checked={checked} toggleAll={toggleAll}/>
 
         </div>
     )

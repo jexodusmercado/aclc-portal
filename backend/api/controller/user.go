@@ -9,7 +9,7 @@ import (
     "net/http"
     "strconv"
     "time"
-    "fmt"
+    // "fmt"
 
     "github.com/gin-gonic/gin"
     "github.com/golang-jwt/jwt"
@@ -96,10 +96,6 @@ func (u *UserController) LoginUser(c *gin.Context) {
 // GetUsers : GetUsers controller
 func (u UserController) GetUsers(c *gin.Context) {
     var users models.User
-    currentUser := c.MustGet("currentUser").(models.User)
-
-    fmt.Println("currentUser")
-    fmt.Println(currentUser)
 
     keyword := c.Query("keyword")
 
