@@ -39,6 +39,50 @@ const authReducer = ( state: types.AuthState = types.initialState, action: AnyAc
             }
         }
 
+    case types.CREATE_USER_REQUEST:
+        return {
+            ...state,
+            createUser: {
+                loading: true,
+                success: false
+            }
+        }
+    
+    case types.CREATE_USER_SUCCESS:
+        return {
+            ...state,
+            createUser: {
+                loading: false,
+                success: true,
+            }
+        }
+
+    case types.CREATE_USER_FAILED:
+        return {
+            ...state,
+            createUser: {
+                loading: false,
+                success: false
+            }
+        }
+
+    case types.LOGOUT_REQUEST:
+        return {
+            user: types.initialState.user,
+            createUser: types.initialState.createUser
+        }
+
+    case types.LOGOUT_FAILED:
+        return {
+            user: types.initialState.user,
+            createUser: types.initialState.createUser
+        }
+    case types.LOGOUT_SUCCESS:
+        return {
+            user: types.initialState.user,
+            createUser: types.initialState.createUser
+        }
+    
     default:
         return state
   }

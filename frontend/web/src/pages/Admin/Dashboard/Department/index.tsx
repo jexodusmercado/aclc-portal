@@ -78,7 +78,7 @@ const DepartmentIndex = () => {
             </div>
 
             {/* FILTER */}
-            <CardContainer className='mt-7'>
+            <CardContainer margin='mt-7'>
                 <div className='flex space-x-3'>
                     <SelectInputText state={search} setState={setSearch} onChange={handleSearch} className='max-w-sm'/>
                     {/* <SelectMenu selected={department} setSelected={setDepartment} name="Departments" lists={list} take={handleSelected} className='max-w-sm'/> */}

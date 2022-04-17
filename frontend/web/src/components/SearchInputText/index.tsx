@@ -22,7 +22,7 @@ const SelectInputText: React.FC<Props> = ({state, setState, onChange, className}
                     type="input"
                     name="search"
                     id="search"
-                    className="input-text"
+                    className="input-text pl-10"
                     onChange={e => setState(e.currentTarget.value)}
                     value={state}
                 />
