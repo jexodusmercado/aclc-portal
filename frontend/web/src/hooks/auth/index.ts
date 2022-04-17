@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import { AppState } from "redux/reducers";
 import { 
-    CreatedState,
     UserDataState,
     UserErrorState,
     UserLoadingState,
@@ -20,5 +19,3 @@ export const useUserError = () : UserErrorState =>
 export const useUserLoading = () : UserLoadingState =>
     useSelector((state: AppState) => state.Auth.user.loading) 
 
-export const useUserCreated = () : CreatedState => 
-    useSelector((state: AppState) => state.Auth.createUser)

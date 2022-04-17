@@ -9,8 +9,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { classNames } from 'utility'
 import { useUpdateEffect, useUserCreated } from 'hooks'
 import { useDispatch } from 'react-redux'
-import { createUserRequest } from 'redux/auth/action'
-import { isUserCreated } from 'redux/auth/selector'
+import { createUserRequest } from 'redux/users/action'
 
 interface FormData {
     username    : string
@@ -80,7 +79,7 @@ const FacultyForm = () => {
                 </div>
                 <div className="mt-5 md:mt-0 md:col-span-2">
                     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                        <CardContainer padding='p-10' footer={true} cancelOnclick={cancelForm}>
+                        <CardContainer padding='p-10' footer={true} cancelOnclick={cancelForm} loading={createdState.loading}>
                             <div className="grid grid-cols-4 gap-6">
                                 <div className="col-span-4 sm:col-span-4">
                                     <label htmlFor="username" className="block text-sm font-medium text-gray-700">

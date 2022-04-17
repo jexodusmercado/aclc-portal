@@ -43,6 +43,10 @@ func (u *UserController) CreateUser(c *gin.Context) {
     user.Password 	= hashPassword
 	user.Type 		= constants.USER_TYPE[user.Type]
 
+    if user.Type == "" {
+        util.CustomErrorJson(c, http.StatusBadRequest, "No existing role")
+    }
+
     err := u.service.CreateUser(user)
     if err != nil {
         util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
@@ -99,7 +103,9 @@ func (u UserController) GetUsers(c *gin.Context) {
 
     keyword := c.Query("keyword")
 
-    data, total, err := u.service.FindAll(users, keyword)
+    userType := c.Query("type")
+
+    data, total, err := u.service.FindAll(users, keyword, userType)
 
     if err != nil {
         util.ErrorJSON(c, http.StatusBadRequest, err)
@@ -142,6 +148,9 @@ func (u *UserController) GetUser(c *gin.Context) {
         Success: true,
         Message: "Result set of Post",
         Data:    &response})
+}
+
+func (u *UserController) GetUsersByType(c *gin.Context) {
 
 }
 

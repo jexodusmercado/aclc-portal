@@ -65,7 +65,7 @@ func (u UserRepository) Login(user models.UserLogin) (*models.User, error) {
 }
 
 //FindAll -> method for returning all users
-func (u UserRepository) FindAll(user models.User, keyword string) (*[]models.User, int64, error) {
+func (u UserRepository) FindAll(user models.User, keyword, userType string) (*[]models.User, int64, error) {
 
     var users []models.User    
     var totalRows int64 = 0
@@ -75,7 +75,11 @@ func (u UserRepository) FindAll(user models.User, keyword string) (*[]models.Use
     if keyword != "" {
         queryKeyword := "%" + keyword + "%"
         queryBuilder = queryBuilder.Where(
-            u.db.DB.Where("user.first_name LIKE ? OR user.last_name LIKE ? ", queryKeyword, queryKeyword))
+            u.db.DB.Where("user.first_name LIKE ? OR user.last_name LIKE ? ", queryKeyword, queryKeyword)).Where("user.type = ? ", userType)
+    }
+
+    if userType != "" {
+        queryBuilder = queryBuilder.Where("type = ? ", userType)
     }
 
     err := queryBuilder.
@@ -90,8 +94,8 @@ func (u UserRepository) Find(user models.User) (models.User, error) {
     var users models.User
     err := u.db.DB.
         Debug().
-        Preload("Classrooms.Subject").
-        Preload(clause.Associations).
+        // Preload("Classrooms.Subject").
+        // Preload(clause.Associations).
         Model(&models.User{}).
         Where(&user).
         Take(&users).Error

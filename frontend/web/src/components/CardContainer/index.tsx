@@ -39,14 +39,14 @@ const Card: React.FC<Props> = ({children, padding, margin, border=true, borderCo
                 rounded ? (roundedSize ? `rounded-${roundedSize}` : "rounded") : "",
                 border ? "border" : "",
                 borderColor ? `border-${borderColor}` : "border-gray-100",
+                margin ? margin : "",
                 "bg-white"
             )
         }>
 
             <div className={
                 classNames(
-                    padding ? padding : "px-3 py-3 sm:px-6",
-                    margin ? margin : "",
+                    padding ? padding : "px-4 py-4 sm:px-6",
                 )
             }>
                 {children}

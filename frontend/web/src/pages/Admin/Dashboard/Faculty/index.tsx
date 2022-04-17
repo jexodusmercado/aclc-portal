@@ -1,13 +1,15 @@
 import React, { useRef, useState } from 'react'
 import { DownloadIcon, PlusCircleIcon } from '@heroicons/react/solid'
-import { useIsomorphicLayoutEffect } from 'hooks'
-import { IFaculty } from 'interfaces'
+import { useEffectOnce, useGetAllUsers, useIsomorphicLayoutEffect, useUpdateEffect } from 'hooks'
+import { Link } from 'react-router-dom'
+import { List } from 'interfaces'
+import { useDispatch } from 'react-redux'
+import FacultyTable from './Components/Tables'
 import CardContainer from 'components/CardContainer'
 import SelectInputText from 'components/SearchInputText'
-import DepartmentTable from './Components/Tables'
-import { Link } from 'react-router-dom'
 import SelectMenu from 'components/SelectMenu'
-import { List } from 'interfaces'
+import { getAllUsersRequest, searchUsersRequest } from 'redux/users/action'
+import { GetAllUsersState } from 'redux/users/types'
 
 const list = [
     {id: 1, name:"Department of Business and Accounting"},
@@ -15,36 +17,18 @@ const list = [
     {id: 3, name:"Department of Computing"},
 ]
 
-const FacultyPeople = [
-    {id: 1,  firstName: "John", lastName: "Doe", Subject:["Accounting", "Business Administrator"], Classes: 5},
-    {id: 2,  firstName: "Jane", lastName: "Doe", Subject:["Java", "C++"], Classes: 2},
-]
-
 const FacultyIndex = () => {
     const [search, setSearch]                           = useState<string>('')
     const [checked, setChecked]                         = useState<boolean>(false)
     const [selected, setSelected]                       = useState<List>({id:0, name:'Select..'})
     const [indeterminate, setIndeterminate]             = useState<boolean>(false)
-    const [selectedFaculty, setSelectedFaculty]         = useState<IFaculty[]>([])
+    const [selectedFaculty, setSelectedFaculty]         = useState<GetAllUsersState["data"]>([])
     const checkbox                                      = useRef<HTMLInputElement | null>(null)
+    const dispatch                                      = useDispatch()
+    const users                                         = useGetAllUsers()
 
-
-    const handleSearch = (text: string) => {
-        console.log(text)
-    }
-
-
-    useIsomorphicLayoutEffect(() => {
-        const isIndeterminate = selectedFaculty.length > 0 && selectedFaculty.length < FacultyPeople.length
-        setChecked(selectedFaculty.length === FacultyPeople.length)
-        setIndeterminate(isIndeterminate)
-        if(checkbox.current){
-            checkbox.current.indeterminate = isIndeterminate
-        }
-      }, [selectedFaculty])
-    
     const toggleAll = () => {
-        setSelectedFaculty(checked || indeterminate ? [] : FacultyPeople)
+        setSelectedFaculty(checked || indeterminate ? [] : users.data)
         setChecked(!checked && !indeterminate)
         setIndeterminate(false)
     }
@@ -54,6 +38,22 @@ const FacultyIndex = () => {
         setSelected({id:0, name:'Select..'})
     }
     
+    useIsomorphicLayoutEffect(() => {
+        const isIndeterminate = selectedFaculty.length > 0 && selectedFaculty.length < users.data.length
+        setChecked(selectedFaculty.length === users.data.length)
+        setIndeterminate(isIndeterminate)
+        if(checkbox.current){
+            checkbox.current.indeterminate = isIndeterminate
+        }
+    }, [selectedFaculty])
+
+    useUpdateEffect(() => {
+        dispatch(searchUsersRequest({keyword: search, type: "faculty"}))
+    },[search])
+
+    useEffectOnce(() => {
+        dispatch(getAllUsersRequest({type: "faculty"}))
+    })
 
     return (
         <div className='containerized'>
@@ -78,7 +78,7 @@ const FacultyIndex = () => {
             {/* FILTER */}
             <CardContainer margin='mt-7'>
                 <div className='flex space-x-3'>
-                    <SelectInputText state={search} setState={setSearch} onChange={handleSearch} className='max-w-sm'/>
+                    <SelectInputText state={search} setState={setSearch} className='max-w-sm'/>
                     <SelectMenu selected={selected} setSelected={setSelected} name="Departments" lists={list} className='max-w-sm'/>
                     <div className='self-center'>
                         <button className='ml-3 text-blue-900 font-extralight' onClick={handleClear}>
@@ -90,7 +90,29 @@ const FacultyIndex = () => {
             </CardContainer>
 
             {/* TABLE */}
-            <DepartmentTable checkbox={checkbox} departments={FacultyPeople} state={selectedFaculty} setState={setSelectedFaculty} checked={checked} toggleAll={toggleAll}/>
+            {
+                !users.data.length &&
+                <div className="w-full mt-7">
+                    <div className='flex justify-center align-middle'>
+                        <span> No faculty member(s) found</span>
+                    </div>
+                </div>
+
+                
+            }
+            {
+                users.data.length !== 0 &&
+                <FacultyTable 
+                    checkbox={checkbox}
+                    users={users.data} 
+                    state={selectedFaculty} 
+                    setState={setSelectedFaculty} 
+                    checked={checked} 
+                    toggleAll={toggleAll}
+                    loading={users.loading}    
+                />
+            }
+            
 
         </div>
     )

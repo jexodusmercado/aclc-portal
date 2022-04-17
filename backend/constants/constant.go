@@ -4,4 +4,5 @@ package constants
 var USER_TYPE = map[string]string {
 	"admin" 	: "ADMIN",
 	"student" 	: "STUDENT",
+	"faculty"	: "FACULTY",
 }

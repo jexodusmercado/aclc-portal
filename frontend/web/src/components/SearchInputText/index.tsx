@@ -4,11 +4,10 @@ import React from 'react'
 interface Props {
     state: string
     setState: React.Dispatch<React.SetStateAction<string>>
-    onChange: (value: string) => void
     className?: string
 }
 
-const SelectInputText: React.FC<Props> = ({state, setState, onChange, className}) => {
+const SelectInputText: React.FC<Props> = ({state, setState, className}) => {
     return (
         <div className={`w-full ${className}`}>
             <label htmlFor="search" className="block text-sm font-light text-gray-600">

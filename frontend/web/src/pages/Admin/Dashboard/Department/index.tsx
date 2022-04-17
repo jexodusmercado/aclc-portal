@@ -33,10 +33,6 @@ const DepartmentIndex = () => {
     //     console.log(selected)
     // }
 
-    const handleSearch = (text: string) => {
-        console.log(text)
-    }
-
     // const handleClear = () => {
     //     setDepartment({id:0, name:'Select..'});
     //     setSearch('')
@@ -80,7 +76,7 @@ const DepartmentIndex = () => {
             {/* FILTER */}
             <CardContainer margin='mt-7'>
                 <div className='flex space-x-3'>
-                    <SelectInputText state={search} setState={setSearch} onChange={handleSearch} className='max-w-sm'/>
+                    <SelectInputText state={search} setState={setSearch} className='max-w-sm'/>
                     {/* <SelectMenu selected={department} setSelected={setDepartment} name="Departments" lists={list} take={handleSelected} className='max-w-sm'/> */}
                     {/* <div className='self-center'>
                         <button className='ml-3 text-blue-900 font-extralight' onClick={handleClear}>

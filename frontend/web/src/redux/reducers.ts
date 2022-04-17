@@ -1,9 +1,12 @@
 import { AnyAction, combineReducers } from 'redux';
 
-import Auth from './auth/reducer'; // import Sample from './sample/reducer';
+import Auth     from'./auth/reducer'; // import Sample from './sample/reducer';
+import Users    from './users/reducer'
 
 export const appReducer = combineReducers({
     Auth,
+    Users
+
     //add reducer here
 })
 
