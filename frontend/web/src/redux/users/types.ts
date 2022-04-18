@@ -82,7 +82,7 @@ export type SearchUsersAction = {
 
 export type GetUserAction = {
     type        : typeof GET_USER_REQUEST
-    paylaod?    : GetUserPayload
+    payload     : GetUserPayload
 }
 
 export type CreateUserAction = {
@@ -100,7 +100,7 @@ export interface GetUsersPayload {
 }
 
 export interface GetUserPayload {
-    id? : string
+    id : string
 }
 
 export interface CreateUserPayload {

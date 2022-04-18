@@ -143,7 +143,7 @@ const FacultyTable: React.FC<Props> = ({state, setState, users, checkbox, checke
                                            {user?.is_active ? "Active" : "Inactive"}
                                         </td>
                                         <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                            <Link to={`/dashboard/faculty/${user.id}`} className="text-blue-600 hover:text-blue-900">
+                                            <Link to={`/dashboard/faculty/edit/${user.id}`} className="text-blue-600 hover:text-blue-900">
                                                 Edit<span className="sr-only">, {user.first_name + ' ' + user.last_name}</span>
                                             </Link>
                                         </td>

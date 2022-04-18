@@ -63,6 +63,33 @@ const usersReducer = ( state: types.UserState = types.initialState, action: AnyA
             }
         }
 
+    case types.GET_USER_REQUEST:
+        return {
+            ...state,
+            user: {
+                ...state.user,
+                loading: true
+            }
+        }
+    
+    case types.GET_USER_SUCCESS:
+        return{
+            ...state,
+            user: {
+                ...action.payload,
+                loading: false
+            }
+        }
+
+    case types.GET_USER_FAILED:
+        return {
+            ...state,
+            user: {
+                ...state.user,
+                loading: false
+            }
+        }
+
 
     default:
         return state

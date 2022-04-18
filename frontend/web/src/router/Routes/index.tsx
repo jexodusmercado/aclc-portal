@@ -9,6 +9,7 @@ import FacultyIndex from 'pages/Admin/Dashboard/Faculty'
 import DepartmentIndex from 'pages/Admin/Dashboard/Department'
 import DepartmentForm from 'pages/Admin/Dashboard/Department/DepartmentForm'
 import FacultyForm from 'pages/Admin/Dashboard/Faculty/FacultyForm'
+import FacultyProfile from 'pages/Admin/Dashboard/Faculty/FacultyProfile'
 
 const CustomRoute = () => {
     return (
@@ -33,6 +34,7 @@ const CustomRoute = () => {
                             <Route path="faculty">
                                 <Route index element={<FacultyIndex />} />
                                 <Route path="create" element={<FacultyForm />} />
+                                <Route path="edit/:id" element={<FacultyProfile />} />
                             </Route>
 
                             <Route path="*" element={<>404</>} />

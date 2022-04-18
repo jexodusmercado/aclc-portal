@@ -74,11 +74,34 @@ function* SearchUserType ({payload} : types.GetUsersAction) {
     }
 }
 
+function* GetUserType({payload}: types.GetUserAction) {
+    try {
+        const response : AxiosResponse = yield call(usersRequest.getUserRequest, payload)
+
+        yield put({
+            type: types.GET_USER_SUCCESS,
+            payload: response.data.data
+        })
+
+    } catch (error) {
+        const payload = handleAxiosError(error as AxiosError)
+
+        yield put({
+            type: types.SEARCH_USER_FAILED,
+            payload
+        })
+
+        toast.error('Failed getting data from server.')
+        
+    }
+}
+
 
 const UsersSaga: ForkEffect[] = [
     takeLatest(types.CREATE_USER_REQUEST, CreateUserType),
     takeLatest(types.GET_USERS_REQUEST, GetAllUsersType),
-    takeLatest(types.SEARCH_USER_REQUEST, SearchUserType)
+    takeLatest(types.SEARCH_USER_REQUEST, SearchUserType),
+    takeLatest(types.GET_USER_REQUEST, GetUserType)
 ]
 
 export default UsersSaga;

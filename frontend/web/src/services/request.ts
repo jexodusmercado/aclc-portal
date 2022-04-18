@@ -1,7 +1,7 @@
 import { END_POINTS } from "services/api";
 import { apiInstance } from "services/axios";
 import { LoginPayload } from "redux/auth/types";
-import { CreateUserPayload, GetUsersPayload } from "redux/users/types";
+import { CreateUserPayload, GetUserPayload, GetUsersPayload } from "redux/users/types";
 
 
 export const authRequest = {
@@ -17,5 +17,8 @@ export const usersRequest = {
 
     getAllUsersRequest: (params?: GetUsersPayload) =>
         apiInstance.get(END_POINTS.USERS, { params }),
+
+    getUserRequest: (params: GetUserPayload) =>
+        apiInstance.get(`${END_POINTS.USERS}/${params.id}`),
 }
 

@@ -20,3 +20,10 @@ export const searchUsersRequest = ( payload : types.GetUsersPayload): types.Sear
         payload
     }
 }
+
+export const getUserRequest = ( payload : types.GetUserPayload): types.GetUserAction => {
+    return {
+        type: types.GET_USER_REQUEST,
+        payload
+    }
+}
