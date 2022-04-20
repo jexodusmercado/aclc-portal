@@ -1,15 +1,15 @@
 /**
  * TYPED STATES
  */
-export type UserState           = typeof initialState
-export type CreateState         = typeof initialState.created
-export type GetAllUsersState    = typeof initialState.users
-export type GetUserState        = typeof initialState.user
+export type UserState           = typeof UserInitialState
+export type CreateState         = typeof UserInitialState.created
+export type GetAllUsersState    = typeof UserInitialState.users
+export type GetUserState        = typeof UserInitialState.user
 
 /**
  * STATES
  */
-export const initialState = {
+export const UserInitialState  = {
     users: {
         data: [
             {
@@ -23,6 +23,14 @@ export const initialState = {
                 is_active: false,
                 updated_at: "",
                 created_at: "",
+                course: {
+                    ID: 0,
+                    created_at: "",
+                    description: "",
+                    is_active: false,
+                    name: "",
+                    updated_at: "",
+                }
             }
         ],
         loading: false
@@ -38,6 +46,14 @@ export const initialState = {
         is_active: false,
         updated_at: "",
         created_at: "",
+        course: {
+            ID: 0,
+            created_at: "",
+            description: "",
+            is_active: false,
+            name: "",
+            updated_at: "",
+        },
         loading: false
     },
     created: {
@@ -97,6 +113,7 @@ export type CreateUserAction = {
 export interface GetUsersPayload {
     type?       : string
     keyword?    : string
+    course_id?  : string
 }
 
 export interface GetUserPayload {
@@ -110,4 +127,6 @@ export interface CreateUserPayload {
     birthday    : Date | null
     type        : string
     email?      : string
+    letter_type : string
+    course_id?  : number
 }

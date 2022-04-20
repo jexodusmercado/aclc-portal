@@ -18,6 +18,7 @@ interface FormData {
     birthday    : Date | null
     email       : string
     type        : string
+    letter_type : string
 }
 
 const facultySchema = yup.object({
@@ -42,7 +43,8 @@ const FacultyForm = () => {
     });
 
     const onSubmit: SubmitHandler<FormData> = (data) => {
-        data.type = "faculty"
+        data.type           = "faculty"
+        data.letter_type    = "f"
 
         dispatch(createUserRequest(data))
     }

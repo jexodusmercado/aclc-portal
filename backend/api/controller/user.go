@@ -135,7 +135,9 @@ func (u UserController) GetUsers(c *gin.Context) {
 
     userType := c.Query("type")
 
-    data, total, err := u.service.FindAll(users, keyword, userType)
+    courseId := c.Query("course_id")
+
+    data, total, err := u.service.FindAll(users, keyword, userType, courseId)
 
     if err != nil {
         util.ErrorJSON(c, http.StatusBadRequest, err)

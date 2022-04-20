@@ -2,14 +2,17 @@ import React, { useState } from 'react'
 import CardContainer from 'components/CardContainer'
 import { useNavigate } from 'react-router-dom'
 import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
+import SelectMenu from 'components/SelectMenu'
 import * as yup from 'yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { classNames } from 'utility'
-import { useUpdateEffect, useUserCreated } from 'hooks'
+import { useCoursesState, useEffectOnce, useIsomorphicLayoutEffect, useUpdateEffect, useUserCreated } from 'hooks'
 import { useDispatch } from 'react-redux'
 import { createUserRequest } from 'redux/users/action'
+import 'react-datepicker/dist/react-datepicker.css'
+import { List } from 'interfaces'
+import { getAllCoursesRequest } from 'redux/courses/action'
 
 interface FormData {
     username    : string
@@ -18,6 +21,8 @@ interface FormData {
     birthday    : Date | null
     email       : string
     type        : string
+    letter_type : string
+    course_id   : number
 }
 
 const facultySchema = yup.object({
@@ -25,14 +30,19 @@ const facultySchema = yup.object({
     first_name  : yup.string().trim().required('*First name is required'),
     last_name   : yup.string().trim().required('*First name is required'),
     birthday    : yup.date().required('*Birthday is required'),
-    email       : yup.string().trim().email('*Input correct email format')
+    email       : yup.string().trim().email('*Input correct email format'),
+    course_id   : yup.number().required('*Course is required')
 }).required()
 
-const FacultyForm = () => {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const createdState = useUserCreated();
-    const [startDate, setStartDate] = useState<Date | null>(null);
+const StudentForm = () => {
+    const navigate                      = useNavigate()
+    const dispatch                      = useDispatch()
+    const createdState                  = useUserCreated();
+    const courses                       = useCoursesState()
+    const [selected, setSelected]       = useState<List>({id:0, name:'Select..'})
+    const [startDate, setStartDate]     = useState<Date | null>(null);
+    const [coursesList, setCoursesList] = useState<List[]>([])
+
 
     const cancelForm = () => navigate('/dashboard/faculty');
 
@@ -42,7 +52,8 @@ const FacultyForm = () => {
     });
 
     const onSubmit: SubmitHandler<FormData> = (data) => {
-        data.type = "faculty"
+        data.type           = "student"
+        data.letter_type    = "s"
 
         dispatch(createUserRequest(data))
     }
@@ -52,10 +63,30 @@ const FacultyForm = () => {
     },[startDate])
 
     useUpdateEffect(() => {
+        setValue('course_id', selected.id)
+    },[selected])
+
+    useUpdateEffect(() => {
         if(createdState.success){
-            navigate('/dashboard/faculty')
+            navigate('/dashboard/student')
         }
     },[createdState])
+
+    useEffectOnce(() => {
+        dispatch(getAllCoursesRequest())
+    })
+
+    useIsomorphicLayoutEffect(() => {
+        if(courses.data){
+            const list = courses.data.map(course => {
+                return {
+                    id: course.ID,
+                    name: course.name
+                }
+            })
+            setCoursesList(list)
+        }
+    },[courses])
 
 
     return (
@@ -63,7 +94,7 @@ const FacultyForm = () => {
             <div className="mx-auto my-10">
                 <div className='flex align-middle'>
                     <h3 className='leading-6 text-2xl mr-auto text-gray-500'>
-                        Add Faculty Member
+                        Add Student
                     </h3>
                 </div>
             </div>
@@ -73,7 +104,7 @@ const FacultyForm = () => {
                     <div className="px-4 sm:px-0">
                         <h1 className="text-lg font-medium text-gray-500 leading-6"> Profile </h1>
                         <p className="mt-1 text-sm text-gray-500 opacity-60">
-                            Fill out the form for the new faculty member.
+                            Fill out the form for the student information.
                         </p>
                     </div>
                 </div>
@@ -142,6 +173,16 @@ const FacultyForm = () => {
                                     {errors.birthday && <p className='text-sm text-red-400'> *Date is required </p>}
                                 </div>
 
+                                <div className="col-span-2 sm:col-span-2">
+                                    <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
+                                        Course
+                                    </label>
+                                    <div className="mt-1 flex rounded-md shadow">
+                                        <SelectMenu selected={selected} setSelected={setSelected} lists={coursesList} className='max-w-sm mt-0 pt-0'/>
+                                    </div>
+                                    {errors.birthday && <p className='text-sm text-red-400'> *Date is required </p>}
+                                </div>
+
                                 <div className="col-span-4 sm:col-span-4">
                                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                                         Email Address <span className='text-xs opacity-75'> *optional  </span>
@@ -165,4 +206,4 @@ const FacultyForm = () => {
     )
 }
 
-export default FacultyForm
+export default StudentForm

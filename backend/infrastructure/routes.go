@@ -18,9 +18,9 @@ func NewGinRouter() GinRouter {
     httpRouter := gin.Default()
 
     config := cors.DefaultConfig()
-
-    config.AllowOrigins = []string{"http://localhost:3001","http://localhost","http://localhost:3000"}
+    config.AllowOrigins = []string{"http://localhost:3001","http://localhost:3001/","http://localhost:3000"}
     config.AllowCredentials = true
+    config.AddAllowMethods("OPTIONS")
     config.AllowHeaders = []string{
         "Origin",
         "Content-Length",

@@ -8,12 +8,13 @@ type Headers = {
 }
 
 export const HEADERS : Headers = {
-    'Content-Type': 'application/json;charset=utf-8',
+    'Content-Type'                  : 'application/json;charset=utf-8',
 }
 
 // AXIOS INSTANCE BELOW
 export const apiInstance = axios.create({
     baseURL: BASE_URL,
+    headers: HEADERS
 })
 
 //BEFORE SUBMITTING REQUEST

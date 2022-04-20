@@ -51,7 +51,7 @@ const StudentTable: React.FC<Props> = ({state, setState, users, checkbox, checke
                                         />
                                     </th>
                                     <th scope="col" className="py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">
-                                        Faculty ID
+                                        Student ID
                                     </th>
                                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                         First Name
@@ -61,6 +61,9 @@ const StudentTable: React.FC<Props> = ({state, setState, users, checkbox, checke
                                     </th>
                                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                         Email
+                                    </th>
+                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        Course
                                     </th>
                                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                         Status
@@ -138,6 +141,9 @@ const StudentTable: React.FC<Props> = ({state, setState, users, checkbox, checke
                                         </td>
                                         <td className="whitespace-pre-wrap px-3 py-4 text-sm space-x-1 space-y-1 text-gray-500">
                                            {user?.email !== "" ? user.email : "-"}
+                                        </td>
+                                        <td className="whitespace-pre-wrap px-3 py-4 text-sm space-x-1 space-y-1 text-gray-500">
+                                           {user?.course && user?.course.name}
                                         </td>
                                         <td className="whitespace-pre-wrap px-3 py-4 text-sm space-x-1 space-y-1 text-gray-500">
                                            {user?.is_active ? "Active" : "Inactive"}

@@ -42,8 +42,8 @@ func (u UserService) Find(user models.User) (models.User, error) {
 }
 
 //FindAll -> calls post repo find all method
-func (u UserService) FindAll(user models.User, keyword, userType string) (*[]models.User, int64, error) {
-    return u.repo.FindAll(user, keyword, userType)
+func (u UserService) FindAll(user models.User, keyword, userType, courseId string) (*[]models.User, int64, error) {
+    return u.repo.FindAll(user, keyword, userType, courseId)
 }
 
 //Adding Users to classroom -> saves many2many relations from users to classroom

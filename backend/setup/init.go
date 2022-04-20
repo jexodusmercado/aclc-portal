@@ -46,7 +46,7 @@ func InitializeServices(router infrastructure.GinRouter) {
     postRoute        := routes.NewPostRoute(postController, router)
     postRoute.Setup()
 
-    //posts
+    //course
     courseRepository   := repository.NewCourseRepository(db)
     courseService      := service.NewCourseService(courseRepository)
     courseController   := controller.NewCourseController(courseService)

@@ -81,7 +81,7 @@ func (u UserRepository) Login(user models.UserLogin) (*models.User, error) {
 }
 
 //FindAll -> method for returning all users
-func (u UserRepository) FindAll(user models.User, keyword, userType string) (*[]models.User, int64, error) {
+func (u UserRepository) FindAll(user models.User, keyword, userType, courseId string) (*[]models.User, int64, error) {
 
     var users []models.User    
     var totalRows int64 = 0
@@ -90,8 +90,22 @@ func (u UserRepository) FindAll(user models.User, keyword, userType string) (*[]
 
     if keyword != "" {
         queryKeyword := "%" + keyword + "%"
+        numericKeyword := keyword + "%"
         queryBuilder = queryBuilder.Where(
-            u.db.DB.Where("user.first_name LIKE ? OR user.last_name LIKE ? ", queryKeyword, queryKeyword)).Where("user.type = ? ", userType)
+            u.db.DB.
+            Where("user.username LIKE ? OR user.first_name LIKE ? OR user.last_name LIKE ?", numericKeyword, queryKeyword, queryKeyword)).
+            Where("user.type = ? ", userType)
+    }
+
+    if courseId != "" {
+        queryKeyword := "%" + keyword + "%"
+        numericKeyword := keyword + "%"
+
+        queryBuilder = queryBuilder.Where(
+            u.db.DB.
+            Where("user.username LIKE ? OR user.first_name LIKE ? OR user.last_name LIKE ?", numericKeyword, queryKeyword, queryKeyword)).
+            Where("type = ? ", userType).
+            Where("user.course_id = ?", courseId)
     }
 
     if userType != "" {

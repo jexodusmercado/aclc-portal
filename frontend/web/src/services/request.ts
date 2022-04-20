@@ -13,7 +13,7 @@ export const authRequest = {
 
 export const usersRequest = {
     createUserRequest: (params: CreateUserPayload) =>
-    apiInstance.post(`${END_POINTS.AUTH}/${END_POINTS.REGISTER}`, params),
+        apiInstance.post(`${END_POINTS.AUTH}/${params.letter_type}/${END_POINTS.REGISTER}`, params),
 
     getAllUsersRequest: (params?: GetUsersPayload) =>
         apiInstance.get(END_POINTS.USERS, { params }),
@@ -22,3 +22,7 @@ export const usersRequest = {
         apiInstance.get(`${END_POINTS.USERS}/${params.id}`),
 }
 
+export const courseRequest = {
+    getAllCoursesRequest: () =>
+        apiInstance.get(END_POINTS.COURSE)
+}

@@ -11,6 +11,7 @@ import DepartmentForm from 'pages/Admin/Dashboard/Department/DepartmentForm'
 import FacultyForm from 'pages/Admin/Dashboard/Faculty/FacultyForm'
 import FacultyProfile from 'pages/Admin/Dashboard/Faculty/FacultyProfile'
 import StudentIndex from 'pages/Admin/Dashboard/Student'
+import StudentForm from 'pages/Admin/Dashboard/Student/StudentForm'
 
 const CustomRoute = () => {
     return (
@@ -41,6 +42,7 @@ const CustomRoute = () => {
                             {/* Student */}
                             <Route path="student">
                                 <Route index element={<StudentIndex/>} />
+                                <Route path="create" element={<StudentForm />} />
                             </Route>
 
                             <Route path="*" element={<>404</>} />

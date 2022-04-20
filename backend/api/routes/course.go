@@ -26,7 +26,7 @@ func (c CourseRoute) Setup() {
     course := c.Handler.Gin.Group("/course")
     {
 		course.Use(middleware.Authenticate())
-        course.GET("/", c.Controller.GetCourses)
+        course.GET("", c.Controller.GetCourses)
         course.GET("/:id", c.Controller.GetCourse)
         course.POST("/", c.Controller.Create)
         course.PATCH("/:id", c.Controller.UpdateCourse)

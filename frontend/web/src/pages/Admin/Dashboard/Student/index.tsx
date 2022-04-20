@@ -4,12 +4,16 @@ import { useEffectOnce, useGetAllUsers, useIsomorphicLayoutEffect, useUpdateEffe
 import { Link } from 'react-router-dom'
 import { List } from 'interfaces'
 import { useDispatch } from 'react-redux'
+import { getAllUsersRequest, searchUsersRequest } from 'redux/users/action'
+import { GetAllUsersState } from 'redux/users/types'
 import StudentTable from './Components/Tables'
 import CardContainer from 'components/CardContainer'
 import SelectInputText from 'components/SearchInputText'
 import SelectMenu from 'components/SelectMenu'
-import { getAllUsersRequest, searchUsersRequest } from 'redux/users/action'
-import { GetAllUsersState } from 'redux/users/types'
+import { useCoursesState } from 'hooks'
+import { getAllCoursesRequest } from 'redux/courses/action'
+
+
 
 const StudentIndex = () => {
     const [search, setSearch]                           = useState<string>('')
@@ -17,9 +21,11 @@ const StudentIndex = () => {
     const [selected, setSelected]                       = useState<List>({id:0, name:'Select..'})
     const [indeterminate, setIndeterminate]             = useState<boolean>(false)
     const [selectedFaculty, setSelectedFaculty]         = useState<GetAllUsersState["data"]>([])
+    const [coursesList, setCoursesList]                 = useState<List[]>([])
     const checkbox                                      = useRef<HTMLInputElement | null>(null)
     const dispatch                                      = useDispatch()
     const users                                         = useGetAllUsers()
+    const courses                                       = useCoursesState()
 
     const toggleAll = () => {
         setSelectedFaculty(checked || indeterminate ? [] : users.data)
@@ -42,12 +48,30 @@ const StudentIndex = () => {
     }, [selectedFaculty])
 
     useUpdateEffect(() => {
-        dispatch(searchUsersRequest({keyword: search, type: "student"}))
+        dispatch(searchUsersRequest({keyword: search, type: "student", course_id: selected.id !== 0 ? selected.id.toString() : ''}))
     },[search])
 
+    useUpdateEffect(() => {
+        dispatch(searchUsersRequest({keyword: search, type: "student", course_id: selected.id !== 0 ? selected.id.toString() : ''}))
+    },[selected])
+
     useEffectOnce(() => {
+        dispatch(getAllCoursesRequest())
         dispatch(getAllUsersRequest({type: "student"}))
     })
+
+    useIsomorphicLayoutEffect(() => {
+        if(courses.data){
+            const list = courses.data.map(course => {
+                return {
+                    id: course.ID,
+                    name: course.name
+                }
+            })
+            setCoursesList(list)
+        }
+        
+    },[courses])
 
     return (
         <div className='containerized'>
@@ -58,7 +82,7 @@ const StudentIndex = () => {
                 </h3>
 
                 <div className='ml-auto space-x-3'>
-                    <Link to="/dashboard/faculty/create" className='button-primary'>
+                    <Link to="/dashboard/student/create" className='button-primary'>
                         <PlusCircleIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                         Add Student
                     </Link>
@@ -73,6 +97,7 @@ const StudentIndex = () => {
             <CardContainer margin='mt-7'>
                 <div className='flex space-x-3'>
                     <SelectInputText state={search} setState={setSearch} className='max-w-sm'/>
+                    <SelectMenu selected={selected} setSelected={setSelected} name="Courses" lists={coursesList} className='max-w-sm'/>
                     <div className='self-center'>
                         <button className='ml-3 text-blue-900 text-opacity-50' onClick={handleClear}>
                             Clear
@@ -87,7 +112,7 @@ const StudentIndex = () => {
                 !users.data.length &&
                 <div className="w-full mt-7">
                     <div className='flex justify-center align-middle'>
-                        <span> No faculty member(s) found</span>
+                        <span> No student(s) found</span>
                     </div>
                 </div>
 

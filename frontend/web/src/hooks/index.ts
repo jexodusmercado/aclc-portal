@@ -2,6 +2,7 @@ import { DependencyList, EffectCallback, useEffect, useRef } from "react";
 
 export * from './auth'
 export * from './users'
+export * from './courses'
 
 export const usePrevious = <T>(value?: T): T | undefined => {
     const ref = useRef<T>();

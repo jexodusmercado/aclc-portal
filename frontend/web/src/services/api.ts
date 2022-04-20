@@ -5,4 +5,5 @@ export const END_POINTS = {
     REGISTER    :   "register",
     AUTH        :   "auth",
     USERS       :   "users",
+    COURSE      :   "course",
 }

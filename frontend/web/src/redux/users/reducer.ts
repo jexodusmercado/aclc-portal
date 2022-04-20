@@ -1,7 +1,7 @@
 import * as types from "./types";
 import { AnyAction } from "redux";
 
-const usersReducer = ( state: types.UserState = types.initialState, action: AnyAction): types.UserState => {
+const usersReducer = ( state: types.UserState = types.UserInitialState, action: AnyAction): types.UserState => {
   switch (action.type) {
 
     case types.CREATE_USER_REQUEST:
