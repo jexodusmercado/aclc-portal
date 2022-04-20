@@ -6,7 +6,6 @@ import (
     "portal/util"
 	
     "gorm.io/gorm/clause"
-    "errors"
     "log"
 )
 
@@ -23,14 +22,9 @@ func NewUserRepository(db infrastructure.Database) UserRepository {
 }
 
 //CreateUser -> method for saving user to database
-func (u UserRepository) Create(user models.UserRegister) error {
+func (u UserRepository) CreateUser(user models.UserRegister) error {
 
     var dbUser models.User
-
-	err := u.db.DB.Where("email = ?", user.Email).First(&dbUser).Error
-	if err == nil {
-		return errors.New("Email already exist")
-	}
 
     dbUser.Email 		= user.Email
     dbUser.FirstName 	= user.FirstName
@@ -39,6 +33,24 @@ func (u UserRepository) Create(user models.UserRegister) error {
 	dbUser.Username 	= user.Username
     dbUser.Birthday     = user.Birthday
 	dbUser.Type			= user.Type
+    dbUser.IsActive 	= true
+
+    return u.db.DB.Create(&dbUser).Error
+}
+
+//CreateUser -> method for saving user to database
+func (u UserRepository) CreateStudent(user models.StudentRegister) error {
+
+    var dbUser models.User
+
+    dbUser.Email 		= user.Email
+    dbUser.FirstName 	= user.FirstName
+    dbUser.LastName 	= user.LastName
+    dbUser.Password 	= user.Password
+	dbUser.Username 	= user.Username
+    dbUser.Birthday     = user.Birthday
+	dbUser.Type			= user.Type
+    dbUser.CourseID     = user.CourseID
     dbUser.IsActive 	= true
 
     return u.db.DB.Create(&dbUser).Error
@@ -70,7 +82,7 @@ func (u UserRepository) FindAll(user models.User, keyword, userType string) (*[]
     var users []models.User    
     var totalRows int64 = 0
 
-    queryBuilder := u.db.DB.Preload(clause.Associations).Order("created_at desc").Model(&models.User{})
+    queryBuilder := u.db.DB.Preload("Course").Preload(clause.Associations).Order("created_at desc").Model(&models.User{})
 
     if keyword != "" {
         queryKeyword := "%" + keyword + "%"

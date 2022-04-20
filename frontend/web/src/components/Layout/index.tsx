@@ -9,8 +9,8 @@ const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, end: true},
     { name: 'Department', href: '/dashboard/department', icon: OfficeBuildingIcon, end: false},
     { name: 'Faculty', href: '/dashboard/faculty', icon: AcademicCapIcon, end: false},
-    { name: 'Student', href: '/dashboard/students', icon: UsersIcon, end: false},
-    { name: 'Course', href: '/dashboard/courses', icon: ServerIcon, end: false},
+    { name: 'Student', href: '/dashboard/student', icon: UsersIcon, end: false},
+    { name: 'Course', href: '/dashboard/course', icon: ServerIcon, end: false},
     // { name: 'Documents', href: '/dashboard/documents', icon: InboxIcon},
   ]
   const userNavigation = [

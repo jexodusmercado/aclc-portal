@@ -9,6 +9,7 @@ import (
     "net/http"
     "strconv"
     "time"
+    "strings"
     // "fmt"
 
     "github.com/gin-gonic/gin"
@@ -48,6 +49,35 @@ func (u *UserController) CreateUser(c *gin.Context) {
     }
 
     err := u.service.CreateUser(user)
+    if err != nil {
+        util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
+        return
+    }
+
+    util.SuccessJSON(c, http.StatusOK, "Successfully Created user")
+}
+
+//CreateStudent -> create student user
+func (u *UserController) CreateStudent(c *gin.Context) {
+    var user models.StudentRegister
+    if err := c.ShouldBind(&user); err != nil {
+        util.ErrorJSON(c, http.StatusBadRequest, err)
+        return
+    }
+
+    year, month, day := time.Time.Date(user.Birthday)
+
+    generatedPassword := user.LastName+strconv.Itoa(year)+strconv.Itoa(int(month))+strconv.Itoa(day)
+
+    hashPassword, _ := util.HashPassword(generatedPassword)
+    user.Password 	= hashPassword
+	user.Type 		= constants.USER_TYPE[user.Type]
+
+    if strings.ToUpper(user.Type) != constants.USER_TYPE_STUDENT {
+        util.CustomErrorJson(c, http.StatusBadRequest, "Student type only")
+    }
+
+    err := u.service.CreateStudent(user)
     if err != nil {
         util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
         return
@@ -113,9 +143,16 @@ func (u UserController) GetUsers(c *gin.Context) {
     }
     respArr := make([]map[string]interface{}, 0, 0)
 
-    for _, n := range *data {
-        resp := n.ResponseMap()
-        respArr = append(respArr, resp)
+    if strings.ToUpper(userType) == constants.USER_TYPE_STUDENT {
+        for _, n := range *data {
+            resp := n.ResponseStudent()
+            respArr = append(respArr, resp)
+        }
+    } else {
+        for _, n := range *data {
+            resp := n.ResponseMap()
+            respArr = append(respArr, resp)
+        }
     }
 
     c.JSON(http.StatusOK, &util.Response{
@@ -148,10 +185,6 @@ func (u *UserController) GetUser(c *gin.Context) {
         Success: true,
         Message: "Result set of Post",
         Data:    &response})
-}
-
-func (u *UserController) GetUsersByType(c *gin.Context) {
-
 }
 
 //UpdatePost : get update by id

@@ -4,20 +4,14 @@ import { useEffectOnce, useGetAllUsers, useIsomorphicLayoutEffect, useUpdateEffe
 import { Link } from 'react-router-dom'
 import { List } from 'interfaces'
 import { useDispatch } from 'react-redux'
-import FacultyTable from './Components/Tables'
+import StudentTable from './Components/Tables'
 import CardContainer from 'components/CardContainer'
 import SelectInputText from 'components/SearchInputText'
 import SelectMenu from 'components/SelectMenu'
 import { getAllUsersRequest, searchUsersRequest } from 'redux/users/action'
 import { GetAllUsersState } from 'redux/users/types'
 
-const list = [
-    {id: 1, name:"Department of Business and Accounting"},
-    {id: 2, name:"Department of Engineering and Architecture"},
-    {id: 3, name:"Department of Computing"},
-]
-
-const FacultyIndex = () => {
+const StudentIndex = () => {
     const [search, setSearch]                           = useState<string>('')
     const [checked, setChecked]                         = useState<boolean>(false)
     const [selected, setSelected]                       = useState<List>({id:0, name:'Select..'})
@@ -48,11 +42,11 @@ const FacultyIndex = () => {
     }, [selectedFaculty])
 
     useUpdateEffect(() => {
-        dispatch(searchUsersRequest({keyword: search, type: "faculty"}))
+        dispatch(searchUsersRequest({keyword: search, type: "student"}))
     },[search])
 
     useEffectOnce(() => {
-        dispatch(getAllUsersRequest({type: "faculty"}))
+        dispatch(getAllUsersRequest({type: "student"}))
     })
 
     return (
@@ -60,13 +54,13 @@ const FacultyIndex = () => {
             {/* TITLE AND BUTTONS */}
             <div className='flex align-middle'>
                 <h3 className='leading-6 text-2xl mr-auto'>
-                    Faculty
+                    Students
                 </h3>
 
                 <div className='ml-auto space-x-3'>
                     <Link to="/dashboard/faculty/create" className='button-primary'>
                         <PlusCircleIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
-                        Add Faculty
+                        Add Student
                     </Link>
                     <button className='button-primary'>
                         <DownloadIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
@@ -79,7 +73,6 @@ const FacultyIndex = () => {
             <CardContainer margin='mt-7'>
                 <div className='flex space-x-3'>
                     <SelectInputText state={search} setState={setSearch} className='max-w-sm'/>
-                    <SelectMenu selected={selected} setSelected={setSelected} name="Departments" lists={list} className='max-w-sm'/>
                     <div className='self-center'>
                         <button className='ml-3 text-blue-900 text-opacity-50' onClick={handleClear}>
                             Clear
@@ -102,7 +95,7 @@ const FacultyIndex = () => {
             }
             {
                 users.data.length !== 0 &&
-                <FacultyTable 
+                <StudentTable 
                     checkbox={checkbox}
                     users={users.data} 
                     state={selectedFaculty} 
@@ -118,4 +111,4 @@ const FacultyIndex = () => {
     )
 }
 
-export default FacultyIndex
+export default StudentIndex

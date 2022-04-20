@@ -49,17 +49,17 @@ func InitializeServices(router infrastructure.GinRouter) {
 
     // migrating User model to datbase table
     if err := db.DB.AutoMigrate(
-        &models.User{}, 
+        &models.Course{},
         &models.Classroom{}, 
         &models.Subject{}, 
         &models.Post{},
         &models.Class{},
-        &models.Course{},
         &models.Faculty{},
         &models.SchoolYear{},
         &models.StudentGrade{},
         &models.YearLevel{},
         &models.Department{},
+        &models.User{},
     ); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
         if err := db.DB.First(&models.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
             layout := time.RFC3339[:len("1994-12-17")]
@@ -72,6 +72,7 @@ func InitializeServices(router infrastructure.GinRouter) {
             if err != nil {
                 log.Fatalf(err.Error())
             }
+
             //Insert seed data
             seedUser := []models.User{
                 {
@@ -81,17 +82,60 @@ func InitializeServices(router infrastructure.GinRouter) {
                     Password: hashPassword,
                     Birthday: t,
                     Type: "admin",
+                    IsActive: true,
                 },
                 {
-                    FirstName: "Aza",
-                    LastName: "Lansangan",
+                    FirstName: "Joshua",
+                    LastName: "Dela Cruz",
                     Username: "44332211",
                     Password: hashPassword,
+                    CourseID: 1,
                     Birthday: t,
                     Type: "student",
+                    IsActive: true,
+                },
+                {
+                    FirstName: "Cent",
+                    LastName: "David",
+                    Username: "55332211",
+                    Password: hashPassword,
+                    Birthday: t,
+                    Type: "faculty",
+                    IsActive: true,
                 },
             }
             db.DB.Create(&seedUser)
+        }
+
+        if err := db.DB.First(&models.Course{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+            seedCourse := []models.Course{
+                {
+                    Name:		    "BSCS",
+                    Description:	"Bachelor of Science in Computer Science",
+                    IsActive:	    true,
+                },
+                {
+                    Name:		    "BSIS",
+                    Description:	"Bachelor of Science in Information Systems",
+                    IsActive:	    true,
+                },
+                {
+                    Name:		    "BSAR",
+                    Description:	"Bachelor of Science in Architect",
+                    IsActive:	    true,
+                },
+                {
+                    Name:		    "BSIT",
+                    Description:	"Bachelor of Science in Information Technology",
+                    IsActive:	    true,
+                },
+                {
+                    Name:		    "BSME",
+                    Description:	"Bachelor of Science in Mechanical Engineering",
+                    IsActive:	    true,
+                },
+            }
+            db.DB.Create(&seedCourse)
         }
 
         if err := db.DB.First(&models.Subject{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {

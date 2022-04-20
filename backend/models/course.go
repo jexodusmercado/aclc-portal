@@ -10,6 +10,7 @@ type Course struct {
     Name		string	`json:"name"`
 	Description	string	`json:"description"`
     IsActive	bool	`json:"is_active"`
+    Users       []User
 }
 
 //TableName -> returns the table name of Course Model
@@ -20,7 +21,7 @@ func (course *Course) TableName() string {
 //Create Subject
 type CourseCreation struct {
 	Name		string	`form:"name" binding:"required"`
-	description	string	`form:"description" binding:"required"`
+	Description	string	`form:"description" binding:"required"`
 }
 
 //ResponseMap -> response map method of User
