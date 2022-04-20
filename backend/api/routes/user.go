@@ -27,7 +27,8 @@ func NewUserRoute(
 func (u UserRoute) Setup() {
     auth := u.Handler.Gin.Group("/auth")
     {
-        auth.POST("/register", u.Controller.CreateUser)
+        auth.POST("/f/register", u.Controller.CreateUser)
+        auth.POST("/s/register", u.Controller.CreateStudent)
         auth.POST("/login", u.Controller.LoginUser)
     }
 

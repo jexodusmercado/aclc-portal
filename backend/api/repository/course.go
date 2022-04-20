@@ -33,7 +33,7 @@ func (c CourseRepository) FindAll(course models.Course, keyword string) (*[]mode
     var courses []models.Course
     var totalRows int64 = 0
 
-    queryBuilder := c.db.DB.Preload("Users").Order("created_at desc").Model(&models.Classroom{})
+    queryBuilder := c.db.DB.Preload("Users").Order("created_at desc").Model(&models.Course{})
 
     if keyword != "" {
         queryKeyword := "%" + keyword + "%"

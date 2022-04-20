@@ -58,7 +58,7 @@ type StudentRegister struct {
     Birthday  time.Time `form:"birthday" json:"birthday" binding:"required"`
 	Type	  string    `form:"type" json:"type" binding:"required"`
     Email     string    `form:"email" json:"email"`
-    CourseID  uint      `form:"course_id"`
+    CourseID  uint      `form:"course_id" json:"course_id"`
 }
 
 

@@ -46,6 +46,13 @@ func InitializeServices(router infrastructure.GinRouter) {
     postRoute        := routes.NewPostRoute(postController, router)
     postRoute.Setup()
 
+    //posts
+    courseRepository   := repository.NewCourseRepository(db)
+    courseService      := service.NewCourseService(courseRepository)
+    courseController   := controller.NewCourseController(courseService)
+    courseRoute        := routes.NewCourseRoute(courseController, router)
+    courseRoute.Setup()
+
 
     // migrating User model to datbase table
     if err := db.DB.AutoMigrate(
@@ -81,7 +88,7 @@ func InitializeServices(router infrastructure.GinRouter) {
                     Username: "11109111",
                     Password: hashPassword,
                     Birthday: t,
-                    Type: "admin",
+                    Type: "ADMIN",
                     IsActive: true,
                 },
                 {
@@ -91,7 +98,7 @@ func InitializeServices(router infrastructure.GinRouter) {
                     Password: hashPassword,
                     CourseID: 1,
                     Birthday: t,
-                    Type: "student",
+                    Type: "STUDENT",
                     IsActive: true,
                 },
                 {
@@ -100,7 +107,7 @@ func InitializeServices(router infrastructure.GinRouter) {
                     Username: "55332211",
                     Password: hashPassword,
                     Birthday: t,
-                    Type: "faculty",
+                    Type: "FACULTY",
                     IsActive: true,
                 },
             }
