@@ -1,9 +1,11 @@
 import { Transition, Dialog, Menu } from '@headlessui/react'
 import { XIcon, MenuAlt2Icon, SearchIcon, BellIcon, ServerIcon, HomeIcon, UsersIcon, AcademicCapIcon, OfficeBuildingIcon } from '@heroicons/react/solid'
 import React, { Fragment, useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet } from 'react-router-dom'
 import { classNames } from 'utility'
 import Logo from 'assets/images/aclc.jpeg'
+import { useDispatch } from 'react-redux'
+import { logoutRequest } from 'redux/auth/action'
 
 const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, end: true},
@@ -16,11 +18,16 @@ const navigation = [
   const userNavigation = [
     { name: 'Your Profile', href: '#' },
     { name: 'Settings', href: '#' },
-    { name: 'Sign out', href: '#' },
+    { name: 'Sign out', href: 'logout' },
   ]
 
 const Navigation = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const dispatch = useDispatch()
+
+    const handleLogout = () => {
+      dispatch(logoutRequest())
+    }
 
     return (
         <>
@@ -216,15 +223,24 @@ const Navigation = () => {
                           {userNavigation.map((item) => (
                             <Menu.Item key={item.name}>
                               {({ active }) => (
-                                <a
-                                  href={item.href}
+                                item.href !== "logout" ?
+                                <Link
+                                  to={item.href}
                                   className={classNames(
                                     active ? 'bg-gray-100' : '',
                                     'block px-4 py-2 text-sm text-gray-700'
                                   )}
+                                  
                                 >
                                   {item.name}
-                                </a>
+                                </Link>
+                                :
+                                <button 
+                                  className='block px-4 py-2 text-sm text-gray-700'
+                                  onClick={() => handleLogout()}
+                                >
+                                  {item.name}
+                                </button>
                               )}
                             </Menu.Item>
                           ))}

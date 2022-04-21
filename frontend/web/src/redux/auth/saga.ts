@@ -19,6 +19,7 @@ function* LoginActionType({ payload }: types.LoginAction) {
 
     } catch (error) {
         const payload = handleAxiosError(error as AxiosError)
+        yield localStorage.removeItem('tk')
 
         yield put({
             type: types.LOGIN_FAILED,
@@ -28,10 +29,30 @@ function* LoginActionType({ payload }: types.LoginAction) {
     }
 }
 
+function* LogoutActionType() {
+    try {
+
+        yield localStorage.removeItem('tk')
+
+        yield put({
+            type: types.LOGOUT_SUCCESS
+        })
+        
+    } catch (error) {
+        const payload = handleAxiosError(error as AxiosError)
+        yield localStorage.removeItem('tk')
+
+        yield put({
+            type: types.LOGOUT_FAILED,
+            payload
+        })
+    }
+}
 
 
 const AuthSaga: ForkEffect[] = [
-    takeLatest(types.LOGIN_REQUEST, LoginActionType)
+    takeLatest(types.LOGIN_REQUEST, LoginActionType),
+    takeLatest(types.LOGOUT_REQUEST, LogoutActionType)
 ]
 
 export default AuthSaga;

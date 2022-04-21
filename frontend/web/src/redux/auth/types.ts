@@ -43,3 +43,7 @@ export interface LoginPayload {
     username    : string
     password    : string
 }
+
+export type LogoutAction = {
+    type        : typeof LOGOUT_REQUEST
+}

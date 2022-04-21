@@ -24,7 +24,7 @@ func NewDatabase() Database {
     // USER := "root"
     // PASS := "root"
     // HOST :="localhost"
-    // PORT := 4000
+    // PORT := 3306
     // DBNAME := "aclcportal"
     // PORT :=8000
 

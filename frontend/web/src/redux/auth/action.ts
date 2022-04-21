@@ -6,3 +6,9 @@ export const loginRequest = (payload: types.LoginPayload): types.LoginAction => 
         payload
     }
 }
+
+export const logoutRequest = () : types.LogoutAction => {
+    return {
+        type: types.LOGOUT_REQUEST
+    }
+}
