@@ -10,17 +10,18 @@ const courseRequest = ( state: types.CourseState = types.CoursesInitialState, ac
             courses: {
                 ...state.courses,
                 loading: true
-            }
+            },
+            created: types.CoursesInitialState.created
         }
     
     case types.GET_COURSES_SUCCESS:
-        console.log(action)
         return {
             ...state,
             courses: {
                 data: action.payload,
                 loading: false
-            }
+            },
+            created: types.CoursesInitialState.created
         }
 
     case types.GET_COURSES_FAILED:
@@ -32,9 +33,36 @@ const courseRequest = ( state: types.CourseState = types.CoursesInitialState, ac
             }
         }
 
+    case types.CREATE_COURSE_REQUEST:
+        return {
+            ...state,
+            created: {
+                success: false,
+                loading: true
+            }
+        }
+
+    case types.CREATE_COURSE_SUCCESS:
+        return {
+            ...state,
+            created: {
+                success: true,
+                loading: false
+            }
+        }
+
+    case types.CREATE_COURSE_FAILED:
+        return {
+            ...state,
+            created: {
+                success: false,
+                loading: false
+            }
+        }
+
     default:
         return state
   }
-};
+}
 
 export default courseRequest;

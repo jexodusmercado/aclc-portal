@@ -26,7 +26,6 @@ func NewDatabase() Database {
     // HOST :="localhost"
     // PORT := 3306
     // DBNAME := "aclcportal"
-    // PORT :=8000
 
     URL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", USER, PASS, 
     HOST, PORT, DBNAME)

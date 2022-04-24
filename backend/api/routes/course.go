@@ -28,7 +28,7 @@ func (c CourseRoute) Setup() {
 		course.Use(middleware.Authenticate())
         course.GET("", c.Controller.GetCourses)
         course.GET("/:id", c.Controller.GetCourse)
-        course.POST("/", c.Controller.Create)
+        course.POST("", c.Controller.Create)
         course.PATCH("/:id", c.Controller.UpdateCourse)
     }
 

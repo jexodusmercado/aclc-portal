@@ -2,6 +2,7 @@ import { END_POINTS } from "services/api";
 import { apiInstance } from "services/axios";
 import { LoginPayload } from "redux/auth/types";
 import { CreateUserPayload, GetUserPayload, GetUsersPayload } from "redux/users/types";
+import { CreateCoursePayload } from "redux/courses/types";
 
 
 export const authRequest = {
@@ -24,5 +25,7 @@ export const usersRequest = {
 
 export const courseRequest = {
     getAllCoursesRequest: () =>
-        apiInstance.get(END_POINTS.COURSE)
+        apiInstance.get(END_POINTS.COURSE),
+    createCourseRequest: (payload: CreateCoursePayload) =>
+        apiInstance.post(END_POINTS.COURSE, payload)
 }

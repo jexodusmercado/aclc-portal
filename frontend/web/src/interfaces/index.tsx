@@ -15,7 +15,6 @@ export interface IDepartment {
     description: string
     courses: Array<string>
 }
-
 export interface IFaculty {
     id: number,
     firstName: string

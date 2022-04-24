@@ -10,7 +10,7 @@ import (
     "strconv"
     "time"
     "strings"
-    // "fmt"
+    "fmt"
 
     "github.com/gin-gonic/gin"
     "github.com/golang-jwt/jwt"
@@ -39,7 +39,7 @@ func (u *UserController) CreateUser(c *gin.Context) {
     year, month, day := time.Time.Date(user.Birthday)
 
     generatedPassword := user.LastName+strconv.Itoa(year)+strconv.Itoa(int(month))+strconv.Itoa(day)
-
+    fmt.Println(generatedPassword)
     hashPassword, _ := util.HashPassword(generatedPassword)
     user.Password 	= hashPassword
 	user.Type 		= constants.USER_TYPE[user.Type]

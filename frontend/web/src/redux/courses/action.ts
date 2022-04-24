@@ -5,3 +5,10 @@ export const getAllCoursesRequest = (): types.GetCoursesAction => {
         type: types.GET_COURSES_REQUEST,
     }
 }
+
+export const createCourseRequest = (payload: types.CreateCoursePayload) : types.CreateCourseAction => {
+    return {
+        type: types.CREATE_COURSE_REQUEST,
+        payload
+    }
+}

@@ -1,5 +1,5 @@
 import { Transition, Dialog, Menu } from '@headlessui/react'
-import { XIcon, MenuAlt2Icon, SearchIcon, BellIcon, ServerIcon, HomeIcon, UsersIcon, AcademicCapIcon, OfficeBuildingIcon } from '@heroicons/react/solid'
+import { XIcon, MenuAlt2Icon, SearchIcon, BellIcon, ServerIcon, HomeIcon, UsersIcon, AcademicCapIcon, OfficeBuildingIcon, CogIcon } from '@heroicons/react/solid'
 import React, { Fragment, useState } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import { classNames } from 'utility'
@@ -13,6 +13,7 @@ const navigation = [
     { name: 'Faculty', href: '/dashboard/faculty', icon: AcademicCapIcon, end: false},
     { name: 'Student', href: '/dashboard/student', icon: UsersIcon, end: false},
     { name: 'Course', href: '/dashboard/course', icon: ServerIcon, end: false},
+    { name: 'Settings', href: '/dashboard/settings', icon: CogIcon, end: false},
     // { name: 'Documents', href: '/dashboard/documents', icon: InboxIcon},
   ]
   const userNavigation = [

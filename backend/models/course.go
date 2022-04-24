@@ -7,7 +7,7 @@ import (
 //Course -> Course struct to save user on database
 type Course struct {
     gorm.Model
-    Name		string	`json:"name"`
+    Name		string	`gorm:"unique" json:"name"`
 	Description	string	`json:"description"`
     IsActive	bool	`json:"is_active"`
     Users       []User
@@ -37,3 +37,17 @@ func (course *Course) ResponseMap() map[string]interface{} {
 
     return resp
 }
+
+func (course *Course) UserResponseMap() map[string]interface{} {
+    resp := make(map[string]interface{})
+
+    resp["ID"]  			= course.ID
+    resp["name"]          	= course.Name
+    resp["description"]		= course.Description
+    resp["is_active"]       = course.IsActive
+    resp["users"]           = course.Users
+    resp["created_at"]  	= course.CreatedAt
+    resp["updated_at"]  	= course.UpdatedAt
+
+    return resp
+} 

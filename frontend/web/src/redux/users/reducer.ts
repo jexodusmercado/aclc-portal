@@ -38,7 +38,8 @@ const usersReducer = ( state: types.UserState = types.UserInitialState, action: 
                 users: {
                     ...state.users,
                     loading: true
-                }
+                },
+                created: types.UserInitialState.created
             }
         
 
@@ -69,7 +70,9 @@ const usersReducer = ( state: types.UserState = types.UserInitialState, action: 
             user: {
                 ...state.user,
                 loading: true
-            }
+            },
+            created: types.UserInitialState.created
+
         }
     
     case types.GET_USER_SUCCESS:
@@ -78,7 +81,8 @@ const usersReducer = ( state: types.UserState = types.UserInitialState, action: 
             user: {
                 ...action.payload,
                 loading: false
-            }
+            },
+            
         }
 
     case types.GET_USER_FAILED:
