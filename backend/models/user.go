@@ -18,6 +18,7 @@ type User struct {
     Subjects    []*Subject      `gorm:"many2many:user_subjects;"`
     CourseID    uint            `gorm:"default:null;" json:"course_id,omitempty"`
     Course      Course
+    SchoolYear  []*SchoolYear   `gorm:"many2many:UserSchoolYear" json:"school_year,omitempty"`
 }
     // Classrooms  []*Classroom    `gorm:"many2many:user_class;"`
     // Posts       []*Post
