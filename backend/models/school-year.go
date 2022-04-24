@@ -20,7 +20,7 @@ func (school *SchoolYear) TableName() string {
 
 //Create SchoolYear
 type SchoolYearCreation struct {
-	YearLevel	string  `form:"year_level" binding:"required"`
+	SchoolYear	string  `form:"school_year" binding:"required"`
 	Semester	string  `form:"semester" binding:"required"`
 }
 

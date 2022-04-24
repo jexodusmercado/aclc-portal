@@ -53,6 +53,13 @@ func InitializeServices(router infrastructure.GinRouter) {
     courseRoute        := routes.NewCourseRoute(courseController, router)
     courseRoute.Setup()
 
+    //school-year
+    schoolYearRepository   := repository.NewSchoolYearRepository(db)
+    schoolYearService      := service.NewSchoolYearService(schoolYearRepository)
+    schoolYearController   := controller.NewSchoolYearController(schoolYearService)
+    schoolYearRoute        := routes.NewSchoolYearRoute(schoolYearController, router)
+    schoolYearRoute.Setup()
+
 
     // migrating User model to datbase table
     if err := db.DB.AutoMigrate(
@@ -68,6 +75,7 @@ func InitializeServices(router infrastructure.GinRouter) {
         &models.Department{},
         &models.User{},
     ); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
+
         if err := db.DB.First(&models.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
             layout := time.RFC3339[:len("1994-12-17")]
             t, err := time.Parse(layout, "1994-12-17")
@@ -96,7 +104,6 @@ func InitializeServices(router infrastructure.GinRouter) {
                     LastName: "Dela Cruz",
                     Username: "44332211",
                     Password: hashPassword,
-                    CourseID: 1,
                     Birthday: t,
                     Type: "STUDENT",
                     IsActive: true,
@@ -111,6 +118,7 @@ func InitializeServices(router infrastructure.GinRouter) {
                     IsActive: true,
                 },
             }
+
             db.DB.Create(&seedUser)
         }
 
@@ -168,6 +176,33 @@ func InitializeServices(router infrastructure.GinRouter) {
                 },
             }
             db.DB.Create(&seedSubject)
+        }
+
+        if err := db.DB.First(&models.SchoolYear{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+            //Insert seed data
+            seedSchoolYear := []models.SchoolYear{
+                {
+                    SchoolYear:     "2022",
+                    Semester:       "First",
+                    IsActive:       true,
+                },
+                {
+                    SchoolYear:     "2022",
+                    Semester:       "Second",
+                    IsActive:       false,
+                },
+                {
+                    SchoolYear:     "2023",
+                    Semester:       "First",
+                    IsActive:       false,
+                },
+                {
+                    SchoolYear:     "2023",
+                    Semester:       "Second",
+                    IsActive:       false,
+                },
+            }
+            db.DB.Create(&seedSchoolYear)
         }
     }
 }

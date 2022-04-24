@@ -3,6 +3,7 @@ import { apiInstance } from "services/axios";
 import { LoginPayload } from "redux/auth/types";
 import { CreateUserPayload, GetUserPayload, GetUsersPayload } from "redux/users/types";
 import { CreateCoursePayload } from "redux/courses/types";
+import { CreateSchoolYearPayload } from "redux/school-year/types";
 
 
 export const authRequest = {
@@ -26,6 +27,13 @@ export const usersRequest = {
 export const courseRequest = {
     getAllCoursesRequest: () =>
         apiInstance.get(END_POINTS.COURSE),
-    createCourseRequest: (payload: CreateCoursePayload) =>
-        apiInstance.post(END_POINTS.COURSE, payload)
+    createCourseRequest: (params: CreateCoursePayload) =>
+        apiInstance.post(END_POINTS.COURSE, params)
+}
+
+export const schoolYearRequest = {
+    getAllSchoolYear: () =>
+        apiInstance.get(END_POINTS.SCHOOL_YEAR),
+    createSchoolYearRequest: (params: CreateSchoolYearPayload) =>
+        apiInstance.post(END_POINTS.SCHOOL_YEAR, params)
 }
