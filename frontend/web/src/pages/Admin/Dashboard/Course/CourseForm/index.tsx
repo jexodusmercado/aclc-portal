@@ -5,9 +5,10 @@ import * as yup from 'yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { classNames } from 'utility'
-import { useCourseCreated, useIsomorphicLayoutEffect } from 'hooks'
+import { useCourseCreated, useIsomorphicLayoutEffect, useCourseError } from 'hooks'
 import { useDispatch } from 'react-redux'
 import { createCourseRequest } from 'redux/courses/action'
+import toast from 'react-hot-toast'
 
 interface FormData {
     name        : string
@@ -22,12 +23,13 @@ const facultySchema = yup.object({
 const CourseForm = () => {
     const navigate                      = useNavigate()
     const dispatch                      = useDispatch()
-    const createdState                  = useCourseCreated();
+    const createdState                  = useCourseCreated()
+    const error                         = useCourseError()
 
 
     const cancelForm = () => navigate('/dashboard/course');
 
-    const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    const { register, handleSubmit, formState: { errors }, setError } = useForm<FormData>({
         mode: "onChange",
         resolver: yupResolver(facultySchema)
     });
@@ -42,6 +44,13 @@ const CourseForm = () => {
             navigate('/dashboard/course')
         }
     }, [createdState])
+
+    useIsomorphicLayoutEffect( () => {
+        if(error.status !== 0){
+            setError('name', { message: error.message})
+            toast.error(error.message)
+        }
+    }, [error])
 
 
     return (

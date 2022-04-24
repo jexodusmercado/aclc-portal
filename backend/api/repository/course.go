@@ -3,6 +3,7 @@ package repository
 import (
     "portal/infrastructure"
     "portal/models"
+    "errors"
 
     // "gorm.io/gorm/clause"
 )
@@ -19,13 +20,18 @@ func NewCourseRepository(db infrastructure.Database) CourseRepository {
 
 func (c CourseRepository) Create(course models.CourseCreation) error {
 
-    var db models.Course
+    var dbCourse models.Course
 
-    db.Name		    = course.Name
-	db.Description  = course.Description
-	db.IsActive		= true
+    isExisting := c.db.DB.Where("name = ?", course.Name).First(&dbCourse).Error
+    if isExisting == nil {
+        return errors.New("Course already exist")
+    }
 
-    return c.db.DB.Create(&db).Error
+    dbCourse.Name		    = course.Name
+	dbCourse.Description  = course.Description
+	dbCourse.IsActive		= true
+
+    return c.db.DB.Create(&dbCourse).Error
 }
 
 func (c CourseRepository) FindAll(course models.Course, keyword string) (*[]models.Course, int64, error) {

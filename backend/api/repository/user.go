@@ -4,7 +4,6 @@ import (
     "portal/infrastructure"
     "portal/models"
     "portal/util"
-    "fmt"
 	
     "gorm.io/gorm/clause"
     "log"
@@ -43,9 +42,6 @@ func (u UserRepository) CreateUser(user models.UserRegister) error {
 func (u UserRepository) CreateStudent(user models.StudentRegister) error {
 
     var dbUser models.User
-
-    fmt.Println("user")
-    fmt.Println(user)
 
     dbUser.Email 		= user.Email
     dbUser.FirstName 	= user.FirstName

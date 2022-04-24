@@ -6,6 +6,7 @@ import (
     "portal/util"
     "net/http"
 	"strconv"
+    "fmt"
 
     "github.com/gin-gonic/gin"
 )
@@ -29,8 +30,9 @@ func (p CourseController) Create(c *gin.Context) {
     }
 
     err := p.service.Create(course)
+    fmt.Println(err)
     if err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
+        util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
         return
     }
 

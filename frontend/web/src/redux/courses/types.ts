@@ -1,9 +1,10 @@
 /**
  * TYPED STATES
  */
-export type CourseState = typeof CoursesInitialState
+export type CourseState     = typeof CoursesInitialState
 export type GetCoursesState = typeof CoursesInitialState['courses']
 export type GetCreatedState = typeof CoursesInitialState['created']
+export type GetErrorState   = typeof CoursesInitialState['error']
 
 
 /**
@@ -60,6 +61,10 @@ export const CoursesInitialState = {
     created: {
         loading: false,
         success: false
+    },
+    error: {
+        status: 0,
+        message: ""
     }
 }
 

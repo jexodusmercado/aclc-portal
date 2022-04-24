@@ -1,4 +1,4 @@
-import { GetCoursesState, GetCreatedState } from "redux/courses/types";
+import { GetCoursesState, GetCreatedState, GetErrorState } from "redux/courses/types";
 import { AppState } from "redux/reducers";
 import { useSelector } from "react-redux";
 
@@ -7,3 +7,6 @@ export const useCoursesState = () : GetCoursesState =>
 
 export const useCourseCreated = () : GetCreatedState =>
     useSelector((state: AppState) => state.Courses.created)
+
+export const useCourseError = () : GetErrorState =>
+    useSelector((state: AppState) => state.Courses.error)
