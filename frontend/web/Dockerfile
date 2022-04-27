@@ -1,11 +1,11 @@
-FROM node:18-alpine AS development
+FROM node:18-alpine
 # Add a work directory
 WORKDIR /app
 # Cache and Install dependencies
-COPY ./web/package.json .
+COPY ./package.json ./
 RUN npm install
 # Copy app files
-COPY . .
+COPY . ./
 # Expose port
 EXPOSE 3001
 # Start the app

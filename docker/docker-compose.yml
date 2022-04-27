@@ -22,6 +22,8 @@ services:
   api:
     build:
       context: ../backend/
+    links:
+      - 'database:mysql'
     volumes:
       - ../backend:/app
     ports:
@@ -33,9 +35,9 @@ services:
 
   app:
     build:
-      context: ../frontend/
+      context: ../frontend/web/
     volumes:
-      - ./web:/app/src
+      - ../frontend/web:/app
     ports:
       - 3001:3001
     networks:

@@ -1,4 +1,4 @@
-FROM golang:1.16.5 as development
+FROM golang:1.18
 # Add a work directory
 WORKDIR /app
 # Cache and install dependencies
