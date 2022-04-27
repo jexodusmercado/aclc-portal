@@ -37,9 +37,12 @@ services:
     build:
       context: ../frontend/web/
     volumes:
+      - /app/node_modules
       - ../frontend/web:/app
     ports:
       - 3001:3001
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     networks:
       - frontend
 

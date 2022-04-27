@@ -1,12 +1,15 @@
 FROM node:18-alpine
-# Add a work directory
+
 WORKDIR /app
-# Cache and Install dependencies
-COPY ./package.json ./
+
+COPY package*.json ./
+
 RUN npm install
-# Copy app files
-COPY . ./
-# Expose port
+
+RUN mkdir -p node_modules/.cache && chmod -R 777 node_modules/.cache
+
+COPY ./ ./
+
 EXPOSE 3001
-# Start the app
+
 CMD [ "npm", "start" ]
