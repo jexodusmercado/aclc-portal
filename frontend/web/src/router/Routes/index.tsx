@@ -24,7 +24,7 @@ const CustomRoute = () => {
 
                 <Route element={<Layout/>}>
                     {/* ADMIN */}
-                    <Route element={<CheckRole type='admin' />} >
+                    <Route element={<CheckRole type='ADMIN' />} >
                         <Route path="dashboard">
                             <Route index element={<AdminDashboard/>} />
 

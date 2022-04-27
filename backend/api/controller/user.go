@@ -1,252 +1,254 @@
 package controller
 
 import (
+	"fmt"
+	"net/http"
 	"os"
+	"portal/api/service"
 	"portal/constants"
-    "portal/api/service"
-    "portal/models"
-    "portal/util"
-    "net/http"
-    "strconv"
-    "time"
-    "strings"
-    "fmt"
+	"portal/models"
+	"portal/util"
+	"strconv"
+	"strings"
+	"time"
 
-    "github.com/gin-gonic/gin"
-    "github.com/golang-jwt/jwt"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 )
 
 //UserController struct
 type UserController struct {
-    service service.UserService
+	service service.UserService
 }
 
 //NewUserController : NewUserController
 func NewUserController(s service.UserService) UserController {
-    return UserController{
-        service: s,
-    }
+	return UserController{
+		service: s,
+	}
 }
 
 //CreateUser ->  calls CreateUser services for validated user
 func (u *UserController) CreateUser(c *gin.Context) {
-    var user models.UserRegister
-    if err := c.ShouldBind(&user); err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
+	var user models.UserRegister
+	if err := c.ShouldBind(&user); err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
 
-    year, month, day := time.Time.Date(user.Birthday)
+	year, month, day := time.Time.Date(user.Birthday)
 
-    generatedPassword := user.LastName+strconv.Itoa(year)+strconv.Itoa(int(month))+strconv.Itoa(day)
-    fmt.Println(generatedPassword)
-    hashPassword, _ := util.HashPassword(generatedPassword)
-    user.Password 	= hashPassword
-	user.Type 		= constants.USER_TYPE[user.Type]
+	generatedPassword := user.LastName + strconv.Itoa(year) + strconv.Itoa(int(month)) + strconv.Itoa(day)
+	fmt.Println(generatedPassword)
+	hashPassword, _ := util.HashPassword(generatedPassword)
+	user.Password = hashPassword
+	user.Type = constants.USER_TYPE[user.Type]
 
-    if user.Type == "" {
-        util.CustomErrorJson(c, http.StatusBadRequest, "No existing role")
-    }
+	if user.Type == "" {
+		util.CustomErrorJson(c, http.StatusBadRequest, "No existing role")
+	}
 
-    err := u.service.CreateUser(user)
-    if err != nil {
-        util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
-        return
-    }
+	err := u.service.CreateUser(user)
+	if err != nil {
+		util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
+		return
+	}
 
-    util.SuccessJSON(c, http.StatusOK, "Successfully Created user")
+	util.SuccessJSON(c, http.StatusOK, "Successfully Created user")
 }
 
 //CreateStudent -> create student user
 func (u *UserController) CreateStudent(c *gin.Context) {
-    var user models.StudentRegister
-    if err := c.ShouldBind(&user); err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
+	var user models.StudentRegister
+	var schoolyear models.SchoolYear
+	if err := c.ShouldBind(&user); err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
 
-    year, month, day := time.Time.Date(user.Birthday)
+	year, month, day := time.Time.Date(user.Birthday)
 
-    generatedPassword := user.LastName+strconv.Itoa(year)+strconv.Itoa(int(month))+strconv.Itoa(day)
+	generatedPassword := user.LastName + strconv.Itoa(year) + strconv.Itoa(int(month)) + strconv.Itoa(day)
 
-    hashPassword, _ := util.HashPassword(generatedPassword)
-    user.Password 	= hashPassword
-	user.Type 		= constants.USER_TYPE[user.Type]
+	hashPassword, _ := util.HashPassword(generatedPassword)
+	user.Password = hashPassword
+	user.Type = constants.USER_TYPE[user.Type]
+	schoolyear.ID = user.SchoolYear
 
-    if strings.ToUpper(user.Type) != constants.USER_TYPE_STUDENT {
-        util.CustomErrorJson(c, http.StatusBadRequest, "Student type only")
-    }
+	if strings.ToUpper(user.Type) != constants.USER_TYPE_STUDENT {
+		util.CustomErrorJson(c, http.StatusBadRequest, "Student type only")
+	}
 
-    err := u.service.CreateStudent(user)
-    if err != nil {
-        util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
-        return
-    }
+	err := u.service.CreateStudent(user, schoolyear)
+	if err != nil {
+		util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
+		return
+	}
 
-    util.SuccessJSON(c, http.StatusOK, "Successfully Created user")
+	util.SuccessJSON(c, http.StatusOK, "Successfully Created user")
 }
 
 //LoginUser : Generates JWT Token for validated user
 func (u *UserController) LoginUser(c *gin.Context) {
-    var user models.UserLogin
+	var user models.UserLogin
 
-    hmacSampleSecret := []byte(os.Getenv("JWT_SECRET"))
+	hmacSampleSecret := []byte(os.Getenv("JWT_SECRET"))
 
-    if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&user); err != nil {
 
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
 
-    dbUser, err := u.service.LoginUser(user)
-    if err != nil {
-        util.CustomErrorJson(c, http.StatusForbidden, "Username/password is incorrect.")
-        return
-    }
+	dbUser, err := u.service.LoginUser(user)
+	if err != nil {
+		util.CustomErrorJson(c, http.StatusForbidden, "Username/password is incorrect.")
+		return
+	}
 
-    token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-        "UserID"    : dbUser.ID,
-        "FirstName" : dbUser.FirstName,
-        "LastName"  : dbUser.LastName,
-    })
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"UserID":    dbUser.ID,
+		"FirstName": dbUser.FirstName,
+		"LastName":  dbUser.LastName,
+	})
 
-    tokenString, err := token.SignedString(hmacSampleSecret)
-    if err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
+	tokenString, err := token.SignedString(hmacSampleSecret)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
 
-    response := &util.Response{
-        Success: true,
-        Message: "Token generated sucessfully",
-        Data:   map[string]interface{}{
-            "token": tokenString,
-            "user": dbUser.ResponseMap(),
-    }}
+	response := &util.Response{
+		Success: true,
+		Message: "Token generated sucessfully",
+		Data: map[string]interface{}{
+			"token": tokenString,
+			"user":  dbUser.ResponseMap(),
+		}}
 
-    util.SuccessJSON(c, http.StatusOK, response)
+	util.SuccessJSON(c, http.StatusOK, response)
 }
 
 // GetUsers : GetUsers controller
 func (u UserController) GetUsers(c *gin.Context) {
-    var users models.User
+	var users models.User
 
-    keyword := c.Query("keyword")
+	keyword := c.Query("keyword")
 
-    userType := c.Query("type")
+	userType := c.Query("type")
 
-    courseId := c.Query("course_id")
+	courseId := c.Query("course_id")
 
-    data, total, err := u.service.FindAll(users, keyword, userType, courseId)
+	data, total, err := u.service.FindAll(users, keyword, userType, courseId)
 
-    if err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
-    respArr := make([]map[string]interface{}, 0, 0)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+	respArr := make([]map[string]interface{}, 0, 0)
 
-    if strings.ToUpper(userType) == constants.USER_TYPE_STUDENT {
-        for _, n := range *data {
-            resp := n.ResponseStudent()
-            respArr = append(respArr, resp)
-        }
-    } else {
-        for _, n := range *data {
-            resp := n.ResponseMap()
-            respArr = append(respArr, resp)
-        }
-    }
+	if strings.ToUpper(userType) == constants.USER_TYPE_STUDENT {
+		for _, n := range *data {
+			resp := n.ResponseStudent()
+			respArr = append(respArr, resp)
+		}
+	} else {
+		for _, n := range *data {
+			resp := n.ResponseMap()
+			respArr = append(respArr, resp)
+		}
+	}
 
-    c.JSON(http.StatusOK, &util.Response{
-        Success: true,
-        Message: "Post result set",
-        Data: map[string]interface{}{
-            "rows":       respArr,
-            "total_rows": total,
-        }})
+	c.JSON(http.StatusOK, &util.Response{
+		Success: true,
+		Message: "Post result set",
+		Data: map[string]interface{}{
+			"rows":       respArr,
+			"total_rows": total,
+		}})
 }
 
 //GetUser : get user by id
 func (u *UserController) GetUser(c *gin.Context) {
-    idParam := c.Param("id")
-    id, err := strconv.ParseUint(idParam, 10, 64) //type conversion string to int64
-    if err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
-    var user models.User
-    user.ID = uint(id)
-    foundUser, err := u.service.Find(user)
-    if err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
-    response := foundUser.ResponseMap()
+	idParam := c.Param("id")
+	id, err := strconv.ParseUint(idParam, 10, 64) //type conversion string to int64
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+	var user models.User
+	user.ID = uint(id)
+	foundUser, err := u.service.Find(user)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+	response := foundUser.ResponseMap()
 
-    c.JSON(http.StatusOK, &util.Response{
-        Success: true,
-        Message: "Result set of Post",
-        Data:    &response})
+	c.JSON(http.StatusOK, &util.Response{
+		Success: true,
+		Message: "Result set of Post",
+		Data:    &response})
 }
 
 //UpdatePost : get update by id
 func (u UserController) UpdateUser(c *gin.Context) {
-    idParam := c.Param("id")
+	idParam := c.Param("id")
 
-    id, err := strconv.ParseUint(idParam, 10, 64)
+	id, err := strconv.ParseUint(idParam, 10, 64)
 
-    if err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
-    var user models.User
-    user.ID = uint(id)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+	var user models.User
+	user.ID = uint(id)
 
-    userRecord, err := u.service.Find(user)
-    if err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
+	userRecord, err := u.service.Find(user)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
 
-    if err := c.ShouldBindJSON(&userRecord); err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
+	if err := c.ShouldBindJSON(&userRecord); err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
 
-    if err := u.service.Update(userRecord); err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
-    response := userRecord.ResponseMap()
+	if err := u.service.Update(userRecord); err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+	response := userRecord.ResponseMap()
 
-    c.JSON(http.StatusOK, &util.Response{
-        Success: true,
-        Message: "Successfully Updated Post",
-        Data:    response,
-    })
+	c.JSON(http.StatusOK, &util.Response{
+		Success: true,
+		Message: "Successfully Updated Post",
+		Data:    response,
+	})
 }
 
 //AddUsertoClassroom : add from user to classroom
 func (u *UserController) AddUsertoClassroom(c *gin.Context) {
-    var post        models.AddUserClass
-    var user        models.User
-    var classroom   models.Classroom
-    if err := c.ShouldBind(&post); err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
+	var post models.AddUserClass
+	var user models.User
+	var classroom models.Classroom
+	if err := c.ShouldBind(&post); err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
 
-    user.ID         = post.UserID
-    classroom.ID    = post.ClassroomID
+	user.ID = post.UserID
+	classroom.ID = post.ClassroomID
 
-    if err := u.service.AddUserToClassroom(user, classroom); err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
+	if err := u.service.AddUserToClassroom(user, classroom); err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
 
-    c.JSON(http.StatusOK, &util.Response{
-        Success: true,
-        Message: "Successfully Updated Post",
-    })
+	c.JSON(http.StatusOK, &util.Response{
+		Success: true,
+		Message: "Successfully Updated Post",
+	})
 
 }

@@ -16,7 +16,8 @@ export const initialState = {
             last_name : "",
             type : "",
             updated_at : "",
-            username : ""
+            username : "",
+            schoolyear: ""
         },
         error : {
             status : 0,
