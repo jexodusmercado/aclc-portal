@@ -123,7 +123,7 @@ func (p SchoolYearController) UpdateCourse(c *gin.Context) {
 	})
 }
 
-func (p SchoolYearController) GetActiveYear() (c *gin.Context) {
+func (p SchoolYearController) GetActiveYear(c *gin.Context) {
 
 	schoolYearRecord, err := p.service.GetActiveYear()
 	if err != nil {
