@@ -62,6 +62,35 @@ const schoolYearReducer = ( state: types.SchoolYearType = types.SchoolYearInitia
             }
         }
 
+    case types.GET_ACTIVE_SCHOOL_YEAR_REQUEST:
+        return{
+            ...state,
+            activeSchoolyear: {
+                ...state.activeSchoolyear,
+                loading: true
+            },
+            created: types.SchoolYearInitial.created,
+            error: types.SchoolYearInitial.error
+        }
+
+    case types.GET_ACTIVE_SCHOOL_YEAR_SUCCESS:
+        return {
+            ...state,
+            activeSchoolyear: {
+                data: action.payload,
+                loading: false
+            }
+        }
+
+    case types.GET_ACTIVE_SCHOOL_YEAR_FAILED:
+        return {
+            ...state,
+            activeSchoolyear: {
+                ...state.activeSchoolyear,
+                loading: false
+            }
+        }
+
     default:
         return state
   }

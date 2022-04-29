@@ -6,6 +6,7 @@ import { classNames } from 'utility'
 import Logo from 'assets/images/aclc.jpeg'
 import { useDispatch } from 'react-redux'
 import { logoutRequest } from 'redux/auth/action'
+import { useActiveSchoolYear } from 'hooks/schoolyear'
 
 const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, end: true},
@@ -24,6 +25,7 @@ const navigation = [
 
 const Navigation = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const schoolyear = useActiveSchoolYear()
     const dispatch = useDispatch()
 
     const handleLogout = () => {
@@ -170,8 +172,8 @@ const Navigation = () => {
                   <span className="sr-only">Open sidebar</span>
                   <MenuAlt2Icon className="h-6 w-6" aria-hidden="true" />
                 </button>
-                <div className="flex-1 px-4 flex justify-between">
-                  <div className="flex-1 flex">
+                <div className="flex-1 px-4 flex justify-end">
+                  {/* <div className="flex-1 flex">
                     <form className="w-full flex md:ml-0" action="#" method="GET">
                       <label htmlFor="search-field" className="sr-only">
                         Search
@@ -189,8 +191,18 @@ const Navigation = () => {
                         />
                       </div>
                     </form>
-                  </div>
-                  <div className="ml-4 flex items-center md:ml-6">
+                  </div> */}
+                  <div className="ml-4 flex items-center md:ml-6 space-x-2">
+
+                    <span className="text-gray-600 text-sm">
+                        S. Y.
+                        {
+                            schoolyear.semester === "First" ? 
+                            `${schoolyear.school_year} - ${Number(schoolyear.school_year) + 1}` :
+                            `${Number(schoolyear.school_year) - 1} - ${schoolyear.school_year}`
+                        }
+                    </span>
+                
                     <button
                       type="button"
                       className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -198,7 +210,7 @@ const Navigation = () => {
                       <span className="sr-only">View notifications</span>
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
                     </button>
-    
+                    
                     {/* Profile dropdown */}
                     <Menu as="div" className="ml-3 relative">
                       <div>
@@ -248,6 +260,7 @@ const Navigation = () => {
                         </Menu.Items>
                       </Transition>
                     </Menu>
+
                   </div>
                 </div>
               </div>

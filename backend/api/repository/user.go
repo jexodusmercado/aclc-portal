@@ -27,6 +27,19 @@ func (u UserRepository) CreateUser(user models.UserRegister) error {
 
 	var dbUser models.User
 
+	var schoolyears *models.SchoolYear
+
+	err := u.db.DB.
+		Debug().
+		Preload("Users").
+		Model(&models.SchoolYear{}).
+		Where("is_active = ?", "1").
+		Take(&schoolyears).Error
+
+	if err != nil {
+		return err
+	}
+
 	dbUser.Email = user.Email
 	dbUser.FirstName = user.FirstName
 	dbUser.LastName = user.LastName
@@ -35,6 +48,7 @@ func (u UserRepository) CreateUser(user models.UserRegister) error {
 	dbUser.Birthday = user.Birthday
 	dbUser.Type = user.Type
 	dbUser.IsActive = true
+	dbUser.SchoolYear = append([]*models.SchoolYear{}, schoolyears)
 
 	return u.db.DB.Create(&dbUser).Error
 }
@@ -47,11 +61,13 @@ func (u UserRepository) CreateStudent(user models.StudentRegister, schoolyear mo
 
 	err := u.db.DB.
 		Debug().
+		Preload("Users").
 		Model(&models.SchoolYear{}).
-		Where(&schoolyear).
+		Where("is_active = ?", "1").
 		Take(&schoolyears).Error
+
 	if err != nil {
-		log.Fatalf(err.Error())
+		return err
 	}
 
 	dbUser.Email = user.Email
@@ -168,15 +184,3 @@ func (u UserRepository) AddUserToClassroom(user models.User, classroom models.Cl
 
 	return u.db.DB.Model(&users).Association("Classrooms").Append(&classrooms)
 }
-
-// func (u UserRepository) AddUserToSchoolYear(user models.User, schoolyear models.SchoolYear) error {
-//     var users models.User
-//     var schoolyear models.SchoolYear
-
-//     err := u.db.DB.
-//         Debug().
-//         Model(&models.User{}).
-//         Where(&user).
-//         Take(&users).Error
-
-// }

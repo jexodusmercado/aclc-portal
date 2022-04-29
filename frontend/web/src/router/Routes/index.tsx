@@ -14,6 +14,9 @@ import StudentIndex from 'pages/Admin/Dashboard/Student'
 import StudentForm from 'pages/Admin/Dashboard/Student/StudentForm'
 import CourseIndex from 'pages/Admin/Dashboard/Course'
 import CourseForm from 'pages/Admin/Dashboard/Course/CourseForm'
+import SettingsPage from 'pages/Admin/Dashboard/Settings'
+import GeneralComponent from 'pages/Admin/Dashboard/Settings/Components/General'
+import SchoolYearComponent from 'pages/Admin/Dashboard/Settings/Components/SchoolYear'
 
 const CustomRoute = () => {
     return (
@@ -52,6 +55,16 @@ const CustomRoute = () => {
                                 <Route index element={<CourseIndex />} />
                                 <Route path="create" element={<CourseForm />} />
                             </Route>
+
+                            {/* Settings */}
+                            <Route path="settings">
+                                <Route element={<SettingsPage />}>
+                                    <Route index element={<GeneralComponent />} />
+                                    <Route path="school-year" element={<SchoolYearComponent />} />
+
+                                </Route>
+                            </Route>
+
 
                             <Route path="*" element={<>404</>} />
 

@@ -55,15 +55,14 @@ type UserRegister struct {
 }
 
 type StudentRegister struct {
-	Username   string    `form:"username" json:"username" binding:"required,numeric"`
-	Password   string    `form:"password" json:"password"`
-	FirstName  string    `form:"first_name" json:"first_name" binding:"required"`
-	LastName   string    `form:"last_name" json:"last_name" binding:"required"`
-	Birthday   time.Time `form:"birthday" json:"birthday" binding:"required"`
-	Type       string    `form:"type" json:"type" binding:"required"`
-	Email      string    `form:"email" json:"email"`
-	CourseID   uint      `form:"course_id" json:"course_id"`
-	SchoolYear uint      `form:"schoolyear_id" json:"schoolyear_id" binding:"required"`
+	Username  string    `form:"username" json:"username" binding:"required,numeric"`
+	Password  string    `form:"password" json:"password"`
+	FirstName string    `form:"first_name" json:"first_name" binding:"required"`
+	LastName  string    `form:"last_name" json:"last_name" binding:"required"`
+	Birthday  time.Time `form:"birthday" json:"birthday" binding:"required"`
+	Type      string    `form:"type" json:"type" binding:"required"`
+	Email     string    `form:"email" json:"email"`
+	CourseID  uint      `form:"course_id" json:"course_id"`
 }
 
 //ResponseMap -> response map method of User

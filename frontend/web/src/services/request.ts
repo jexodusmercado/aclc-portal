@@ -35,5 +35,7 @@ export const schoolYearRequest = {
     getAllSchoolYear: () =>
         apiInstance.get(END_POINTS.SCHOOL_YEAR),
     createSchoolYearRequest: (params: CreateSchoolYearPayload) =>
-        apiInstance.post(END_POINTS.SCHOOL_YEAR, params)
+        apiInstance.post(END_POINTS.SCHOOL_YEAR, params),
+    GetActiveSchoolYear: () =>
+        apiInstance.get(`${END_POINTS.SCHOOL_YEAR}/${END_POINTS.ACTIVE}`),
 }

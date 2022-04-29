@@ -52,10 +52,35 @@ function* CreateSchoolYearType ({payload} : types.CreateSchoolYearAction) {
     }
 }
 
+function* GetActiveSchoolYearType(){
+    try {
+        
+        const response: AxiosResponse = yield call(schoolYearRequest.GetActiveSchoolYear)
+
+        yield put({
+            type: types.GET_ACTIVE_SCHOOL_YEAR_SUCCESS,
+            payload: response.data.data
+        })
+
+    } catch (error) {
+        
+        const payload = handleAxiosError(error as AxiosError)
+
+        yield put({
+            type: types.GET_ACTIVE_SCHOOL_YEAR_FAILED,
+            payload
+        })
+
+        toast.error('Failed to get active school year')
+
+    }
+}
+
 
 const SchoolYearSaga: ForkEffect[] = [
     takeLatest(types.GET_SCHOOL_YEARS_REQUEST, GetSchoolYearsType),
-    takeLatest(types.CREATE_SCHOOL_YEAR_REQUEST, CreateSchoolYearType)
+    takeLatest(types.CREATE_SCHOOL_YEAR_REQUEST, CreateSchoolYearType),
+    takeLatest(types.GET_ACTIVE_SCHOOL_YEAR_REQUEST, GetActiveSchoolYearType)
 ]
 
 export default SchoolYearSaga;

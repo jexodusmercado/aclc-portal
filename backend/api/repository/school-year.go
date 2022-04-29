@@ -72,9 +72,12 @@ func (s SchoolYearRepository) Update(schoolyear models.SchoolYear) error {
 func (s SchoolYearRepository) GetActiveYear() (models.SchoolYear, error) {
 	var schoolyears models.SchoolYear
 
-	queryBuilder := s.db.DB.Preload(clause.Associations).Order("created_at desc").Model(&models.SchoolYear{})
-
-	err := queryBuilder.Where("schoolyear.IsActive = ACTIVE").Find(&schoolyears).Error
+	err := s.db.DB.
+		Debug().
+		Preload("Users").
+		Model(&models.SchoolYear{}).
+		Where("is_active = ?", "1").
+		Take(&schoolyears).Error
 
 	return schoolyears, err
 }

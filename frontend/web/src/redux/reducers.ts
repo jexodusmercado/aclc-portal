@@ -1,12 +1,14 @@
 import { AnyAction, combineReducers } from 'redux'
-import Auth     from './auth/reducer' // import Sample from './sample/reducer';
-import Users    from './users/reducer'
-import Courses   from './courses/reducer'
+import Auth         from './auth/reducer' // import Sample from './sample/reducer';
+import Users        from './users/reducer'
+import Courses      from './courses/reducer'
+import Schoolyear   from './school-year/reducer'
 
 export const appReducer = combineReducers({
     Auth,
     Users,
-    Courses
+    Courses,
+    Schoolyear
 
     //add reducer here
 })

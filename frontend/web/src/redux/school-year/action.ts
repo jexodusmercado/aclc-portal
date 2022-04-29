@@ -12,3 +12,9 @@ export const CreateSchoolyear = (payload: types.CreateSchoolYearPayload) : types
         payload
     }
 }
+
+export const GetActiveSchoolYear = (): types.GetActiveSchoolYearAction => {
+    return {
+        type: types.GET_ACTIVE_SCHOOL_YEAR_REQUEST
+    }
+}

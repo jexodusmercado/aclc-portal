@@ -37,7 +37,7 @@ func (p SchoolYearController) Create(c *gin.Context) {
 	util.SuccessJSON(c, http.StatusOK, "Successfully Created Classroom")
 }
 
-func (p SchoolYearController) GetCourses(c *gin.Context) {
+func (p SchoolYearController) GetSchoolYears(c *gin.Context) {
 	var schoolyears models.SchoolYear
 
 	keyword := c.Query("keyword")
@@ -64,7 +64,7 @@ func (p SchoolYearController) GetCourses(c *gin.Context) {
 		}})
 }
 
-func (p SchoolYearController) GetCourse(c *gin.Context) {
+func (p SchoolYearController) GetSchoolYear(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.ParseUint(idParam, 10, 64) //type conversion string to int64
 	if err != nil {
@@ -87,7 +87,7 @@ func (p SchoolYearController) GetCourse(c *gin.Context) {
 
 }
 
-func (p SchoolYearController) UpdateCourse(c *gin.Context) {
+func (p SchoolYearController) UpdateSchoolYear(c *gin.Context) {
 	idParam := c.Param("id")
 
 	id, err := strconv.ParseUint(idParam, 10, 64)
@@ -135,7 +135,7 @@ func (p SchoolYearController) GetActiveYear(c *gin.Context) {
 
 	c.JSON(http.StatusOK, &util.Response{
 		Success: true,
-		Message: "Successfully Fetch School Year",
+		Message: "Successfully fetched active school year",
 		Data:    response,
 	})
 }

@@ -6,5 +6,6 @@ export const END_POINTS = {
     AUTH        :   "auth",
     USERS       :   "users",
     COURSE      :   "course",
-    SCHOOL_YEAR :   "school-year"
+    SCHOOL_YEAR :   "school-year",
+    ACTIVE      :   "active"
 }

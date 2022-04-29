@@ -73,7 +73,6 @@ func (u *UserController) CreateStudent(c *gin.Context) {
 	hashPassword, _ := util.HashPassword(generatedPassword)
 	user.Password = hashPassword
 	user.Type = constants.USER_TYPE[user.Type]
-	schoolyear.ID = user.SchoolYear
 
 	if strings.ToUpper(user.Type) != constants.USER_TYPE_STUDENT {
 		util.CustomErrorJson(c, http.StatusBadRequest, "Student type only")
