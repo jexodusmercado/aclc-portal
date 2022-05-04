@@ -7,18 +7,23 @@ import * as yup from 'yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { classNames } from 'utility'
-import { useUpdateEffect, useUserCreated } from 'hooks'
+import { useEffectOnce, useIsomorphicLayoutEffect, useUpdateEffect, useUserCreated } from 'hooks'
 import { useDispatch } from 'react-redux'
 import { createUserRequest } from 'redux/users/action'
+import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
+import { List } from 'interfaces'
+import { GetAllSchoolYears } from 'redux/school-year/action'
+import SelectMenu from 'components/SelectMenu'
 
 interface FormData {
-    username    : string
-    first_name  : string
-    last_name   : string
-    birthday    : Date | null
-    email       : string
-    type        : string
-    letter_type : string
+    username        : string
+    first_name      : string
+    last_name       : string
+    birthday        : Date | null
+    email           : string
+    type            : string
+    letter_type     : string
+    schoolyear_id   : number
 }
 
 const facultySchema = yup.object({
@@ -26,14 +31,19 @@ const facultySchema = yup.object({
     first_name  : yup.string().trim().required('*First name is required'),
     last_name   : yup.string().trim().required('*First name is required'),
     birthday    : yup.date().required('*Birthday is required'),
-    email       : yup.string().trim().email('*Input correct email format')
+    email       : yup.string().trim().email('*Input correct email format'),
+    schoolyear_id : yup.number().required('*School Year is required')
 }).required()
 
 const FacultyForm = () => {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const createdState = useUserCreated();
-    const [startDate, setStartDate] = useState<Date | null>(null);
+    const navigate                      = useNavigate()
+    const dispatch                      = useDispatch()
+    const createdState                  = useUserCreated();
+    const schoolyears                   = useSchoolYears()
+    const activeSchoolyear              = useActiveSchoolYear()
+    const [startDate, setStartDate]     = useState<Date | null>(null);
+    const [schoolYear, setSchoolYear]   = useState<List>({id: activeSchoolyear.ID, name:activeSchoolyear.school_year+", "+activeSchoolyear.semester+" Semester"})
+    const [yearList, setYearList]       = useState<List[]>([])
 
     const cancelForm = () => navigate('/dashboard/faculty');
 
@@ -49,9 +59,30 @@ const FacultyForm = () => {
         dispatch(createUserRequest(data))
     }
 
+    useEffectOnce(() => {
+        dispatch(GetAllSchoolYears())
+    })
+
     useUpdateEffect(() => {
         setValue('birthday', startDate)
     },[startDate])
+
+    useUpdateEffect(() => {
+        setValue('schoolyear_id', schoolYear.id)
+    },[schoolYear])
+
+    useIsomorphicLayoutEffect(() => {
+        if(schoolyears.data){
+            setValue('schoolyear_id', activeSchoolyear.ID)
+            const list = schoolyears.data.map(year => {
+                return {
+                    id: year.ID,
+                    name: year.school_year+", "+year.semester + " Semester"
+                }
+            })
+            setYearList(list)
+        }
+    },[schoolyears.data])
 
     useUpdateEffect(() => {
         if(createdState.success){
@@ -142,6 +173,16 @@ const FacultyForm = () => {
                                         />
                                     </div>
                                     {errors.birthday && <p className='text-sm text-red-400'> *Date is required </p>}
+                                </div>
+
+                                <div className="col-span-2 sm:col-span-2">
+                                    <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
+                                        School Year
+                                    </label>
+                                    <div className="mt-1 flex rounded-md shadow">
+                                        <SelectMenu selected={schoolYear} setSelected={setSchoolYear} lists={yearList} className='max-w-sm mt-0 pt-0'/>
+                                    </div>
+                                    {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>}
                                 </div>
 
                                 <div className="col-span-4 sm:col-span-4">

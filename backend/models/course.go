@@ -7,10 +7,11 @@ import (
 //Course -> Course struct to save user on database
 type Course struct {
     gorm.Model
-    Name		string	`gorm:"unique" json:"name"`
-	Description	string	`json:"description"`
-    IsActive	bool	`json:"is_active"`
-    Users       []User
+    Name		    string	`gorm:"unique" json:"name"`
+	Description	    string	`json:"description"`
+    IsActive	    bool	`json:"is_active"`
+    Users           []User
+    SchoolYears     []SchoolYear `gorm:"many2many:CourseSchoolYear" json:"school_years"`
 }
 
 //TableName -> returns the table name of Course Model
@@ -20,8 +21,9 @@ func (course *Course) TableName() string {
 
 //Create Subject
 type CourseCreation struct {
-	Name		string	`form:"name" binding:"required"`
-	Description	string	`form:"description" binding:"required"`
+	Name		    string	`form:"name" binding:"required"`
+	Description	    string	`form:"description" binding:"required"`
+    SchoolYearID    uint    `form:"schoolyear_id" json:"schoolyear_id" binding:"required"`
 }
 
 //ResponseMap -> response map method of User

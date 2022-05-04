@@ -14,8 +14,8 @@ func NewCourseService(repo repository.CourseRepository) CourseService {
     }
 }
 
-func (u CourseService) Create(course models.CourseCreation) error {
-    return u.repo.Create(course)
+func (u CourseService) Create(course models.CourseCreation, schoolyear models.SchoolYear) error {
+    return u.repo.Create(course, schoolyear)
 }
 
 func (u CourseService) Update(course models.Course) error {

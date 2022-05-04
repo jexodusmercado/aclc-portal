@@ -24,12 +24,15 @@ func NewCourseController(s service.CourseService) CourseController {
 func (p CourseController) Create(c *gin.Context) {
 
     var course models.CourseCreation
+    var schoolyear models.SchoolYear
     if err := c.ShouldBind(&course); err != nil {
         util.ErrorJSON(c, http.StatusBadRequest, err)
         return
     }
 
-    err := p.service.Create(course)
+    schoolyear.ID = course.SchoolYearID
+
+    err := p.service.Create(course, schoolyear)
     fmt.Println(err)
     if err != nil {
         util.CustomErrorJson(c, http.StatusBadRequest, err.Error())

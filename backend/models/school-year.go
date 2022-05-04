@@ -7,10 +7,11 @@ import (
 //SchoolYear -> SchoolYear struct to save user on database
 type SchoolYear struct {
     gorm.Model
-    SchoolYear		string	`json:"school_year"`
-    Semester  	    string	`json:"semester"`
-	IsActive		bool	`json:"is_active"`		
-    Users           []User  `gorm:"many2many:UserSchoolYear" json:"users"`
+    SchoolYear		string	    `json:"school_year"`
+    Semester  	    string	    `json:"semester"`
+	IsActive		bool	    `json:"is_active"`		
+    Users           []User      `gorm:"many2many:UserSchoolYear" json:"users"`
+    Courses         []Course    `gorm:"many2many:CourseSchoolYear" json:"courses"`
 }
 
 //TableName -> returns the table name of SchoolYear Model

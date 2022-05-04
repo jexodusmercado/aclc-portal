@@ -121,12 +121,13 @@ export interface GetUserPayload {
 }
 
 export interface CreateUserPayload {
-    username    : string
-    first_name  : string
-    last_name   : string
-    birthday    : Date | null
-    type        : string
-    email?      : string
-    letter_type : string
-    course_id?  : number
+    username        : string
+    first_name      : string
+    last_name       : string
+    birthday        : Date | null
+    type            : string
+    email?          : string
+    letter_type     : string
+    course_id?      : number
+    schoolyear_id   : number
 }

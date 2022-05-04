@@ -31,6 +31,7 @@ func NewUserController(s service.UserService) UserController {
 //CreateUser ->  calls CreateUser services for validated user
 func (u *UserController) CreateUser(c *gin.Context) {
 	var user models.UserRegister
+	var schoolyear models.SchoolYear
 	if err := c.ShouldBind(&user); err != nil {
 		util.ErrorJSON(c, http.StatusBadRequest, err)
 		return
@@ -43,12 +44,13 @@ func (u *UserController) CreateUser(c *gin.Context) {
 	hashPassword, _ := util.HashPassword(generatedPassword)
 	user.Password = hashPassword
 	user.Type = constants.USER_TYPE[user.Type]
+	schoolyear.ID = user.SchoolYearID
 
 	if user.Type == "" {
 		util.CustomErrorJson(c, http.StatusBadRequest, "No existing role")
 	}
 
-	err := u.service.CreateUser(user)
+	err := u.service.CreateUser(user, schoolyear)
 	if err != nil {
 		util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
 		return
@@ -73,6 +75,7 @@ func (u *UserController) CreateStudent(c *gin.Context) {
 	hashPassword, _ := util.HashPassword(generatedPassword)
 	user.Password = hashPassword
 	user.Type = constants.USER_TYPE[user.Type]
+	schoolyear.ID = user.SchoolYearID
 
 	if strings.ToUpper(user.Type) != constants.USER_TYPE_STUDENT {
 		util.CustomErrorJson(c, http.StatusBadRequest, "Student type only")

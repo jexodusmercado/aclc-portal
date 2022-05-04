@@ -8,7 +8,7 @@ import { classNames } from 'utility'
 import { useDispatch } from 'react-redux'
 import { loginRequest } from 'redux/auth/action'
 import { ExclamationCircleIcon } from '@heroicons/react/solid'
-import { useEffectOnce, useIsomorphicLayoutEffect, useUpdateEffect, useUserAuthenticated, useUserError } from 'hooks'
+import { useIsomorphicLayoutEffect, useUpdateEffect, useUserAuthenticated, useUserError } from 'hooks'
 import { useNavigate } from 'react-router-dom'
 
 type FormData = {
@@ -41,12 +41,6 @@ const SignIn = () => {
 
         dispatch(loginRequest(jsondata))
     }
-
-    useEffectOnce(() => {
-        if(auth){
-            navigate('/dashboard')
-        }
-    })
 
     useIsomorphicLayoutEffect(() => {
         if(auth){
@@ -82,13 +76,13 @@ const SignIn = () => {
                             {
                                 showError &&
                                 <Alert 
-                                Icon={ExclamationCircleIcon} 
-                                title={"Username/Password is incorrect"} 
-                                description={"Please provide the correct credentials"} 
-                                backgroundColor={"bg-red-100"}
-                                titleTextColor={"text-red-800"}
-                                descriptionColor={"text-red-700"}
-                                iconColor={"text-red-300"}
+                                    Icon={ExclamationCircleIcon} 
+                                    title={"Username/Password is incorrect"} 
+                                    description={"Please provide the correct credentials"} 
+                                    backgroundColor={"bg-red-100"}
+                                    titleTextColor={"text-red-800"}
+                                    descriptionColor={"text-red-700"}
+                                    iconColor={"text-red-300"}
                                 />
                             }
 

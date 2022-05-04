@@ -8,15 +8,15 @@ const Authenticating = () => {
     const user      = useUserData()
 
     if(auth) {
-        if(user.type === 'admin'){
+        if(user.type === 'ADMIN'){
             return <Navigate to="/dashboard" state={{ from: location }} />
         }
 
-        if(user.type === 'student'){
+        if(user.type === 'STUDENT'){
             return <Navigate to="/dashboard" state={{ from: location }} />
         }
 
-        if(user.type === 'faculty'){
+        if(user.type === 'FACULTY'){
             return <Navigate to="/dashboard" state={{ from: location }} />
         }
     }

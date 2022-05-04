@@ -23,7 +23,7 @@ func NewUserRepository(db infrastructure.Database) UserRepository {
 }
 
 //CreateUser -> method for saving user to database
-func (u UserRepository) CreateUser(user models.UserRegister) error {
+func (u UserRepository) CreateUser(user models.UserRegister, schoolyear models.SchoolYear) error {
 
 	var dbUser models.User
 
@@ -33,7 +33,7 @@ func (u UserRepository) CreateUser(user models.UserRegister) error {
 		Debug().
 		Preload("Users").
 		Model(&models.SchoolYear{}).
-		Where("is_active = ?", "1").
+		Where(schoolyear).
 		Take(&schoolyears).Error
 
 	if err != nil {
@@ -63,7 +63,7 @@ func (u UserRepository) CreateStudent(user models.StudentRegister, schoolyear mo
 		Debug().
 		Preload("Users").
 		Model(&models.SchoolYear{}).
-		Where("is_active = ?", "1").
+		Where(schoolyear).
 		Take(&schoolyears).Error
 
 	if err != nil {

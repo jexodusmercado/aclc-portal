@@ -1,23 +1,29 @@
-import React from 'react'
+import React, { useState } from 'react'
 import CardContainer from 'components/CardContainer'
 import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { classNames } from 'utility'
-import { useCourseCreated, useIsomorphicLayoutEffect, useCourseError } from 'hooks'
+import { useCourseCreated, useIsomorphicLayoutEffect, useCourseError, useEffectOnce, useUpdateEffect } from 'hooks'
 import { useDispatch } from 'react-redux'
 import { createCourseRequest } from 'redux/courses/action'
 import toast from 'react-hot-toast'
+import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
+import { List } from 'interfaces'
+import { GetAllSchoolYears } from 'redux/school-year/action'
+import SelectMenu from 'components/SelectMenu'
 
 interface FormData {
-    name        : string
-    description : string
+    name            : string
+    description     : string
+    schoolyear_id   : number
 }
 
 const facultySchema = yup.object({
-    name        : yup.string().trim().required('*name is required'),
-    description : yup.string().trim().required('*description is required'),
+    name        : yup.string().trim().required('*Name is required'),
+    description : yup.string().trim().required('*Description is required'),
+    schoolyear_id : yup.number().required('*School Year is required')
 }).required()
 
 const CourseForm = () => {
@@ -25,11 +31,15 @@ const CourseForm = () => {
     const dispatch                      = useDispatch()
     const createdState                  = useCourseCreated()
     const error                         = useCourseError()
+    const schoolyears                   = useSchoolYears()
+    const activeSchoolyear              = useActiveSchoolYear()
+    const [schoolYear, setSchoolYear]   = useState<List>({id: activeSchoolyear.ID, name:activeSchoolyear.school_year+", "+activeSchoolyear.semester+" Semester"})
+    const [yearList, setYearList]       = useState<List[]>([])
 
 
     const cancelForm = () => navigate('/dashboard/course');
 
-    const { register, handleSubmit, formState: { errors }, setError } = useForm<FormData>({
+    const { register, handleSubmit, setValue, formState: { errors }, setError } = useForm<FormData>({
         mode: "onChange",
         resolver: yupResolver(facultySchema)
     });
@@ -38,6 +48,10 @@ const CourseForm = () => {
 
         dispatch(createCourseRequest(data))
     }
+
+    useEffectOnce(() => {
+        dispatch(GetAllSchoolYears())
+    })
 
     useIsomorphicLayoutEffect( () => {
         if(createdState.success) {
@@ -51,6 +65,23 @@ const CourseForm = () => {
             toast.error(error.message)
         }
     }, [error])
+
+    useUpdateEffect(() => {
+        setValue('schoolyear_id', schoolYear.id)
+    },[schoolYear])
+
+    useIsomorphicLayoutEffect(() => {
+        if(schoolyears.data){
+            setValue('schoolyear_id', activeSchoolyear.ID)
+            const list = schoolyears.data.map(year => {
+                return {
+                    id: year.ID,
+                    name: year.school_year+", "+year.semester + " Semester"
+                }
+            })
+            setYearList(list)
+        }
+    },[schoolyears.data])
 
 
     return (
@@ -104,6 +135,16 @@ const CourseForm = () => {
                                         />
                                     </div>
                                     {errors.description && <p className='text-sm text-red-400'> {errors.description.message} </p>}
+                                </div>
+
+                                <div className="col-span-4 sm:col-span-4">
+                                    <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
+                                        School Year
+                                    </label>
+                                    <div className="mt-1 flex rounded-md shadow">
+                                        <SelectMenu selected={schoolYear} setSelected={setSchoolYear} lists={yearList} className='mt-0 pt-0'/>
+                                    </div>
+                                    {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>}
                                 </div>
 
                             </div>

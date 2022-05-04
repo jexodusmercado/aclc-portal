@@ -18,9 +18,22 @@ func NewCourseRepository(db infrastructure.Database) CourseRepository {
     }
 }
 
-func (c CourseRepository) Create(course models.CourseCreation) error {
+func (c CourseRepository) Create(course models.CourseCreation, schoolyear models.SchoolYear) error {
 
     var dbCourse models.Course
+
+    var schoolyears models.SchoolYear
+
+    err := c.db.DB.
+        Debug().
+        Preload("Users").
+        Model(&models.SchoolYear{}).
+        Where(schoolyear).
+        Take(&schoolyears).Error
+
+	if err != nil {
+		return err
+	}
 
     isExisting := c.db.DB.Where("name = ?", course.Name).First(&dbCourse).Error
     if isExisting == nil {
@@ -30,6 +43,7 @@ func (c CourseRepository) Create(course models.CourseCreation) error {
     dbCourse.Name		    = course.Name
 	dbCourse.Description  = course.Description
 	dbCourse.IsActive		= true
+    dbCourse.SchoolYears = append([]models.SchoolYear{}, schoolyears)
 
     return c.db.DB.Create(&dbCourse).Error
 }

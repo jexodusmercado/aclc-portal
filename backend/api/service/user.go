@@ -18,8 +18,8 @@ func NewUserService(repo repository.UserRepository) UserService {
 }
 
 //Save -> saves users entity
-func (u UserService) CreateUser(user models.UserRegister) error {
-	return u.repo.CreateUser(user)
+func (u UserService) CreateUser(user models.UserRegister, schoolyear models.SchoolYear) error {
+	return u.repo.CreateUser(user, schoolyear)
 }
 
 //SaveStudent -> saves users entity

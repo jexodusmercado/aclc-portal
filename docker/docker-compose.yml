@@ -30,8 +30,10 @@ services:
       - 8000:8000
     networks:
       - backend
+    restart: on-failure
     depends_on:
       - database
+
 
   app:
     build:

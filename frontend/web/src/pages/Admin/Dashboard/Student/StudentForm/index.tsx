@@ -13,35 +13,43 @@ import { createUserRequest } from 'redux/users/action'
 import 'react-datepicker/dist/react-datepicker.css'
 import { List } from 'interfaces'
 import { getAllCoursesRequest } from 'redux/courses/action'
+import { GetAllSchoolYears } from 'redux/school-year/action'
+import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
 
 interface FormData {
-    username    : string
-    first_name  : string
-    last_name   : string
-    birthday    : Date | null
-    email       : string
-    type        : string
-    letter_type : string
-    course_id   : number
+    username        : string
+    first_name      : string
+    last_name       : string
+    birthday        : Date | null
+    email           : string
+    type            : string
+    letter_type     : string
+    course_id       : number
+    schoolyear_id   : number
 }
 
 const facultySchema = yup.object({
-    username    : yup.string().trim().required('*Username is required'),
-    first_name  : yup.string().trim().required('*First name is required'),
-    last_name   : yup.string().trim().required('*First name is required'),
-    birthday    : yup.date().required('*Birthday is required'),
-    email       : yup.string().trim().email('*Input correct email format'),
-    course_id   : yup.number().required('*Course is required')
+    username        : yup.string().trim().required('*Username is required'),
+    first_name      : yup.string().trim().required('*First name is required'),
+    last_name       : yup.string().trim().required('*First name is required'),
+    birthday        : yup.date().required('*Birthday is required'),
+    email           : yup.string().trim().email('*Input correct email format'),
+    course_id       : yup.number().required('*Course is required'),
+    schoolyear_id   : yup.number().required('*School Year is required')
 }).required()
 
 const StudentForm = () => {
     const navigate                      = useNavigate()
     const dispatch                      = useDispatch()
-    const createdState                  = useUserCreated();
+    const createdState                  = useUserCreated()
     const courses                       = useCoursesState()
+    const schoolyears                   = useSchoolYears()
+    const activeSchoolyear              = useActiveSchoolYear()
     const [selected, setSelected]       = useState<List>({id:0, name:'Select..'})
-    const [startDate, setStartDate]     = useState<Date | null>(null);
+    const [schoolYear, setSchoolYear]   = useState<List>({id: activeSchoolyear.ID, name:activeSchoolyear.school_year+", "+activeSchoolyear.semester+" Semester"})
+    const [startDate, setStartDate]     = useState<Date | null>(null)
     const [coursesList, setCoursesList] = useState<List[]>([])
+    const [yearList, setYearList]       = useState<List[]>([])
 
 
     const cancelForm = () => navigate('/dashboard/faculty');
@@ -74,6 +82,7 @@ const StudentForm = () => {
 
     useEffectOnce(() => {
         dispatch(getAllCoursesRequest())
+        dispatch(GetAllSchoolYears())
     })
 
     useIsomorphicLayoutEffect(() => {
@@ -86,7 +95,28 @@ const StudentForm = () => {
             })
             setCoursesList(list)
         }
-    },[courses])
+    },[courses.data])
+
+    useIsomorphicLayoutEffect(() => {
+        if(schoolyears.data){
+            setValue('schoolyear_id', activeSchoolyear.ID)
+            const list = schoolyears.data.map(year => {
+                return {
+                    id: year.ID,
+                    name: year.school_year+", "+year.semester + " Semester"
+                }
+            })
+            setYearList(list)
+        }
+    },[schoolyears.data])
+
+    useUpdateEffect(() => {
+        setValue('course_id', selected.id)
+    },[selected.id])
+
+    useUpdateEffect(() => {
+        setValue('schoolyear_id', schoolYear.id)
+    },[schoolYear])
 
 
     return (
@@ -180,10 +210,20 @@ const StudentForm = () => {
                                     <div className="mt-1 flex rounded-md shadow">
                                         <SelectMenu selected={selected} setSelected={setSelected} lists={coursesList} className='max-w-sm mt-0 pt-0'/>
                                     </div>
-                                    {errors.birthday && <p className='text-sm text-red-400'> *Date is required </p>}
+                                    {errors.course_id && <p className='text-sm text-red-400'> {errors.course_id.message} </p>}
                                 </div>
 
-                                <div className="col-span-4 sm:col-span-4">
+                                <div className="col-span-2 sm:col-span-2">
+                                    <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
+                                        School Year
+                                    </label>
+                                    <div className="mt-1 flex rounded-md shadow">
+                                        <SelectMenu selected={schoolYear} setSelected={setSchoolYear} lists={yearList} className='max-w-sm mt-0 pt-0'/>
+                                    </div>
+                                    {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>}
+                                </div>
+
+                                <div className="col-span-2 sm:col-span-2">
                                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                                         Email Address <span className='text-xs opacity-75'> *optional  </span>
                                     </label>
