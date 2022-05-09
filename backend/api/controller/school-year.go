@@ -6,6 +6,7 @@ import (
 	"portal/models"
 	"portal/util"
 	"strconv"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -120,6 +121,47 @@ func (p SchoolYearController) UpdateSchoolYear(c *gin.Context) {
 		Success: true,
 		Message: "Successfully Updated School Year",
 		Data:    response,
+	})
+}
+
+func (p SchoolYearController) ChangeActiveYear(c *gin.Context) {
+	idParam := c.Param("id")
+
+	if idParam == "" {
+		util.CustomErrorJson(c, http.StatusBadRequest, "Missing string query id")
+	}
+
+	id, err := strconv.ParseUint(idParam, 10, 64)
+
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	var schoolyear models.SchoolYear
+
+	schoolyear.ID = uint(id)
+
+	schoolyearRecord, err := p.service.Find(schoolyear)
+
+
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	fmt.Println("test")
+	fmt.Println(schoolyearRecord)
+
+
+	if err := p.service.ChangeActiveYear(schoolyearRecord); err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, &util.Response{
+		Success: true,
+		Message: "Successfully Changed Active School year",
 	})
 }
 

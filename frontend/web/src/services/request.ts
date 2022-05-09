@@ -3,7 +3,7 @@ import { apiInstance } from "services/axios";
 import { LoginPayload } from "redux/auth/types";
 import { CreateUserPayload, GetUserPayload, GetUsersPayload } from "redux/users/types";
 import { CreateCoursePayload } from "redux/courses/types";
-import { CreateSchoolYearPayload } from "redux/school-year/types";
+import { ChangeActiveSchoolYearPayload, CreateSchoolYearPayload } from "redux/school-year/types";
 
 
 export const authRequest = {
@@ -38,4 +38,6 @@ export const schoolYearRequest = {
         apiInstance.post(END_POINTS.SCHOOL_YEAR, params),
     GetActiveSchoolYear: () =>
         apiInstance.get(`${END_POINTS.SCHOOL_YEAR}/${END_POINTS.ACTIVE}`),
+    ChangeActiveSchoolYear: (params: ChangeActiveSchoolYearPayload) =>
+        apiInstance.get(`${END_POINTS.SCHOOL_YEAR}/${END_POINTS.CHANGE_ACTIVE}/${params.id}`)
 }

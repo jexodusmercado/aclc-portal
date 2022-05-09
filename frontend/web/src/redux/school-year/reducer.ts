@@ -1,14 +1,13 @@
 import * as types from "./types";
 import { AnyAction } from "redux";
 
-const schoolYearReducer = ( state: types.SchoolYearType = types.SchoolYearInitial, action: AnyAction): types.SchoolYearType => {
+const schoolYearReducer = ( state: types.SchoolYearState = types.SchoolYearInitial, action: AnyAction): types.SchoolYearState => {
   switch (action.type) {
 
     case types.CREATE_SCHOOL_YEAR_REQUEST:
         return {
             ...state,
             created: {
-                success: false,
                 loading: false
             },
             error: types.SchoolYearInitial.error
@@ -18,7 +17,6 @@ const schoolYearReducer = ( state: types.SchoolYearType = types.SchoolYearInitia
         return {
             ...state,
             created: {
-                success: true,
                 loading: false
             }
         }
@@ -27,7 +25,6 @@ const schoolYearReducer = ( state: types.SchoolYearType = types.SchoolYearInitia
         return {
             ...state,
             created: {
-                success: false,
                 loading: false
             },
             error: action.payload
@@ -92,7 +89,9 @@ const schoolYearReducer = ( state: types.SchoolYearType = types.SchoolYearInitia
         }
 
     default:
-        return state
+        return {
+            ...state
+        }
   }
 };
 

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"portal/infrastructure"
 	"portal/models"
+	"fmt"
 
 	"gorm.io/gorm/clause"
 )
@@ -66,6 +67,36 @@ func (s SchoolYearRepository) Find(schoolyear models.SchoolYear) (models.SchoolY
 }
 
 func (s SchoolYearRepository) Update(schoolyear models.SchoolYear) error {
+	return s.db.DB.Save(&schoolyear).Error
+}
+
+func (s SchoolYearRepository) ChangeActiveYear(schoolyear models.SchoolYear) error {
+	var old_schoolyear models.SchoolYear
+
+	err := s.db.DB.
+		Debug().
+		Preload("Users").
+		Model(&models.SchoolYear{}).
+		Where("is_active = ?", "1").
+		Take(&old_schoolyear).Error
+	
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("inside repo")
+	fmt.Println(old_schoolyear)
+
+	old_schoolyear.IsActive = false
+
+	err = s.db.DB.Save(&old_schoolyear).Error
+
+	if err != nil {
+		return err
+	}
+
+	schoolyear.IsActive = true
+
 	return s.db.DB.Save(&schoolyear).Error
 }
 

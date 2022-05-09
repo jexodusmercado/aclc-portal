@@ -25,6 +25,10 @@ type SchoolYearCreation struct {
 	Semester	string  `form:"semester" binding:"required"`
 }
 
+type ChangeActiveYear struct {
+	IsActive	string  `form:"is_active" binding:"required"`
+}
+
 //ResponseMap -> response map method of User
 func (school *SchoolYear) ResponseMap() map[string]interface{} {
     resp := make(map[string]interface{})

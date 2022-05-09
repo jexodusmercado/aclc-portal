@@ -40,11 +40,11 @@ function* CreateSchoolYearType ({payload} : types.CreateSchoolYearAction) {
         
     } catch (error) {
 
-        const payload = handleAxiosError(error as AxiosError)
+        const err = handleAxiosError(error as AxiosError)
 
         yield put({
             type: types.CREATE_SCHOOL_YEAR_FAILED,
-            payload
+            payload: err
         })
 
         toast.error('Failed to create school year')
@@ -76,11 +76,43 @@ function* GetActiveSchoolYearType(){
     }
 }
 
+function* ChangeActiveSchoolYear({payload} : types.ChangeActiveSchoolYearAction){
+    try {
+
+        yield call(schoolYearRequest.ChangeActiveSchoolYear, payload)
+
+        yield put({
+            type: types.GET_SCHOOL_YEARS_REQUEST
+        })
+
+        yield put({
+            type: types.GET_ACTIVE_SCHOOL_YEAR_REQUEST
+        })
+
+        yield put({
+            type: types.CHANGE_SCHOOL_YEAR_SUCCESS
+        })
+
+        toast.success('Success!')
+        
+    } catch (error) {
+        const err = handleAxiosError(error as AxiosError)
+
+        yield put({
+            type: types.CHANGE_SCHOOL_YEAR_FAILED,
+            payload: err
+        })
+
+        toast.error('Failed to change school year')
+    }
+}
+
 
 const SchoolYearSaga: ForkEffect[] = [
     takeLatest(types.GET_SCHOOL_YEARS_REQUEST, GetSchoolYearsType),
     takeLatest(types.CREATE_SCHOOL_YEAR_REQUEST, CreateSchoolYearType),
-    takeLatest(types.GET_ACTIVE_SCHOOL_YEAR_REQUEST, GetActiveSchoolYearType)
+    takeLatest(types.GET_ACTIVE_SCHOOL_YEAR_REQUEST, GetActiveSchoolYearType),
+    takeLatest(types.CHANGE_SCHOOL_YEAR_REQUEST, ChangeActiveSchoolYear)
 ]
 
 export default SchoolYearSaga;

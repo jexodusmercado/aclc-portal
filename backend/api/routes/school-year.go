@@ -31,5 +31,6 @@ func (c SchoolYearRoute) Setup() {
 		schoolyear.POST("", c.Controller.Create)
 		schoolyear.PATCH("/:id", c.Controller.UpdateSchoolYear)
 		schoolyear.GET("/active", c.Controller.GetActiveYear)
+		schoolyear.GET("/change-active/:id", c.Controller.ChangeActiveYear)
 	}
 }

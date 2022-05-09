@@ -34,3 +34,7 @@ func (u SchoolYearService) Find(schoolyear models.SchoolYear) (models.SchoolYear
 func (u SchoolYearService) GetActiveYear() (models.SchoolYear, error) {
 	return u.repo.GetActiveYear()
 }
+
+func (u SchoolYearService) ChangeActiveYear(schoolyear models.SchoolYear) error {
+	return u.repo.ChangeActiveYear(schoolyear)
+}

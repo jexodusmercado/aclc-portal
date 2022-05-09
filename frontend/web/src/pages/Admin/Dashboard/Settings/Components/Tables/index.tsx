@@ -1,19 +1,21 @@
-import Badges from 'components/Badge'
 import React from 'react'
 import { classNames } from 'utility'
-import { Link } from 'react-router-dom'
-import { ActiveSchoolYearType } from 'redux/school-year/types'
-import { GetAllSchoolYears } from 'redux/school-year/action'
-import { useSchoolYears } from 'hooks/schoolyear'
-import { useEffectOnce } from 'hooks'
+import { ActiveSchoolYearState } from 'redux/school-year/types'
 import { useDispatch } from 'react-redux'
+import { ChangeActiveSchoolYear } from 'redux/school-year/action'
 
 interface Props {
-    schoolyears:        ActiveSchoolYearType[]
+    schoolyears:        ActiveSchoolYearState[]
 }
 
 const SchoolYearTable: React.FC<Props> = ({schoolyears}) => {
+    const dispatch = useDispatch()
 
+    const handleOnclick = (id: number) => {
+        dispatch(
+            ChangeActiveSchoolYear({id})
+        )
+    }
 
     return (
         <div className="mt-8 flex flex-col">
@@ -39,7 +41,7 @@ const SchoolYearTable: React.FC<Props> = ({schoolyears}) => {
                                     <tr key={schoolyear.ID}>
                                         <td
                                             className={classNames(
-                                            'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6',
+                                            'whitespace-nowrap py-4 pl- pr-3 text-sm font-medium text-gray-900 sm:pl-6',
                                             )}
                                         >
                                             {schoolyear.school_year}
@@ -49,7 +51,8 @@ const SchoolYearTable: React.FC<Props> = ({schoolyears}) => {
                                             <button
                                                 type="button"
                                                 className='button-selection'
-                                                disabled={schoolyear.is_active}                                                
+                                                disabled={schoolyear.is_active}
+                                                onClick={() => handleOnclick(schoolyear.ID)}                                              
                                             > 
                                                 ACTIVE
                                             </button>
