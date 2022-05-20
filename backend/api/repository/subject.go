@@ -1,10 +1,10 @@
 package repository
 
 import (
-    "portal/infrastructure"
-    "portal/models"
-	
-    "errors"
+	"portal/infrastructure"
+	"portal/models"
+
+	"errors"
 )
 
 //SubjectRepository -> SubjectRepository resposible for accessing database
@@ -32,8 +32,6 @@ func (s SubjectRepository) Create(subject models.SubjectCreation) error {
     dbSubject.Name	 		= subject.Name
     dbSubject.Code 	        = subject.Code
     dbSubject.Unit          = subject.Unit
-    dbSubject.YearLevelID   = subject.YearLevelID
-    dbSubject.SchoolYearID  = subject.SchoolYearID
     dbSubject.IsActive 		= true
 
     return s.db.DB.Create(&dbSubject).Error

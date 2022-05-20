@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { classNames } from 'utility'
 import { Switch } from '@headlessui/react'
+import { useUserData } from 'hooks';
 
 const GeneralComponent = () => {
 
-    const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled] = useState<boolean>(true)
-    const [autoUpdateApplicantDataEnabled, setAutoUpdateApplicantDataEnabled] = useState<boolean>(false)
+    const user = useUserData();
+
+    const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled]               = useState<boolean>(true)
+    const [autoUpdateApplicantDataEnabled, setAutoUpdateApplicantDataEnabled]   = useState<boolean>(false)
 
     return (
         <>
@@ -21,11 +24,12 @@ const GeneralComponent = () => {
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
                             <dt className="text-sm font-medium text-gray-500">First Name</dt>
                             <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                <span className="flex-grow">Chelsea</span>
+                                <span className="flex-grow">{user.first_name}</span>
                                 <span className="ml-4 flex-shrink-0">
                                     <button
                                         type="button"
                                         className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    
                                     >
                                         Update
                                     </button>
@@ -35,7 +39,7 @@ const GeneralComponent = () => {
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
                             <dt className="text-sm font-medium text-gray-500">Last Name</dt>
                             <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                <span className="flex-grow">Hagon</span>
+                                <span className="flex-grow">{user.last_name}</span>
                                 <span className="ml-4 flex-shrink-0">
                                     <button
                                         type="button"
@@ -49,36 +53,36 @@ const GeneralComponent = () => {
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5">
                             <dt className="text-sm font-medium text-gray-500">Photo</dt>
                             <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow">
-                                <img
-                                className="h-8 w-8 rounded-full"
-                                src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                alt=""
-                                />
-                            </span>
-                            <span className="ml-4 flex-shrink-0 flex items-start space-x-4">
-                                <button
-                                type="button"
-                                className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                >
-                                Update
-                                </button>
-                                <span className="text-gray-300" aria-hidden="true">
-                                |
+                                <span className="flex-grow">
+                                    <img
+                                        className="h-8 w-8 rounded-full"
+                                        src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                        alt=""
+                                    />
                                 </span>
-                                <button
-                                type="button"
-                                className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                >
-                                Remove
-                                </button>
-                            </span>
+                                <span className="ml-4 flex-shrink-0 flex items-start space-x-4">
+                                    <button
+                                        type="button"
+                                        className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    >
+                                        Update
+                                    </button>
+                                    <span className="text-gray-300" aria-hidden="true">
+                                        |
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    >
+                                        Remove
+                                    </button>
+                                </span>
                             </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5">
                             <dt className="text-sm font-medium text-gray-500">Email</dt>
                             <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow">chelsea.hagon@example.com</span>
+                            <span className="flex-grow">{user.email !== "" ? user.email : "N/A"}</span>
                             <span className="ml-4 flex-shrink-0">
                                 <button
                                 type="button"
@@ -106,29 +110,29 @@ const GeneralComponent = () => {
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
                             <dt className="text-sm font-medium text-gray-500">Password</dt>
                             <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow">**********</span>
-                            <span className="ml-4 flex-shrink-0">
-                                <button
-                                type="button"
-                                className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                >
-                                Change
-                                </button>
-                            </span>
+                                <span className="flex-grow">**********</span>
+                                <span className="ml-4 flex-shrink-0">
+                                    <button
+                                    type="button"
+                                    className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    >
+                                    Change
+                                    </button>
+                                </span>
                             </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
                             <dt className="text-sm font-medium text-gray-500">Language</dt>
                             <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow">English</span>
-                            <span className="ml-4 flex-shrink-0">
-                                <button
-                                type="button"
-                                className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                >
-                                Update
-                                </button>
-                            </span>
+                                <span className="flex-grow">English</span>
+                                <span className="ml-4 flex-shrink-0">
+                                    <button
+                                    type="button"
+                                    className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    >
+                                    Update
+                                    </button>
+                                </span>
                             </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5">
@@ -137,19 +141,19 @@ const GeneralComponent = () => {
                                 <span className="flex-grow">DD-MM-YYYY</span>
                                 <span className="ml-4 flex-shrink-0 flex items-start space-x-4">
                                     <button
-                                    type="button"
-                                    className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                        type="button"
+                                        className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                     >
                                     Update
                                     </button>
                                     <span className="text-gray-300" aria-hidden="true">
-                                    |
+                                        |
                                     </span>
                                     <button
-                                    type="button"
-                                    className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                        type="button"
+                                        className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                     >
-                                    Remove
+                                        Remove
                                     </button>
                                 </span>
                             </dd>

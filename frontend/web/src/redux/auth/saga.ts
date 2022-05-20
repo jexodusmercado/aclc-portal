@@ -13,13 +13,14 @@ function* LoginActionType({ payload }: types.LoginAction) {
             yield localStorage.setItem('tk', response.data.data.token)
 
             yield put({
+                type: schoolyear.GET_ACTIVE_SCHOOL_YEAR_REQUEST
+            })
+
+            yield put({
                 type: types.LOGIN_SUCCESS,
                 payload: response.data.data.user
             })
-            
-            yield put({
-                type: schoolyear.GET_ACTIVE_SCHOOL_YEAR_REQUEST
-            })
+
         } 
 
     } catch (error) {

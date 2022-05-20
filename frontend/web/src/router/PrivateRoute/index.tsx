@@ -3,11 +3,11 @@ import { useUserAuthenticated } from 'hooks'
 import { useLocation, Navigate, Outlet } from 'react-router-dom'
 
 const PrivateRoute = () => {
-    const location  = useLocation()
     const auth      = useUserAuthenticated()
 
     if(!auth) {
-        return <Navigate to="/" state={{ from: location }} />
+        console.log('not login')
+        return <Navigate to="/"/>
     }
 
     return <Outlet />;

@@ -1,13 +1,14 @@
 package controller
 
 import (
-    "portal/api/service"
-    "portal/models"
-    "portal/util"
-    "net/http"
+	"fmt"
+	"net/http"
+	"portal/api/service"
+	"portal/models"
+	"portal/util"
 	"strconv"
 
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 )
 
 //ClassroomController struct
@@ -25,12 +26,24 @@ func NewClassroomController(s service.ClassroomService) ClassroomController {
 //CreateClassroom ->  calls CreateClassroom services for validated classroom
 func (cr *ClassroomController) CreateClassroom(c *gin.Context) {
     var classroom models.ClassroomCreation
+    var students []models.User
+
     if err := c.ShouldBind(&classroom); err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
+        fmt.Println(err)
+        util.CustomErrorJson(c, http.StatusBadRequest, err)
         return
     }
 
-    err := cr.service.CreateClassroom(classroom)
+    if len(classroom.StudentsID) != 0 {
+        for _, student := range classroom.StudentsID {
+            var tempModel models.User
+            tempModel.ID = student
+    
+            students = append(students, tempModel)
+        }
+    }
+    
+    err := cr.service.CreateClassroom(classroom, students)
     if err != nil {
         util.ErrorJSON(c, http.StatusBadRequest, err)
         return
@@ -119,6 +132,7 @@ func (cr ClassroomController) UpdateClassroom(c *gin.Context) {
         util.ErrorJSON(c, http.StatusBadRequest, err)
         return
     }
+    
     response := classroomRecord.ResponseMap()
 
     c.JSON(http.StatusOK, &util.Response{

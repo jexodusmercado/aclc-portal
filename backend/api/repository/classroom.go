@@ -1,10 +1,9 @@
 package repository
 
 import (
-    "portal/infrastructure"
-    "portal/models"
-
-    "gorm.io/gorm/clause"
+	"log"
+	"portal/infrastructure"
+	"portal/models"
 )
 
 //ClassroomRepository -> Classroom responsible for accessing database
@@ -20,16 +19,40 @@ func NewClassroomRepository(db infrastructure.Database) ClassroomRepository {
 }
 
 //CreateUser -> method for saving user to database
-func (c ClassroomRepository) Create(classroom models.ClassroomCreation) error {
+func (c ClassroomRepository) Create(classroom models.ClassroomCreation, students []models.User) error {
 
     var dbClassroom models.Classroom
+    var users []models.User
 
     dbClassroom.Title 		= classroom.Title
 	dbClassroom.Body		= classroom.Body
 	dbClassroom.SubjectID	= classroom.SubjectID
+    dbClassroom.TeacherID   = classroom.TeacherID
 	dbClassroom.IsActive	= true
 
-    return c.db.DB.Create(&dbClassroom).Error
+    err := c.db.DB.Create(&dbClassroom).Error
+    if err != nil {
+        return err
+    }
+
+    for _, u := range students {
+        var user models.User
+
+        err := c.db.DB.
+            Debug().
+            Model(&models.User{}).
+            Where(&u).
+            Take(&user).Error
+
+        if err != nil {
+            log.Fatalf(err.Error())
+        }
+
+        users = append(users, user)
+
+    }
+
+    return c.db.DB.Model(&dbClassroom).Association("Students").Append(&users)
 }
 
 //FindAll -> method for returning all classrooms
@@ -38,7 +61,12 @@ func (c ClassroomRepository) FindAll(classroom models.Classroom, keyword string)
     var classrooms []models.Classroom
     var totalRows int64 = 0
 
-    queryBuilder := c.db.DB.Preload("Subject").Preload("Posts.User").Preload(clause.Associations).Order("created_at desc").Model(&models.Classroom{})
+    queryBuilder := c.db.DB.Preload("Subject").
+                    Preload("Students.Course").
+                    Preload("Teacher").
+                    Preload("Posts.User").
+                    Order("created_at desc").
+                    Model(&models.Classroom{})
 
     if keyword != "" {
         queryKeyword := "%" + keyword + "%"
@@ -58,8 +86,10 @@ func (u ClassroomRepository) Find(classroom models.Classroom) (models.Classroom,
     var classrooms models.Classroom
     err := u.db.DB.
         Debug().
-		Joins("Subject").
-        Preload(clause.Associations).
+		Preload("Subject").
+        Preload("Students.Course").
+        Preload("Teacher").
+        Preload("Posts.User").
         Model(&models.Classroom{}).
         Where(&classroom).
         Take(&classrooms).Error
@@ -68,5 +98,47 @@ func (u ClassroomRepository) Find(classroom models.Classroom) (models.Classroom,
 
 //Update -> Method for updating Post
 func (u ClassroomRepository) Update(classroom models.Classroom) error {
-    return u.db.DB.Save(&classroom).Error
+    var teacher models.User
+    var students []models.User
+    var subject models.Subject
+
+    for _, student := range classroom.Students {
+        var user models.User
+
+        err := u.db.DB.
+            Debug().
+            Model(&models.User{}).
+            Where(&student).
+            Take(&user).Error
+
+        if err != nil {
+            log.Fatalf(err.Error())
+        }
+
+        students = append(students, user)
+
+    }
+
+    err := u.db.DB.
+        Debug().
+        Model(&models.Subject{}).
+        Where(&classroom.Subject).
+        Take(&subject).Error
+    if err != nil {
+        return err
+    }
+
+    err = u.db.DB.
+        Debug().
+        Model(&models.User{}).
+        Where(&classroom.Teacher).
+        Take(&teacher).Error
+    if err != nil {
+        return err
+    }
+
+    u.db.DB.Association("Teacher").Replace()
+    return u.db.DB.Select("*").
+        Omit("ID").
+        Updates(&classroom).Error
 }

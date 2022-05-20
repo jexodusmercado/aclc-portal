@@ -1,9 +1,9 @@
 package routes
 
 import (
-    "portal/api/controller"
-    "portal/infrastructure"
-    "portal/middleware"
+	"portal/api/controller"
+	"portal/infrastructure"
+	"portal/middleware"
 )
 
 //ClassroomRoute -> Route for user module
@@ -31,6 +31,7 @@ func (c ClassroomRoute) Setup() {
         classroom.POST("/create", c.Controller.CreateClassroom)
 		classroom.GET("/", c.Controller.GetClassrooms)
 		classroom.GET("/:id", c.Controller.GetClassroom)
+        classroom.PATCH("/:id", c.Controller.UpdateClassroom)
     }
 
 }

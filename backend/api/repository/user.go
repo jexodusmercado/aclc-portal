@@ -158,7 +158,7 @@ func (u UserRepository) Find(user models.User) (models.User, error) {
 
 //Update -> Method for updating Post
 func (u UserRepository) Update(user models.User) error {
-	return u.db.DB.Save(&user).Error
+	return u.db.DB.Updates(&user).Error
 }
 
 func (u UserRepository) AddUserToClassroom(user models.User, classroom models.Classroom) error {

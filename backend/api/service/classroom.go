@@ -1,7 +1,8 @@
 package service
+
 import (
-    "portal/api/repository"
-    "portal/models"
+	"portal/api/repository"
+	"portal/models"
 )
 
 //Classroom ClassroomService struct
@@ -17,8 +18,8 @@ func NewClassroomService(repo repository.ClassroomRepository) ClassroomService {
 }
 
 // Create -> create classroom entity
-func (u ClassroomService) CreateClassroom(classroom models.ClassroomCreation) error {
-    return u.repo.Create(classroom)
+func (u ClassroomService) CreateClassroom(classroom models.ClassroomCreation, students []models.User) error {
+    return u.repo.Create(classroom, students)
 }
 
 // Update -> calls class room update method

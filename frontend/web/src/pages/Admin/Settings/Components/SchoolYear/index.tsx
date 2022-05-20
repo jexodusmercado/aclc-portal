@@ -18,7 +18,7 @@ const SchoolYearComponent = () => {
     return (
         <>
             <div className='flex justify-between mt-10'>
-                <span className='text-gray-600 leading-6 text-lg'>
+                <span className="text-lg leading-6 font-medium text-gray-900">
                     Application School Year
                 </span>
 

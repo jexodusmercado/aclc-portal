@@ -22,3 +22,10 @@ export interface IFaculty {
     Subject: string[]
     Classes: number
 }
+
+export interface IMenu {
+    name: string
+    href: string
+    icon: (props: React.SVGProps<SVGSVGElement>) => JSX.Element
+    end: boolean
+}

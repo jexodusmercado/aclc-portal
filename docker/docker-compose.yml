@@ -16,6 +16,7 @@ services:
       - ./storage:/var/lib/mysql
     ports:
       - "4000:3306"
+    restart: always
     networks:
       - backend
 
@@ -30,7 +31,7 @@ services:
       - 8000:8000
     networks:
       - backend
-    restart: on-failure
+    restart: always
     depends_on:
       - database
 

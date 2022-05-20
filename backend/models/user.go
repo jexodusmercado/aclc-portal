@@ -9,18 +9,19 @@ import (
 //User -> User struct to save user on database
 type User struct {
 	gorm.Model
-	FirstName  string     `json:"first_name"`
-	LastName   string     `json:"last_name"`
-	Email      string     `gorm:"unique;default:null;" json:"email,omitempty"`
-	Username   string     `gorm:"unique" json:"username"`
-	Password   string     `json:"password"`
-	Birthday   time.Time  `json:"birthday"`
-	Type       string     `json:"type"`
-	IsActive   bool       `json:"is_active"`
-	Subjects   []*Subject `gorm:"many2many:user_subjects;"`
-	CourseID   uint       `gorm:"default:null;" json:"course_id,omitempty"`
-	Course     Course
-	SchoolYear []*SchoolYear `gorm:"many2many:UserSchoolYear" json:"school_year,omitempty"`
+	FirstName  	string     		`json:"first_name"`
+	LastName   	string     		`json:"last_name"`
+	Email      	string     		`gorm:"unique;default:null;" json:"email"`
+	Username   	string     		`gorm:"unique" json:"username"`
+	Password   	string     		`json:"password"`
+	Birthday   	time.Time  		`json:"birthday"`
+	Type       	string     		`json:"type"`
+	IsActive   	bool       		`json:"is_active"`
+	Subjects   	[]*Subject 		`gorm:"many2many:user_subjects;"`
+	Course     	Course
+	CourseID   	uint          	`gorm:"default:null;" json:"course_id"`
+	SchoolYear 	[]*SchoolYear 	`gorm:"many2many:user_schoolyear" json:"school_year,omitempty"`
+	Students	[]*Classroom  	`gorm:"many2many:students_classroom"`
 }
 
 // Classrooms  []*Classroom    `gorm:"many2many:user_class;"`
@@ -45,26 +46,26 @@ type AddUserClass struct {
 
 //UserRegister -> Request Binding for User Register
 type UserRegister struct {
-	Username  		string    	`form:"username" json:"username" binding:"required,numeric"`
-	Password  		string    	`form:"password" json:"password"`
-	FirstName 		string    	`form:"first_name" json:"first_name" binding:"required"`
-	LastName  		string    	`form:"last_name" json:"last_name" binding:"required"`
-	Birthday  		time.Time 	`form:"birthday" json:"birthday" binding:"required"`
-	Type      		string    	`form:"type" json:"type" binding:"required"`
-	Email     		string    	`form:"email" json:"email"`
-	SchoolYearID	uint		`form:"schoolyear_id" json:"schoolyear_id" binding:"required"`
+	Username     string    `form:"username" json:"username" binding:"required,numeric"`
+	Password     string    `form:"password" json:"password"`
+	FirstName    string    `form:"first_name" json:"first_name" binding:"required"`
+	LastName     string    `form:"last_name" json:"last_name" binding:"required"`
+	Birthday     time.Time `form:"birthday" json:"birthday" binding:"required"`
+	Type         string    `form:"type" json:"type" binding:"required"`
+	Email        string    `form:"email" json:"email"`
+	SchoolYearID uint      `form:"schoolyear_id" json:"schoolyear_id" binding:"required"`
 }
 
 type StudentRegister struct {
-	Username  		string    	`form:"username" json:"username" binding:"required,numeric"`
-	Password  		string    	`form:"password" json:"password"`
-	FirstName 		string   	 `form:"first_name" json:"first_name" binding:"required"`
-	LastName  		string    	`form:"last_name" json:"last_name" binding:"required"`
-	Birthday  		time.Time 	`form:"birthday" json:"birthday" binding:"required"`
-	Type      		string    	`form:"type" json:"type" binding:"required"`
-	Email     		string    	`form:"email" json:"email"`
-	CourseID  		uint      	`form:"course_id" json:"course_id"`
-	SchoolYearID	uint		`form:"schoolyear_id" json:"schoolyear_id" binding:"required"`
+	Username     string    `form:"username" json:"username" binding:"required,numeric"`
+	Password     string    `form:"password" json:"password"`
+	FirstName    string    `form:"first_name" json:"first_name" binding:"required"`
+	LastName     string    `form:"last_name" json:"last_name" binding:"required"`
+	Birthday     time.Time `form:"birthday" json:"birthday" binding:"required"`
+	Type         string    `form:"type" json:"type" binding:"required"`
+	Email        string    `form:"email" json:"email"`
+	CourseID     uint      `form:"course_id" json:"course_id"`
+	SchoolYearID uint      `form:"schoolyear_id" json:"schoolyear_id" binding:"required"`
 }
 
 //ResponseMap -> response map method of User
