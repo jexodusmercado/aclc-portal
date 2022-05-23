@@ -13,7 +13,7 @@ import { createUserRequest } from 'redux/users/action'
 import 'react-datepicker/dist/react-datepicker.css'
 import { List } from 'interfaces'
 import { getAllCoursesRequest } from 'redux/courses/action'
-import { GetAllSchoolYears } from 'redux/school-year/action'
+import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
 import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
 
 interface FormData {
@@ -83,6 +83,7 @@ const StudentForm = () => {
     useEffectOnce(() => {
         dispatch(getAllCoursesRequest())
         dispatch(GetAllSchoolYears())
+        dispatch(GetActiveSchoolYear())
     })
 
     useIsomorphicLayoutEffect(() => {

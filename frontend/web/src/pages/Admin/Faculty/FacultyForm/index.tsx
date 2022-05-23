@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux'
 import { createUserRequest } from 'redux/users/action'
 import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
 import { List } from 'interfaces'
-import { GetAllSchoolYears } from 'redux/school-year/action'
+import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
 import SelectMenu from 'components/SelectMenu'
 
 interface FormData {
@@ -61,6 +61,7 @@ const FacultyForm = () => {
 
     useEffectOnce(() => {
         dispatch(GetAllSchoolYears())
+        dispatch(GetActiveSchoolYear())
     })
 
     useUpdateEffect(() => {

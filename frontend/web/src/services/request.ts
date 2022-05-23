@@ -41,3 +41,8 @@ export const schoolYearRequest = {
     ChangeActiveSchoolYear: (params: ChangeActiveSchoolYearPayload) =>
         apiInstance.get(`${END_POINTS.SCHOOL_YEAR}/${END_POINTS.CHANGE_ACTIVE}/${params.id}`)
 }
+
+export const classroomRequest = {
+    createClassroom: () =>
+        apiInstance.post(`${END_POINTS.CLASSROOM}/${END_POINTS.CREATE}`)
+}

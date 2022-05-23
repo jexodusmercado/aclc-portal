@@ -8,5 +8,7 @@ export const END_POINTS = {
     COURSE          :   "course",
     SCHOOL_YEAR     :   "school-year",
     ACTIVE          :   "active",
-    CHANGE_ACTIVE   :   "change-active"
+    CHANGE_ACTIVE   :   "change-active",
+    CLASSROOM       :   "classroom",
+    CREATE          :   "create"
 }
