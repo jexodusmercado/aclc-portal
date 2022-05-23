@@ -42,6 +42,27 @@ export const ClassroomState  = {
     }
 }
 
-export const CREATE_CLASSROOM_REQUEST   = "GET_USERS_REQUEST"
-export const CREATE_CLASSROOM_SUCCESS   = "GET_USERS_SUCCESS"
-export const CREATE_CLASSROOM_FAILED    = "GET_USERS_FAILED"
+export const CREATE_CLASSROOM_REQUEST   =   "CREATE_CLASSROOM_REQUEST"
+export const CREATE_CLASSROOM_SUCCESS   =   "CREATE_CLASSROOM_SUCCESS"
+export const CREATE_CLASSROOM_FAILED    =   "CREATE_CLASSROOM_FAILED"
+
+export const GET_CLASSROOMS_REQUEST     =   "GET_CLASSROOMS_REQUEST"
+export const GET_CLASSROOMS_SUCCESS     =   "GET_CLASSROOMS_SUCCESS"
+export const GET_CLASSROOMS_FAILED      =   "GET_CLASSROOMS_FAILED"
+
+export const GET_CLASSROOM_REQUEST      =   "GET_CLASSROOM_REQUEST"
+export const GET_CLASSROOM_SUCCESS      =   "GET_CLASSROOM_SUCCESS"
+export const GET_CLASSROOM_FAILED       =   "GET_CLASSROOM_FAILED"
+
+
+export type CreateCourseAction = {
+    type: typeof CREATE_CLASSROOM_REQUEST
+}
+
+export type GetClassroomAction = {
+    type: typeof GET_CLASSROOM_REQUEST
+}
+
+export type GetClassroomsAction = {
+    type: typeof GET_CLASSROOMS_REQUEST
+}
