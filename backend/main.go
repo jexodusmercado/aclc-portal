@@ -1,9 +1,9 @@
 package main
 
 import (
-    // "github.com/gin-contrib/cors"
-    "portal/infrastructure"
-    "portal/setup"
+	// "github.com/gin-contrib/cors"
+	"portal/infrastructure"
+	"portal/setup"
 )
 
 func init() {

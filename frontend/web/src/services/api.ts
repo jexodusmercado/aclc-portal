@@ -4,11 +4,12 @@ export const END_POINTS = {
     LOGIN           :   "login",
     REGISTER        :   "register",
     AUTH            :   "auth",
-    USERS           :   "users",
+    USERS           :   "user",
     COURSE          :   "course",
     SCHOOL_YEAR     :   "school-year",
     ACTIVE          :   "active",
     CHANGE_ACTIVE   :   "change-active",
     CLASSROOM       :   "classroom",
-    CREATE          :   "create"
+    CREATE          :   "create",
+    SUBJECT         :   "subject"
 }

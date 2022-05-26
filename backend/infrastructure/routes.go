@@ -1,10 +1,10 @@
 package infrastructure
 
 import (
-    "github.com/gin-contrib/cors"
-    "github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 
-    "net/http"
+	"net/http"
 )
 
 //GinRouter -> Gin Router
@@ -18,8 +18,9 @@ func NewGinRouter() GinRouter {
     httpRouter := gin.Default()
 
     config := cors.DefaultConfig()
+    // config.AllowAllOrigins = true
     config.AllowOrigins = []string{"http://localhost:3001","http://localhost:3001/","http://localhost:3000"}
-    config.AllowCredentials = true
+    // config.AllowCredentials = true
     config.AddAllowMethods("OPTIONS")
     config.AllowHeaders = []string{
         "Origin",

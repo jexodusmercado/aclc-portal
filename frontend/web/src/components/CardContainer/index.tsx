@@ -15,6 +15,7 @@ interface Props {
     submitText?: string
     cancelText?: string
     loading?: boolean
+    className? : string
     submitOnclick?: () => void
     cancelOnclick?: () => void
 }
@@ -29,7 +30,7 @@ interface Props {
  * @param shadow defaults true - boolean
  * 
  */
-const Card: React.FC<Props> = ({children, padding, margin, border=true, borderColor, rounded=true, roundedSize, shadow=true, shadowSize, footer, loading, submitText="Submit", submitOnclick, cancelText="Cancel", cancelOnclick}) => {
+const Card: React.FC<Props> = ({children, padding, margin, border=true, borderColor, className, rounded=true, roundedSize, shadow=true, shadowSize, footer, loading, submitText="Submit", submitOnclick, cancelText="Cancel", cancelOnclick}) => {
 
     return(
         <div
@@ -47,6 +48,7 @@ const Card: React.FC<Props> = ({children, padding, margin, border=true, borderCo
             <div className={
                 classNames(
                     padding ? padding : "px-4 py-4 sm:px-6",
+                    className ? className : ""
                 )
             }>
                 {children}

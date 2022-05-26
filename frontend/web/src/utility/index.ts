@@ -25,5 +25,12 @@ export const handleAxiosError = (error: AxiosError): ErrorPayload | undefined =>
   
     return payload;
     
-  
-  }
+}
+
+export const debounce = (func: (...args: any[]) => any, timeout: number = 300) => {
+    let timer: NodeJS.Timeout | undefined;
+    return (...args: any[]) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    };
+}

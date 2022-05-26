@@ -1,6 +1,5 @@
-import { Switch } from '@headlessui/react'
-import React, { useState } from 'react'
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import React from 'react'
+import { NavLink, Outlet } from 'react-router-dom'
 import { classNames } from 'utility'
 
 

@@ -4,6 +4,8 @@ import { LoginPayload } from "redux/auth/types";
 import { CreateUserPayload, GetUserPayload, GetUsersPayload } from "redux/users/types";
 import { CreateCoursePayload } from "redux/courses/types";
 import { ChangeActiveSchoolYearPayload, CreateSchoolYearPayload } from "redux/school-year/types";
+import { CreateClassroomPayload, GetAllClassroomPayload, GetClassroomPayload, UpdateClassroomPayload } from "redux/classroom/types";
+import { GetSubjectsPayload } from "redux/subject/types";
 
 
 export const authRequest = {
@@ -43,6 +45,18 @@ export const schoolYearRequest = {
 }
 
 export const classroomRequest = {
-    createClassroom: () =>
-        apiInstance.post(`${END_POINTS.CLASSROOM}/${END_POINTS.CREATE}`)
+    createClassroom: (params: CreateClassroomPayload) =>
+        apiInstance.post(`${END_POINTS.CLASSROOM}/${END_POINTS.CREATE}`, params),
+    getClassroom: (params: GetClassroomPayload) => 
+        apiInstance.get(`${END_POINTS.CLASSROOM}/${params.classroomId}`),
+    getAllClassrooms: (params: GetAllClassroomPayload) =>
+        apiInstance.get(END_POINTS.CLASSROOM, {params}),
+    updateClassroom: (params: UpdateClassroomPayload) =>
+        apiInstance.patch(`${END_POINTS.CLASSROOM}/${params.classroomId}`, params)
+    
+}
+
+export const subjectRequest = {
+    getSubjects: (params: GetSubjectsPayload) =>
+        apiInstance.get(END_POINTS.SUBJECT, { params })
 }

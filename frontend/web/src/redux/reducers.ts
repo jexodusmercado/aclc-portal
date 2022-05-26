@@ -3,12 +3,16 @@ import Auth         from './auth/reducer' // import Sample from './sample/reduce
 import Users        from './users/reducer'
 import Courses      from './courses/reducer'
 import Schoolyear   from './school-year/reducer'
+import Classroom    from './classroom/reducer'
+import Subject      from './subject/reducer'
 
 export const appReducer = combineReducers({
     Auth,
     Users,
     Courses,
-    Schoolyear
+    Schoolyear,
+    Classroom,
+    Subject
 
     //add reducer here
 })

@@ -8,7 +8,7 @@ const GeneralComponent = () => {
     const user = useUserData();
 
     const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled]               = useState<boolean>(true)
-    const [autoUpdateApplicantDataEnabled, setAutoUpdateApplicantDataEnabled]   = useState<boolean>(false)
+    // const [autoUpdateApplicantDataEnabled, setAutoUpdateApplicantDataEnabled]   = useState<boolean>(false)
 
     return (
         <>

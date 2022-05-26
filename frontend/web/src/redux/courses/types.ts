@@ -20,20 +20,6 @@ export const CoursesInitialState = {
                 is_active: false,
                 name: "",
                 updated_at: "",
-                users: [
-                    {
-                        id: 0,
-                        username: "",
-                        email: "",
-                        first_name: "",
-                        last_name: "",
-                        birthday: "",
-                        type: "",
-                        is_active: false,
-                        updated_at: "",
-                        created_at: "",
-                    }
-                ]
             }
         ],
         loading: false
@@ -45,18 +31,6 @@ export const CoursesInitialState = {
         is_active: false,
         name: "",
         updated_at: "",
-        users: {
-            id: 0,
-            username: "",
-            email: "",
-            first_name: "",
-            last_name: "",
-            birthday: "",
-            type: "",
-            is_active: false,
-            updated_at: "",
-            created_at: "",
-        }
     },
     created: {
         loading: false,

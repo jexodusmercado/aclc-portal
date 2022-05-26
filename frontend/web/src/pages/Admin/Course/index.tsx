@@ -19,15 +19,6 @@ const CourseIndex = () => {
     const courses                                       = useCoursesState()
     const dispatch                                      = useDispatch()
 
-    // const handleSelected = (selected: List) => {
-    //     console.log(selected)
-    // }
-
-    // const handleClear = () => {
-    //     setDepartment({id:0, name:'Select..'});
-    //     setSearch('')
-    // }
-
     const toggleAll = () => {
         setSelectedCourse(checked || indeterminate ? [] : courses.data)
         setChecked(!checked && !indeterminate)

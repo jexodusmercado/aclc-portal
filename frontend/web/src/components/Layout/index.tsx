@@ -1,7 +1,7 @@
 import { Transition, Dialog, Menu } from '@headlessui/react'
-import { XIcon, MenuAlt2Icon, SearchIcon, BellIcon, ServerIcon, HomeIcon, UsersIcon, AcademicCapIcon, OfficeBuildingIcon, CogIcon } from '@heroicons/react/solid'
-import React, { Fragment, useState } from 'react'
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { XIcon, MenuAlt2Icon, BellIcon, ServerIcon, HomeIcon, UsersIcon, AcademicCapIcon, OfficeBuildingIcon, CogIcon, PresentationChartBarIcon } from '@heroicons/react/solid'
+import { Fragment, useState } from 'react'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 import { classNames } from 'utility'
 import Logo from 'assets/images/aclc.jpeg'
 import { useDispatch } from 'react-redux'
@@ -11,9 +11,11 @@ import SidebarNavigation from './SidebarNavigation'
 import { useIsomorphicLayoutEffect, useUserData } from 'hooks'
 import { IMenu } from 'interfaces'
 import { ActiveSchoolYearState } from 'redux/school-year/types'
+import { GetActiveSchoolYear } from 'redux/school-year/action'
 
 const adminNavigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, end: true},
+    { name: 'Dashboard', href: '/dashboard', icon: PresentationChartBarIcon, end: true},
+    { name: 'Classroom', href: '/dashboard/classroom', icon: HomeIcon, end: true},
     { name: 'Department', href: '/dashboard/department', icon: OfficeBuildingIcon, end: false},
     { name: 'Faculty', href: '/dashboard/faculty', icon: AcademicCapIcon, end: false},
     { name: 'Student', href: '/dashboard/student', icon: UsersIcon, end: false},
@@ -37,10 +39,11 @@ const userNavigation = [
 ]
 
 const Navigation = () => {
-    const [sidebarOpen, setSidebarOpen] = useState(false)
-    const schoolyear                    = useActiveSchoolYear()
-    const user                          = useUserData()
     const dispatch                      = useDispatch()
+    const user                          = useUserData()
+    const location                      = useLocation()
+    const schoolyear                    = useActiveSchoolYear()
+    const [sidebarOpen, setSidebarOpen] = useState(false)
     const [menu, setMenu]               = useState<Array<IMenu>>([])
     const [school, setSchool]           = useState<ActiveSchoolYearState>(schoolyear)
     
@@ -68,6 +71,14 @@ const Navigation = () => {
     useIsomorphicLayoutEffect(() => {
         setSchool(schoolyear)
     }, [schoolyear])
+
+    useIsomorphicLayoutEffect(() => {
+        if(schoolyear.ID === 0){
+            dispatch(
+                GetActiveSchoolYear()
+            )
+        }
+    }, [location.pathname])
 
     return (
         <>

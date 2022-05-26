@@ -25,11 +25,11 @@ func NewClassroomRoute(
 
 //Setup -> setups user routes
 func (c ClassroomRoute) Setup() {
-    classroom := c.Handler.Gin.Group("/classrooms")
+    classroom := c.Handler.Gin.Group("/classroom")
     {
         classroom.Use(middleware.Authenticate())
         classroom.POST("/create", c.Controller.CreateClassroom)
-		classroom.GET("/", c.Controller.GetClassrooms)
+		classroom.GET("", c.Controller.GetClassrooms)
 		classroom.GET("/:id", c.Controller.GetClassroom)
         classroom.PATCH("/:id", c.Controller.UpdateClassroom)
     }
