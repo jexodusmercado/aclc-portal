@@ -94,7 +94,7 @@ const FacultyTable: React.FC<Props> = ({state, setState, users, checkbox, checke
                                             </td>
                                         </tr>
                                     )
-                                    }
+                                }
                                 { !loading && users.map((user) => (
                                     <tr key={user.id} className={state.includes(user) ? 'bg-gray-50' : undefined}>
                                         <td className="relative w-12 px-6 sm:w-16 sm:px-8">

@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  database:
+    build:
+      context: ./mysql
+      args:
+        - MYSQL_VERSION=latest
+    environment:
+      - MYSQL_DATABASE=aclcportal
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=user
+      - MYSQL_ROOT_PASSWORD=root
+      - TZ=UTC
+    volumes:
+      - ./storage:/var/lib/mysql
+    ports:
+      - "4000:3306"
+    restart: always
+    networks:
+      - backend
+
+  api:
+    build:
+      context: ../backend/
+    links:
+      - 'database:mysql'
+    volumes:
+      - ../backend:/app
+    ports:
+      - 8000:8000
+    networks:
+      - backend
+    restart: always
+    depends_on:
+      - database
+
+networks:
+  backend:
+    driver: bridge

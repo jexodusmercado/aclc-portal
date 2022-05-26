@@ -30,7 +30,7 @@ func (cr *ClassroomController) CreateClassroom(c *gin.Context) {
 
     if err := c.ShouldBind(&classroom); err != nil {
         fmt.Println(err)
-        util.CustomErrorJson(c, http.StatusBadRequest, err)
+        util.ErrorJSON(c, http.StatusBadRequest, err)
         return
     }
 
