@@ -110,7 +110,7 @@ export interface CreateClassroomPayload {
     teacher_id: number
     subject_id: number
     student_id: Array<number>
-    body:       string
+    body?:      string
     title:      string
 }
 

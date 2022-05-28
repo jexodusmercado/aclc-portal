@@ -1,13 +1,26 @@
 import Card from 'components/CardContainer';
 import SelectMenu from 'components/SelectMenu';
 import MultipleSelectMenu from 'components/MultipleSelectMenu';
-import { useEffectOnce } from 'hooks';
+import { useEffectOnce, useUpdateEffect } from 'hooks';
 import { List, ListWithAvatar } from 'interfaces';
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { getAllSubjects } from 'redux/subject/action';
 import { usersRequest } from 'services/request';
+import { getClassroom } from 'redux/classroom/action';
+import { useNavigate, useParams } from 'react-router-dom';
+import { UpdateClassroomPayload } from 'redux/classroom/types';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup'
 
+const formSchema = yup.object({
+    title: yup.string().trim().required('*Title is required'),
+    subject_id: yup.number().required('*Subject is required'),
+    teacher_id: yup.number().required('*Subject is required'),
+    students_id: yup.array(yup.number())
+
+}).required()
 
 const ClassroomForm = () => {
     const [subject, setSubject]   = useState<List | null>(null)
@@ -15,37 +28,53 @@ const ClassroomForm = () => {
     const [students, setStudents]   = useState<ListWithAvatar[]>([])
     const [teacherOptions, setTeacherOptions]   = useState<List[]>([])
     const [studentOptions, setStudentOptions]   = useState<ListWithAvatar[]>([])
+    const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { id } = useParams();
 
+    const { register, handleSubmit, formState: { errors } } = useForm<UpdateClassroomPayload>({
+        mode: "onChange",
+        resolver: yupResolver(formSchema)
+    })
+    
     const fetchInitialData = () => {
-        dispatch(getAllSubjects({keyword:""}))
-        usersRequest.getAllUsersRequest({type:"FACULTY"}).then(({data}) => {
-            const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
-                return {
-                    value: row.id,
-                    name: row.first_name + " " + row.last_name,
-                    avatar: ""
-                }
+        if(id){
+            dispatch(getClassroom({classroomId: id}))
+            dispatch(getAllSubjects({keyword:""}))
+            usersRequest.getAllUsersRequest({type:"FACULTY"}).then(({data}) => {
+                const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
+                    return {
+                        value: row.id,
+                        name: row.first_name + " " + row.last_name,
+                        avatar: ""
+                    }
+                })
+                console.log(filtered)
+                setTeacherOptions(filtered)
+            });
+            usersRequest.getAllUsersRequest({type:"STUDENT"}).then(({data}) => {
+                const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
+                    return {
+                        value: row.id,
+                        name: row.first_name + " " + row.last_name,
+                        avatar: ""
+                    }
+                })
+                console.log(filtered)
+                setStudentOptions(filtered)
             })
-            console.log(filtered)
-            setTeacherOptions(filtered)
-        });
-        usersRequest.getAllUsersRequest({type:"STUDENT"}).then(({data}) => {
-            const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
-                return {
-                    value: row.id,
-                    name: row.first_name + " " + row.last_name,
-                    avatar: ""
-                }
-            })
-            console.log(filtered)
-            setStudentOptions(filtered)
-        })
+        } else {
+            navigate('/dashboard/classroom')
+        }
     }
 
     useEffectOnce(() => {
         fetchInitialData();
     })
+
+    useUpdateEffect(() => {
+
+    },[subject])
 
     return (
         <div className='containerized'>
@@ -62,16 +91,16 @@ const ClassroomForm = () => {
                             </div>
                         </div>
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                                Name
+                            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                                Title
                             </label>
                             <div className="mt-1">
                                 <input
                                 type="text"
-                                name="name"
-                                id="name"
+                                id="title"
                                 className="input-text"
                                 placeholder="Computer Science 1"
+                                { ...register('title')}
                                 />
                             </div>
                         </div>
