@@ -9,6 +9,10 @@ export interface List {
     name: string
 }
 
+export interface ListWithAvatar extends List {
+    avatar?: string
+}
+
 export interface IDepartment {
     id: number
     name: string

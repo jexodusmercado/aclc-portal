@@ -75,8 +75,8 @@ const ClassroomPage = () => {
                 </CardContainer>
 
                 { classrooms.loading &&
-                        Array.from(Array(5).keys()).map( (k, i) => 
-                            <div key={i} className={`h-32 w-full animate-pulse relative bg-slate-${(500 - (i * 100)).toString()} rounded`}>
+                        Array.from(Array(3).keys()).map( (k, i) => 
+                            <div key={i} className={`h-32 w-full animate-pulse relative bg-slate-${(400 - (i * 100)).toString()} rounded`}>
                             </div>
                            
                         )

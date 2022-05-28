@@ -42,7 +42,7 @@ const FacultyForm = () => {
     const schoolyears                   = useSchoolYears()
     const activeSchoolyear              = useActiveSchoolYear()
     const [startDate, setStartDate]     = useState<Date | null>(null);
-    const [schoolYear, setSchoolYear]   = useState<List>({id: activeSchoolyear.ID, name:activeSchoolyear.school_year+", "+activeSchoolyear.semester+" Semester"})
+    const [schoolYear, setSchoolYear]   = useState<List | null>(null)
     const [yearList, setYearList]       = useState<List[]>([])
 
     const cancelForm = () => navigate('/dashboard/faculty');
@@ -69,7 +69,9 @@ const FacultyForm = () => {
     },[startDate])
 
     useUpdateEffect(() => {
-        setValue('schoolyear_id', schoolYear.id)
+        if(schoolYear){
+            setValue('schoolyear_id', schoolYear.id)
+        }
     },[schoolYear])
 
     useIsomorphicLayoutEffect(() => {

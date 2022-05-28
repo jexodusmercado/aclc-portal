@@ -20,7 +20,7 @@ const list = [
 const FacultyIndex = () => {
     const [search, setSearch]                           = useState<string>('')
     const [checked, setChecked]                         = useState<boolean>(false)
-    const [selected, setSelected]                       = useState<List>({id:0, name:'Select..'})
+    const [selected, setSelected]                       = useState<List | null>(null)
     const [indeterminate, setIndeterminate]             = useState<boolean>(false)
     const [selectedFaculty, setSelectedFaculty]         = useState<GetAllUsersState["data"]>([])
     const checkbox                                      = useRef<HTMLInputElement | null>(null)

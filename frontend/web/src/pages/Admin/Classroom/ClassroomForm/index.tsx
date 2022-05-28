@@ -1,33 +1,45 @@
 import Card from 'components/CardContainer';
 import SelectMenu from 'components/SelectMenu';
+import MultipleSelectMenu from 'components/MultipleSelectMenu';
 import { useEffectOnce } from 'hooks';
-import { List } from 'interfaces';
+import { List, ListWithAvatar } from 'interfaces';
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { getAllSubjects } from 'redux/subject/action';
-import Select from 'react-select';
 import { usersRequest } from 'services/request';
 
-interface IOptions {
-    value: string,
-    label: string
-}
 
 const ClassroomForm = () => {
-    const [subject, setSubject]   = useState<List>({id: 0, name:"test"})
-    const [teacher, setTeacher]   = useState<List>({id: 0, name:"test"})
-    const [students, setStudents]   = useState<List[]>([{id: 0, name:"test"}])
-    const [teacherOptions, setTeacherOptions]   = useState<IOptions[]>([])
-    const [studentOptions, setStudentOptions]   = useState<IOptions[]>([])
+    const [subject, setSubject]   = useState<List | null>(null)
+    const [teacher, setTeacher]   = useState<List | null>(null)
+    const [students, setStudents]   = useState<ListWithAvatar[]>([])
+    const [teacherOptions, setTeacherOptions]   = useState<List[]>([])
+    const [studentOptions, setStudentOptions]   = useState<ListWithAvatar[]>([])
     const dispatch = useDispatch();
 
     const fetchInitialData = () => {
         dispatch(getAllSubjects({keyword:""}))
         usersRequest.getAllUsersRequest({type:"FACULTY"}).then(({data}) => {
-            setTeacherOptions(data.data.rows)
+            const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
+                return {
+                    value: row.id,
+                    name: row.first_name + " " + row.last_name,
+                    avatar: ""
+                }
+            })
+            console.log(filtered)
+            setTeacherOptions(filtered)
         });
         usersRequest.getAllUsersRequest({type:"STUDENT"}).then(({data}) => {
-            setStudentOptions(data.data.rows)
+            const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
+                return {
+                    value: row.id,
+                    name: row.first_name + " " + row.last_name,
+                    avatar: ""
+                }
+            })
+            console.log(filtered)
+            setStudentOptions(filtered)
         })
     }
 
@@ -77,7 +89,7 @@ const ClassroomForm = () => {
                                 Teacher
                             </label>
                             <div className="mt-1 flex rounded-md shadow">
-                                <SelectMenu selected={subject} setSelected={setSubject} lists={[]} className='mt-0 pt-0'/>
+                                <SelectMenu selected={teacher} setSelected={setTeacher} lists={teacherOptions} className='mt-0 pt-0'/>
                             </div>
                             {/* {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>} */}
                         </div>
@@ -86,7 +98,8 @@ const ClassroomForm = () => {
                                 Students
                             </label>
                             <div className="mt-1 flex rounded-md shadow">
-                                <SelectMenu selected={subject} setSelected={setSubject} lists={[]} className='mt-0 pt-0'/>
+                                <MultipleSelectMenu selectedAvatars={students} setSelectedAvatars={setStudents} list={studentOptions}/>
+                                {/* <SelectMenu selected={subject} setSelected={setSubject} lists={[]} className='mt-0 pt-0'/> */}
                             </div>
                             {/* {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>} */}
                         </div>

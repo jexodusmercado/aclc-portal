@@ -33,7 +33,7 @@ const CourseForm = () => {
     const error                         = useCourseError()
     const schoolyears                   = useSchoolYears()
     const activeSchoolyear              = useActiveSchoolYear()
-    const [schoolYear, setSchoolYear]   = useState<List>({id: activeSchoolyear.ID, name:activeSchoolyear.school_year+", "+activeSchoolyear.semester+" Semester"})
+    const [schoolYear, setSchoolYear]   = useState<List | null>(null)
     const [yearList, setYearList]       = useState<List[]>([])
 
 
@@ -67,7 +67,9 @@ const CourseForm = () => {
     }, [error])
 
     useUpdateEffect(() => {
-        setValue('schoolyear_id', schoolYear.id)
+        if(schoolYear){
+            setValue('schoolyear_id', schoolYear.id)
+        }
     },[schoolYear])
 
     useIsomorphicLayoutEffect(() => {
