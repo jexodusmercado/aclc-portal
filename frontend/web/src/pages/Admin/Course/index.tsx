@@ -40,7 +40,7 @@ const CourseIndex = () => {
 
 
     return (
-        <div className='containerized'>
+        <div className='containerized over'>
             {/* TITLE AND BUTTONS */}
             <div className='flex align-middle'>
                 <h3 className='leading-6 text-2xl mr-auto'>

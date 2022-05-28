@@ -6,3 +6,10 @@ export const getAllClassrooms = (payload: types.GetAllClassroomPayload): types.G
         payload
     }
 }
+
+export const getClassroom = (payload: types.GetClassroomPayload): types.GetClassroomAction => {
+    return {
+        type: types.GET_CLASSROOM_REQUEST,
+        payload
+    }
+}

@@ -4,7 +4,7 @@ import { AxiosError, AxiosResponse }    from 'axios'
 import * as types           from './types'
 import { handleAxiosError } from 'utility'
 
-function* GetClassrooms ({payload}: types.GetClassroomsAction) {
+function* getClassrooms ({payload}: types.GetClassroomsAction) {
     try {
 
         yield delay(500)
@@ -30,8 +30,28 @@ function* GetClassrooms ({payload}: types.GetClassroomsAction) {
     }
 }
 
+function* getClassroom({payload}: types.GetClassroomAction){
+    try {
+        const response : AxiosResponse = yield call(classroomRequest.getClassroom, payload)
+
+        yield put({
+            type: types.GET_CLASSROOM_SUCCESS,
+            payload: response.data
+        })
+
+    } catch (error) {
+        const payload = handleAxiosError(error as AxiosError)
+
+        yield put({
+            type: types.GET_CLASSROOM_FAILED,
+            payload
+        })
+    }
+}
+
 const ClassroomSaga: ForkEffect[] = [
-    takeLatest(types.GET_CLASSROOMS_REQUEST, GetClassrooms),
+    takeLatest(types.GET_CLASSROOMS_REQUEST, getClassrooms),
+    takeLatest(types.GET_CLASSROOM_REQUEST, getClassroom)
 ]
 
 export default ClassroomSaga;

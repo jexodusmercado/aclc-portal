@@ -36,6 +36,33 @@ export const ClassroomInitialState  = {
         ],
         loading: false
     },
+    classroom: {
+        data:{
+                body: "",
+                created_at: "",
+                id: 0,
+                posts: [],
+                student : UsersState,
+                subject: {
+                    ID: 0,
+                    CreatedAt: "",
+                    UpdatedAt: "",
+                    DeletedAt: null,
+                    UserID: 0,
+                    name: "",
+                    code: "",
+                    unit: 0,
+                    is_active: false,
+                    Classrooms: null
+                },
+                subject_id: 0,
+                teacher: UserState,
+                teacher_id: 0,
+                title: "",
+                updated_at: ""
+        },
+        loading: false
+    },
     created: {
         loading: false,
         success: false
