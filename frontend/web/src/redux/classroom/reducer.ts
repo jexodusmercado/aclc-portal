@@ -44,7 +44,7 @@ const classroomReducer = ( state: types.ClassroomState = types.ClassroomInitialS
             return {
                 ...state,
                 classroom: {
-                    data: action.payload,
+                    data: action.payload.data,
                     loading: false
                 }
             }
