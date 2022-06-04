@@ -90,34 +90,35 @@ const ClassroomPage = () => {
 
                 {!classrooms.loading && classrooms.data.map((classroom, index ) => 
                     <CardContainer key={index} className='space-y-2 divide-y divide-gray-200' >
-                        <div className='flex justify-between'>
-                            <div>
-                                <h1 className='text-xl text-gray-800 uppercase'>
-                                    {classroom.title}
-                                </h1>
-                                <h3 className='text-gray-500 capitalize'> 
-                                    {classroom.subject.name} - {classroom.subject.code} 
-                                </h3>
-                            </div>
-                            <div className="flex top">
-                                <DotsVerticalDropdown menus={menus(classroom.id)} />
-                            </div>
-                        </div>
-
-                        <div className='flex w-full items-center justify-between pt-2'>
-                            <div className="inline-flex space-x-2">
-                                <Avatar height={10} width={10} name={classroom.teacher.first_name + ' ' + classroom.teacher.last_name} rounded/>
-                                <div className="flex flex-col">
-                                    <span className='text-gray-800 capitalize'>{classroom.teacher.first_name + ' ' + classroom.teacher.last_name}</span>
-                                    <span className="text-sm text-gray-500">Teacher</span>
+                            <div className='flex justify-between'>
+                                <div>
+                                    <Link to={`/dashboard/classroom/${classroom.id}`}>
+                                        <h1 className='text-xl text-gray-800 uppercase'>
+                                            {classroom.title}
+                                        </h1>
+                                        <h3 className='text-gray-500 capitalize'> 
+                                            {classroom.subject.name} - {classroom.subject.code} 
+                                        </h3>
+                                    </Link>
+                                </div>
+                                <div className="flex top">
+                                    <DotsVerticalDropdown menus={menus(classroom.id)} />
                                 </div>
                             </div>
 
-                            <h3 className='text-gray-500'> 
-                                {classroom.student?.length ?? 0} Students
-                            </h3>
-                        </div>
+                            <div className='flex w-full items-center justify-between pt-2'>
+                                <div className="inline-flex space-x-2">
+                                    <Avatar height={10} width={10} name={classroom.teacher.first_name + ' ' + classroom.teacher.last_name} rounded/>
+                                    <div className="flex flex-col">
+                                        <span className='text-gray-800 capitalize'>{classroom.teacher.first_name + ' ' + classroom.teacher.last_name}</span>
+                                        <span className="text-sm text-gray-500">Teacher</span>
+                                    </div>
+                                </div>
 
+                                <h3 className='text-gray-500'> 
+                                    {classroom.student?.length ?? 0} Students
+                                </h3>
+                            </div>
                     </CardContainer>
                 )}
 

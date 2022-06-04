@@ -13,3 +13,17 @@ export const getClassroom = (payload: types.GetClassroomPayload): types.GetClass
         payload
     }
 }
+
+export const updateClassroom = (payload : types.UpdateClassroomPayload): types.UpdateClassroomAction => {
+    return {
+        type: types.UPDATE_CLASSROOM_REQUEST,
+        payload
+    }
+}
+
+export const createClassroom = (payload: types.CreateClassroomPayload): types.CreateClassroomAction => {
+    return {
+        type: types.CREATE_CLASSROOM_REQUEST,
+        payload
+    }
+}

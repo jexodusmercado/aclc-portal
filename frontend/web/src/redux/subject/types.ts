@@ -4,7 +4,7 @@ export const SubjectInitial = {
     subjects: {
         data: [
             {
-                id: 0,
+                ID: 0,
                 name: "",
                 code: "",
                 is_active: false,

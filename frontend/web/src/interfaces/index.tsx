@@ -6,7 +6,7 @@ export interface Location {
 
 export interface List {
     id: number
-    name: string
+    name?: string
 }
 
 export interface ListWithAvatar extends List {
@@ -32,4 +32,8 @@ export interface IMenu {
     href: string
     icon: (props: React.SVGProps<SVGSVGElement>) => JSX.Element
     end: boolean
+}
+
+export interface IPayload {
+    onSuccess?: () => void
 }

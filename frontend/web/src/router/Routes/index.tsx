@@ -20,6 +20,7 @@ import SchoolYearComponent from 'pages/Admin/Settings/Components/SchoolYear'
 import ClassroomPage from 'pages/Admin/Classroom'
 import ClassroomForm from 'pages/Admin/Classroom/ClassroomForm'
 import UpdateClassroomForm from 'pages/Admin/Classroom/UpdateClassroomForm'
+import ClassroomDetails from 'pages/Admin/Classroom/ClassroomDetails'
 
 const CustomRoute = () => {
     return (
@@ -43,6 +44,7 @@ const CustomRoute = () => {
                                     <Route path="classroom">
                                         <Route index element={<ClassroomPage/>} />
                                         <Route path="create" element={<ClassroomForm />} />
+                                        <Route path=":id" element={<ClassroomDetails />} />
                                         <Route path="update/:id" element={<UpdateClassroomForm />} />
                                     </Route>
 

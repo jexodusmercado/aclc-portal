@@ -1,8 +1,8 @@
 package routes
 
 import (
-    "portal/api/controller"
-    "portal/infrastructure"
+	"portal/api/controller"
+	"portal/infrastructure"
 	"portal/middleware"
 )
 
@@ -33,6 +33,7 @@ func (c PostRoute) Setup() {
 			post.GET("/:id", c.Controller.GetPost)
 			post.POST("/create", c.Controller.CreatePost)
 			post.PATCH("/:id", c.Controller.UpdatePost)
+            post.POST("/test", c.Controller.TestUpload)
 		}
     }
 

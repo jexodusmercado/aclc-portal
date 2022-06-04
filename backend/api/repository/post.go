@@ -1,10 +1,9 @@
 package repository
 
 import (
-    "portal/infrastructure"
-    "portal/models"
-
-    // "gorm.io/gorm/clause"
+	"portal/infrastructure"
+	"portal/models"
+	// "gorm.io/gorm/clause"
 )
 
 //PostRepository -> Post responsible for accessing database
@@ -28,6 +27,8 @@ func (p PostRepository) Create(post models.PostCreation) error {
 	dbPost.Body			= post.Body
 	dbPost.UserID		= post.UserID
 	dbPost.ClassroomID	= post.ClassroomID
+    dbPost.Filename     = &post.Filename
+    dbPost.Extension    = &post.Extension
 	dbPost.IsActive		= true
 
     return p.db.DB.Create(&dbPost).Error

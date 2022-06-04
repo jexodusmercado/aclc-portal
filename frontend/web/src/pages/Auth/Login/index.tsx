@@ -34,12 +34,7 @@ const SignIn = () => {
     });
 
     const onSubmit: SubmitHandler<FormData> = (data) => {
-        const jsondata = {
-            username: data.username,
-            password: data.password
-        }
-
-        dispatch(loginRequest(jsondata))
+        dispatch(loginRequest(data))
     }
 
     useIsomorphicLayoutEffect(() => {

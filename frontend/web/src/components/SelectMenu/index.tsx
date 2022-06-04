@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import { classNames } from 'utility'
-import { List, ListWithAvatar } from 'interfaces'
+import { ListWithAvatar } from 'interfaces'
 
 
 
@@ -17,7 +17,6 @@ interface Props {
 }
 
 const SelectMenu: React.FC<Props> = ({selected, setSelected, lists, name, className, placeholderText = "Select.."}) => {
-
     return (
         <Listbox value={selected} onChange={setSelected}>
             {({ open }) => (
@@ -53,9 +52,9 @@ const SelectMenu: React.FC<Props> = ({selected, setSelected, lists, name, classN
                             leaveTo="opacity-0"
                         >
                             <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                            {lists.map((list) => (
+                            {lists.map((list, index) => (
                                 <Listbox.Option
-                                key={list.id}
+                                key={index}
                                 className={({ active }) =>
                                     classNames(
                                     active ? 'text-white bg-indigo-600' : 'text-gray-900',

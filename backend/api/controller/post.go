@@ -1,13 +1,17 @@
 package controller
 
 import (
-    "portal/api/service"
-    "portal/models"
-    "portal/util"
-    "net/http"
+	"net/http"
+	"os"
+	"path/filepath"
+	"portal/api/service"
+	"portal/models"
+	"portal/util"
 	"strconv"
+	"strings"
 
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
+	"github.com/twinj/uuid"
 )
 
 //PostController struct
@@ -31,6 +35,29 @@ func (p *PostController) CreatePost(c *gin.Context) {
         return
     }
 
+    file, _  := c.FormFile("file")
+
+    newPath := filepath.Join(".", "public")
+    err = os.MkdirAll(newPath, os.ModePerm)
+
+    if err != nil {
+        c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+            "message": "Unable to create path",
+        })
+    }
+
+    extension := filepath.Ext(file.Filename)
+    newFileName := uuid.NewV4().String() + extension
+
+    noDotExtension := strings.Replace(extension, ".", "", -1)
+
+    if err := c.SaveUploadedFile(file, "./public/" + newFileName); err != nil{
+        c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+            "message": "Unable to save the file",
+        })
+        return
+    }
+
     var post models.PostCreation
     if err := c.ShouldBind(&post); err != nil {
         util.ErrorJSON(c, http.StatusBadRequest, err)
@@ -41,6 +68,8 @@ func (p *PostController) CreatePost(c *gin.Context) {
 
 	post.UserID = uint(UserID)
 	post.ClassroomID = uint(id)
+    post.Filename = newFileName
+    post.Extension = noDotExtension
 
     err = p.service.Create(post)
     if err != nil {
@@ -137,5 +166,39 @@ func (p PostController) UpdatePost(c *gin.Context) {
         Success: true,
         Message: "Successfully Updated Post",
         Data:    response,
+    })
+}
+
+//Test upload
+func (p PostController) TestUpload (c *gin.Context) {
+    file, err := c.FormFile("file")
+
+    if err != nil {
+        c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+            "message":"No file is received",
+        })
+        return
+    }
+
+    newPath := filepath.Join(".", "public")
+    err = os.MkdirAll(newPath, os.ModePerm)
+    if err != nil {
+        c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+            "message": "Unable to create path",
+        })
+    }
+
+    extension := filepath.Ext(file.Filename)
+    newFileName := uuid.NewV4().String() + extension
+
+    if err := c.SaveUploadedFile(file, "./public/" + newFileName); err != nil{
+        c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+            "message": "Unable to save the file",
+        })
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "message" : "uploaded",
     })
 }

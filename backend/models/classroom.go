@@ -25,12 +25,11 @@ func (classroom *Classroom) TableName() string {
 }
 
 type ClassroomCreation struct {
-	ID         uint    `form:"ID"`
 	Title      *string `form:"title" json:"title" binding:"required"`
 	Body       *string `form:"body" json:"body"`
 	SubjectID  *uint   `form:"subject_id" json:"subject_id" binding:"required"`
 	TeacherID  *uint   `form:"teacher_id" json:"teacher_id" binding:"required"`
-	StudentsID []*uint `form:"students_id" json:"students_id" binding:"required"`
+	StudentsID []*uint `form:"student_id" json:"student_id" binding:"required"`
 }
 
 type ClassroomUpdate struct {
@@ -39,16 +38,21 @@ type ClassroomUpdate struct {
 	Body       *string `form:"body" json:"body"`
 	SubjectID  *uint   `form:"subject_id" json:"subject_id"`
 	TeacherID  *uint   `form:"teacher_id" json:"teacher_id"`
-	StudentsID []*uint `form:"students_id" json:"students_id"`
+	StudentsID []*uint `form:"student_id" json:"student_id"`
 }
 
 //ResponseMap -> response map method of User
 func (classroom *Classroom) ResponseMap() map[string]interface{} {
 	resp := make(map[string]interface{})
 	var students []map[string]interface{}
+	var posts []map[string]interface{}
 
 	for _, s := range classroom.Students {
 		students = append(students, s.ResponseStudent())
+	}
+
+	for _, p := range classroom.Posts {
+		posts = append(posts, p.ResponseMap())
 	}
 
 	resp["id"] = classroom.ID
@@ -61,7 +65,7 @@ func (classroom *Classroom) ResponseMap() map[string]interface{} {
 	resp["teacher_id"] = classroom.TeacherID
 	resp["teacher"] = classroom.Teacher.ResponseMap()
 	resp["student"] = students
-	resp["posts"] = classroom.Posts
+	resp["posts"] = posts
 
 	return resp
 }

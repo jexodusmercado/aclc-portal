@@ -7,20 +7,27 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { getAllSubjects } from 'redux/subject/action';
 import { usersRequest } from 'services/request';
-import { getClassroom } from 'redux/classroom/action';
+import { getClassroom, updateClassroom } from 'redux/classroom/action';
 import { useNavigate, useParams } from 'react-router-dom';
-import { UpdateClassroomPayload } from 'redux/classroom/types';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup'
+import { useFilteredSubjects } from 'hooks/subject';
 
 const formSchema = yup.object({
     title: yup.string().trim().required('*Title is required'),
     subject_id: yup.number().required('*Subject is required'),
     teacher_id: yup.number().required('*Subject is required'),
-    students_id: yup.array(yup.number())
+    student_id: yup.array(yup.number())
+})
 
-}).required()
+interface IForm {
+    classroomId:    string
+    title:          string
+    teacher_id:     number
+    subject_id:     number
+    student_id:     Array<number>
+}
 
 const UpdateClassroomForm = () => {
     const [subject, setSubject]                 = useState<List | null>(null)
@@ -29,20 +36,17 @@ const UpdateClassroomForm = () => {
     const [teacherOptions, setTeacherOptions]   = useState<List[]>([])
     const [studentOptions, setStudentOptions]   = useState<ListWithAvatar[]>([])
     const classroom                             = useGetClassroom()
+    const subjects                              = useFilteredSubjects()
     const navigate                              = useNavigate();
     const dispatch                              = useDispatch();
     const { id }                                = useParams();
 
-    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm<UpdateClassroomPayload>({
+    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm<IForm>({
         mode: "onChange",
-        resolver: yupResolver(formSchema),
-        defaultValues:{
-            title: classroom.data.title
-        }
+        resolver: yupResolver(formSchema)
     })
     
     const fetchInitialData = () => {
-        reset()
         if(id){
             setValue('classroomId', id)
             dispatch(getClassroom({classroomId: id}))
@@ -50,54 +54,100 @@ const UpdateClassroomForm = () => {
             usersRequest.getAllUsersRequest({type:"FACULTY"}).then(({data}) => {
                 const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
                     return {
-                        value: row.id,
+                        id: row.id,
                         name: row.first_name + " " + row.last_name,
                         avatar: ""
                     }
                 })
-                console.log(filtered)
                 setTeacherOptions(filtered)
             });
             usersRequest.getAllUsersRequest({type:"STUDENT"}).then(({data}) => {
                 const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
                     return {
-                        value: row.id,
+                        id: row.id,
                         name: row.first_name + " " + row.last_name,
                         avatar: ""
                     }
                 })
-                console.log(filtered)
                 setStudentOptions(filtered)
             })
 
+            setValue('title', classroom.data.title)
         } else {
             navigate('/dashboard/classroom')
         }
     }
 
-    const onSubmit : SubmitHandler<UpdateClassroomPayload> = (data) => {
-        console.log(data)
+    const success = () => {
+        navigate(`/dashboard/classroom/${id}`)
+    }
+
+    const onSubmit : SubmitHandler<IForm> = (data) => {
+        const params = {
+            ...data,
+            onSuccess: success
+        }
+        dispatch(updateClassroom(params))
     }
 
     useEffectOnce(() => {
-        fetchInitialData();
+        reset()
+        setSubject(null)
+        setTeacher(null)
+        setStudents([])
+        fetchInitialData()
     })
-    
+
+    useIsomorphicLayoutEffect(() => {
+        setValue('title', classroom?.data?.title)
+        
+        if(classroom?.data?.subject_id){
+            setValue('subject_id', classroom?.data?.subject_id)
+            const filtered = {
+                id: classroom?.data?.subject.ID,
+                name: classroom?.data?.subject.name
+            }
+            setSubject(filtered)
+        }
+        
+        if(classroom?.data?.teacher_id){
+            setValue('teacher_id', classroom?.data?.teacher_id)
+            const filtered = {
+                id: classroom?.data?.teacher.id,
+                name: classroom?.data?.teacher?.first_name + ' ' + classroom?.data?.teacher?.last_name,
+                avatar: ""
+            }
+            setTeacher(filtered)
+        }
+
+        if(classroom?.data?.student){
+            setValue('student_id', classroom?.data?.student?.map(user => user.id))
+            const filtered = classroom?.data?.student?.map(user => {
+                return {
+                    id: user.id,
+                    name: user.first_name + ' ' + user.last_name,
+                    avatar: ''
+                }
+            })
+            setStudents(filtered)
+        }
+    }, [classroom.data])
+
     useUpdateEffect(() => {
-        setValue('subject_id', subject?.id)
+        setValue('subject_id', subject!.id)
     },[subject])
 
     useUpdateEffect(() => {
-        setValue('teacher_id', teacher?.id)
+        setValue('teacher_id', teacher!.id)
     }, [teacher])
 
     useUpdateEffect(() => {
-        if(studentOptions.length){
+        if(students.length){
             setValue('student_id', students.map(student => student.id))
         }else {
             setValue('student_id', [])
         }
-    },[teacher])
+    },[students])
 
     return (
         <div className='containerized'>
@@ -127,15 +177,16 @@ const UpdateClassroomForm = () => {
                                     { ...register('title')}
                                     />
                                 </div>
+                                {errors.title && <p className='text-sm text-red-400'> {errors.title.message} </p>}
                             </div>
                             <div>
                                 <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
                                     Subject
                                 </label>
                                 <div className="mt-1 flex rounded-md shadow">
-                                    <SelectMenu selected={subject} setSelected={setSubject} lists={[]} className='mt-0 pt-0'/>
+                                    <SelectMenu selected={subject} setSelected={setSubject} lists={subjects} className='mt-0 pt-0'/>
                                 </div>
-                                {/* {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>} */}
+                                {errors.subject_id && <p className='text-sm text-red-400'> {errors.subject_id.message} </p>}
                             </div>
                             <div>
                                 <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
@@ -144,7 +195,7 @@ const UpdateClassroomForm = () => {
                                 <div className="mt-1 flex rounded-md shadow">
                                     <SelectMenu selected={teacher} setSelected={setTeacher} lists={teacherOptions} className='mt-0 pt-0'/>
                                 </div>
-                                {/* {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>} */}
+                                {errors.teacher_id && <p className='text-sm text-red-400'> {errors.teacher_id.message} </p>}
                             </div>
                             <div>
                                 <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
@@ -152,14 +203,13 @@ const UpdateClassroomForm = () => {
                                 </label>
                                 <div className="mt-1 flex rounded-md shadow">
                                     <MultipleSelectMenu selectedAvatars={students} setSelectedAvatars={setStudents} list={studentOptions}/>
-                                    {/* <SelectMenu selected={subject} setSelected={setSubject} lists={[]} className='mt-0 pt-0'/> */}
                                 </div>
-                                {/* {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>} */}
+                                {errors.student_id && <p className='text-sm text-red-400'> {errors.student_id[0].message} </p>}
                             </div>
 
                             <div className='flex border-t justify-end pt-5 space-x-3'>
-                                <button className='button-secondary'> Back </button>
-                                <button className='button-primary'> Submit </button>
+                                <button type="button" className='button-secondary' onClick={() => navigate(-1)}> Back </button>
+                                <button type="submit" className='button-primary'> Submit </button>
                             </div>
                         </form>
 

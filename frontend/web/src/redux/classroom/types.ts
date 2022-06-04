@@ -1,3 +1,6 @@
+import { AxiosResponse } from 'axios';
+import { IPayload } from 'interfaces';
+import { PostInitialState } from 'redux/post/types';
 import { UserInitialState } from '../users/types'
 
 export type ClassroomState = typeof ClassroomInitialState;
@@ -5,6 +8,8 @@ export type ClassroomState = typeof ClassroomInitialState;
 const UsersState = UserInitialState.users.data
 
 const UserState = UserInitialState.user
+
+const PostState = PostInitialState.posts.data
 
 export const ClassroomInitialState  = {
     classrooms: {
@@ -41,7 +46,7 @@ export const ClassroomInitialState  = {
                 body: "",
                 created_at: "",
                 id: 0,
-                posts: [],
+                posts: PostState,
                 student : UsersState,
                 subject: {
                     ID: 0,
@@ -106,7 +111,7 @@ export type GetClassroomsAction = {
     payload: GetAllClassroomPayload
 }
 
-export interface CreateClassroomPayload { 
+export interface CreateClassroomPayload extends IPayload { 
     teacher_id: number
     subject_id: number
     student_id: Array<number>

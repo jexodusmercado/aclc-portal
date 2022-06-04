@@ -34,15 +34,6 @@ func (cr *ClassroomController) CreateClassroom(c *gin.Context) {
 		return
 	}
 
-	if len(classroom.StudentsID) != 0 {
-		for _, student := range classroom.StudentsID {
-			var tempModel models.User
-			tempModel.ID = *student
-
-			students = append(students, tempModel)
-		}
-	}
-
 	err := cr.service.CreateClassroom(classroom, students)
 	if err != nil {
 		util.ErrorJSON(c, http.StatusBadRequest, err)
@@ -123,6 +114,11 @@ func (cr ClassroomController) UpdateClassroom(c *gin.Context) {
 		// util.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
+
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
+	fmt.Println(classroom.Title)
 
 	updatedClassroom, err := cr.service.Update(classroom)
 	if err != nil {

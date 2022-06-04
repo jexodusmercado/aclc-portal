@@ -58,6 +58,25 @@ const classroomReducer = ( state: types.ClassroomState = types.ClassroomInitialS
                 }
             }
 
+        case types.UPDATE_CLASSROOM_REQUEST:
+            return{
+                ...state,
+                classroom: {
+                    ...state.classroom,
+                    loading: true
+                }
+            }
+        
+        case types.UPDATE_CLASSROOM_SUCCESS:
+        case types.UPDATE_CLASSROOM_FAILED:
+            return{
+                ...state,
+                classroom: {
+                    ...state.classroom,
+                    loading: false
+                }
+            }
+
         default: 
             return state
     }
