@@ -114,7 +114,7 @@ const ClassroomForm = () => {
                                 </h3>
                             </div>
                         </div>
-                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                             <div>
                                 <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                                     Title

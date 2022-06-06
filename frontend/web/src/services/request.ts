@@ -6,6 +6,7 @@ import { CreateCoursePayload } from "redux/courses/types";
 import { ChangeActiveSchoolYearPayload, CreateSchoolYearPayload } from "redux/school-year/types";
 import { CreateClassroomPayload, GetAllClassroomPayload, GetClassroomPayload, UpdateClassroomPayload } from "redux/classroom/types";
 import { GetSubjectsPayload } from "redux/subject/types";
+import { CreatePostPayload } from "redux/post/types";
 
 
 export const authRequest = {
@@ -59,4 +60,23 @@ export const classroomRequest = {
 export const subjectRequest = {
     getSubjects: (params: GetSubjectsPayload) =>
         apiInstance.get(END_POINTS.SUBJECT, { params })
+}
+
+export const postRequest = {
+    createPost: (params: CreatePostPayload) =>
+        apiInstance.post(
+            `${END_POINTS.CLASSROOM}/${params.classroomId}/${END_POINTS.POST}/${END_POINTS.CREATE}`, 
+            params.formdata, 
+            { 
+                headers : {
+                    'content-type': 'multipart/form-data'
+                }
+            }
+        )
+}
+
+export const publicRequest = {
+    getDownloadRequest: (filename: string) =>
+        apiInstance.get(`${END_POINTS.DOWNLOAD}/${filename}`)
+
 }

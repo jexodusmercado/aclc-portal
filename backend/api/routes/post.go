@@ -36,5 +36,10 @@ func (c PostRoute) Setup() {
             post.POST("/test", c.Controller.TestUpload)
 		}
     }
+    
+    download := c.Handler.Gin.Group("/download")
+    {
+        download.GET("/:filename", c.Controller.DownloadFile)
+    }
 
 }

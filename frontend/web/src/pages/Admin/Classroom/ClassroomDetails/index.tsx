@@ -1,20 +1,27 @@
-import { PaperClipIcon, PencilAltIcon, PlusCircleIcon, PlusIcon, XCircleIcon } from '@heroicons/react/solid'
+import { DownloadIcon, PaperClipIcon, PencilAltIcon, PlusCircleIcon, PlusIcon, XCircleIcon } from '@heroicons/react/solid'
 import Card from 'components/CardContainer'
 import Feeds from 'components/Feeds'
 import Modal from 'components/Modal'
 import TextArea from 'components/TextArea'
-import { useEffectOnce, useGetClassroom } from 'hooks'
+import { useEffectOnce, useGetClassroom, useIsomorphicLayoutEffect } from 'hooks'
 import React, { Fragment, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
 import { getClassroom } from 'redux/classroom/action'
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import RichTextEditor, {EditorValue} from 'react-rte';
-
+import { FileIcon } from 'react-file-icon';
+import { createPostRequest } from 'redux/post/action'
+import parse from 'html-react-parser'
+import { publicRequest } from 'services/request'
+import { AxiosResponse } from 'axios'
 
 interface IForm {
-    title: string
+    classroomId:    number
+    title:          string
+    body:           string
+    file:           File | null
 }
 
 const ClassroomDetails = () => {
@@ -23,10 +30,11 @@ const ClassroomDetails = () => {
     const classData                         = useGetClassroom()
 
     const [attachment, setAttachment]       = useState<File>()
+    const [extension, setExtension]         = useState<string>('')
     const [comment, setComment]             = useState<string>('')
     const [updateModal, setUpdateModal]     = useState<boolean>(false)
-    const [richText, setRichText]           = useState<EditorValue>(RichTextEditor.createEmptyValue()
-    )
+    const [richText, setRichText]           = useState<EditorValue>(RichTextEditor.createEmptyValue())
+
 
     const fetchData = () => {
         if(params?.id){
@@ -38,19 +46,49 @@ const ClassroomDetails = () => {
         console.log(comment)
     }
 
+    const onDownload = (filename: string) => {
+        publicRequest.getDownloadRequest(filename)
+    }
+
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<IForm>({
         mode: "onChange",
     })
 
-    const handleAttachment = (e: File | undefined) => {
-        console.log(e)
-        setAttachment(e)
+    const handleAttachment = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if(e.target.files?.length){
+            console.log(e.target.files[0])
+            setAttachment(e.target.files[0])
+            setExtension(e.target.files[0].name.split(".").pop()!)
+        }
+        // console.log(e)
+        // setExtension(e?.name.split(".").pop()!)
+    }
+
+    const onSubmit: SubmitHandler<IForm> = (data) => {
+        const fd = new FormData()
+
+        fd.append('title', data.title)
+        fd.append('body', richText.toString('html'))
+        if(attachment){
+            fd.append('file', attachment)
+        }
+        
+        const payload = {
+            classroomId: Number(params!.id),
+            formdata: fd
+        }
+
+        dispatch(createPostRequest(payload))
     }
 
 
     useEffectOnce(() => {
         fetchData()
     })
+
+    useIsomorphicLayoutEffect(() => {
+        console.log(comment)
+    }, [comment])
 
     const comments = [
         {
@@ -138,29 +176,47 @@ const ClassroomDetails = () => {
                             classData.data?.posts &&
                             <div className='space-y-10'>
                                 {
-                                    classData.data?.posts.map((post) => 
+                                    classData.data?.posts.map((post, index) => 
                                         <Fragment key={post.id}>
-                                            <Card className=''>
+                                            <Card className='space-y-3'>
                                                 {/* texts */}
                                                 <div className='space-y-4'>
                                                     <span className='leading-6 text-xl mr-auto'> 
                                                         {post.title}
                                                     </span>
                                                     
-                                                    <p className='pt-4 text-sm h-16'>
-                                                        {post.body}
+                                                    <p className='pt-4 px-2 bg-gray-50 text-sm h-16'>
+                                                        {parse(post.body)}
                                                     </p>
                                                 </div>
 
                                                 {/* attachments */}
-                                                <div className='flex w-full justify-start items-center py-0'>
-                                                    <span>test</span>
-                                                </div>
+                                                {
+                                                    post.filename &&
+                                                    <a 
+                                                        href={`http://localhost:8000/download/${post.filename}`}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className='inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 space-x-2 cursor-pointer' 
+                                                        // onClick={() =>onDownload(post.filename)}
+                                                    >
+                                                        <div className='h-4 w-4'>
+                                                            <FileIcon extension={post.extension} />
+                                                        </div>
+                                                        <span className='text-sm truncate'>
+                                                            {post.filename}
+                                                        </span>
+                                                        <div className='h-4 w-4'>
+                                                            <DownloadIcon />
+                                                        </div>
+                                                    </a>
+                                                }
+                                                
 
                                                 {/* comment area */}
                                                 <div className='pt-5 space-y-3'>
                                                     <Feeds lists={comments} />
-                                                    <TextArea text={comment} setText={setComment} onSubmit={onPostSubmit}/>
+                                                    <TextArea onValue={setComment} onSubmit={onPostSubmit} />
                                                 </div>
                                             </Card>
                                         </Fragment>
@@ -201,7 +257,7 @@ const ClassroomDetails = () => {
                 <div className='leading-6 text-lg pb-2 mb-2 border-b-2 border-gray-200'>
                         Create Post
                 </div>
-                <form className='space-y-4'>
+                <form className='space-y-4' onSubmit={handleSubmit(onSubmit)}>
                     <div>
                         <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                             Title
@@ -221,14 +277,39 @@ const ClassroomDetails = () => {
                         <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
                             Content
                         </label>
-                        <RichTextEditor value={richText} onChange={setRichText} className='h-full'/>
+                        <RichTextEditor 
+                            value={richText} 
+                            onChange={setRichText} 
+                            className='h-full'
+                        />
                     </div>
-                    <div className='overflow-hidden relative w-5'>
-                        <label htmlFor='attachment' className='cursor-pointer' onChange={(e) => handleAttachment((e.target as any).value)}>
-                            <input type='file' id='attachment' hidden />
-                            <PaperClipIcon className='h-5 w-5'/>
-                        </label>
+                    <div className='flex justify-between'>
+                        <div className='overflow-hidden relative'>
+                            {
+                                !attachment &&
+                                <label htmlFor='attachment' className='cursor-pointer'>
+                                    <input type='file' id='attachment' onChange={(e) => handleAttachment(e)} hidden />
+                                    <PaperClipIcon className='h-5 w-5'/>
+                                </label>
+                            }
+
+                            {
+                                attachment &&
+                                <div className="flex space-x-2 justify-center items-center">
+                                    <div className='h-6 w-6'>
+                                        <FileIcon extension={extension} />
+                                    </div>
+                                    <span className='text-sm truncate'>
+                                        { attachment.name }
+                                    </span>
+                                </div>
+                            }
+                            
+                        </div>
+
+                        <button className='button-primary'>Post</button>
                     </div>
+                    
                 </form>
             </Modal>
         </>

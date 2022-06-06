@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -28,48 +29,68 @@ func NewPostController(s service.PostService) PostController {
 
 //CreateClassroom ->  calls CreateClassroom services for validated classroom
 func (p *PostController) CreatePost(c *gin.Context) {
-	idParam := c.Param("id")
+	var newFileName string
+    var extension string
+    var noDotExtension string
+    
+    idParam := c.Param("id")
+    
     id, err := strconv.ParseUint(idParam, 10, 64) //type conversion string to int64
 	if err != nil {
         util.ErrorJSON(c, http.StatusBadRequest, err)
         return
     }
 
-    file, _  := c.FormFile("file")
+    title       := c.PostForm("title")
+    body        := c.PostForm("body")
+    file, err   := c.FormFile("file")
 
     newPath := filepath.Join(".", "public")
     err = os.MkdirAll(newPath, os.ModePerm)
+
+    if title == "" || body == "" {
+        c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+            "message": "Unable to create post",
+        })
+        return
+    }
 
     if err != nil {
         c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
             "message": "Unable to create path",
         })
+        return
     }
 
-    extension := filepath.Ext(file.Filename)
-    newFileName := uuid.NewV4().String() + extension
+    if err == nil {
+        fmt.Println(err)
 
-    noDotExtension := strings.Replace(extension, ".", "", -1)
+        extension = filepath.Ext(file.Filename)
+        newFileName = uuid.NewV4().String() + extension
+        noDotExtension = strings.Replace(extension, ".", "", -1)
 
-    if err := c.SaveUploadedFile(file, "./public/" + newFileName); err != nil{
-        c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-            "message": "Unable to save the file",
-        })
-        return
+        if err := c.SaveUploadedFile(file, "./public/" + newFileName); err != nil{
+            c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+                "message": "Unable to save the file",
+            })
+            return
+        }
     }
 
     var post models.PostCreation
-    if err := c.ShouldBind(&post); err != nil {
-        util.ErrorJSON(c, http.StatusBadRequest, err)
-        return
-    }
+    // if err := c.ShouldBind(&post); err != nil {
+    //     util.ErrorJSON(c, http.StatusBadRequest, err)
+    //     return
+    // }
 
 	UserID := c.Keys["UserID"].(float64)
 
-	post.UserID = uint(UserID)
-	post.ClassroomID = uint(id)
-    post.Filename = newFileName
-    post.Extension = noDotExtension
+	post.UserID         = uint(UserID)
+	post.ClassroomID    = uint(id)
+    post.Filename       = newFileName
+    post.Extension      = noDotExtension
+    post.Body           = body
+    post.Title          = title
 
     err = p.service.Create(post)
     if err != nil {
@@ -201,4 +222,12 @@ func (p PostController) TestUpload (c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{
         "message" : "uploaded",
     })
+}
+
+func (p PostController) DownloadFile (c *gin.Context) {
+    // httpRouter.GET("/download/:filename", func (c *gin.Context) {
+    filename := c.Param("filename")
+    path := filepath.Join(".", "public", filename)
+    c.File(path)
+    // })
 }

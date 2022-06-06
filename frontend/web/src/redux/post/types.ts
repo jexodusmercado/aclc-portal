@@ -1,4 +1,5 @@
 
+export type PostState = typeof PostInitialState;
 
 export const PostInitialState = {
     posts: {
@@ -54,5 +55,26 @@ export const PostInitialState = {
             user_id: 0
         },
         loading: false
+    },
+    created: {
+        loading: false
     }
+}
+
+export const CREATE_POST_REQUEST  = "CREATE_POST_REQUEST"
+export const CREATE_POST_SUCCESS  = "CREATE_POST_SUCCESS"
+export const CREATE_POST_FAILED   = "CREATE_POST_FAILED"
+
+
+export type CreatePostAction = {
+    type: typeof CREATE_POST_REQUEST
+    payload: CreatePostPayload
+}
+
+export interface CreatePostPayload {
+    classroomId:    number
+    // title:          string
+    // body:           string
+    // file:           File | null
+    formdata:       FormData
 }

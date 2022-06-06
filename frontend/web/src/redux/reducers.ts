@@ -5,6 +5,7 @@ import Courses      from './courses/reducer'
 import Schoolyear   from './school-year/reducer'
 import Classroom    from './classroom/reducer'
 import Subject      from './subject/reducer'
+import Post         from './post/reducer'
 
 export const appReducer = combineReducers({
     Auth,
@@ -12,7 +13,8 @@ export const appReducer = combineReducers({
     Courses,
     Schoolyear,
     Classroom,
-    Subject
+    Subject,
+    Post
 
     //add reducer here
 })

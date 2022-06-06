@@ -42,9 +42,7 @@ const Feeds : React.FC<IProps> = ({lists}) => {
                                                 <h3 className="text-sm font-medium">{list.person.name}</h3>
                                                 <p className="text-sm text-gray-500">{list.createdAt}</p>
                                             </div>
-                                            <p className="text-sm text-gray-500">
-                                                {list.body}
-                                            </p>
+                                            <p className="text-sm text-gray-500" dangerouslySetInnerHTML={{__html: list.body}} />
                                         </div>
                                     </div>
                                 </li>

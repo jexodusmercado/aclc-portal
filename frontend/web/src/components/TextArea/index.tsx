@@ -1,12 +1,17 @@
-import React from 'react'
+import { useUpdateEffect } from 'hooks'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 
 interface IProps {
-    text:    string
-    setText: React.Dispatch<React.SetStateAction<string>>
+    onValue:  Dispatch<SetStateAction<string>>
     onSubmit: () => void
 }
 
-const TextArea: React.FC<IProps> = ({text, setText, onSubmit}) => {
+const TextArea: React.FC<IProps> = ({onSubmit, onValue}) => {
+  const [text, setText] = useState<string>('')
+
+  useUpdateEffect(() => {
+    onValue(text)
+  }, [text])
 
   return (
     <div className="flex items-start space-x-4">
@@ -33,6 +38,7 @@ const TextArea: React.FC<IProps> = ({text, setText, onSubmit}) => {
               onChange={(e) => {
                 setText((e.target as any).value)
               }}
+              onBlur={() => setText('')}
             />
 
             {/* Spacer element to match the height of the toolbar */}

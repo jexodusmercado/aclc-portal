@@ -11,5 +11,7 @@ export const END_POINTS = {
     CHANGE_ACTIVE   :   "change-active",
     CLASSROOM       :   "classroom",
     CREATE          :   "create",
-    SUBJECT         :   "subject"
+    SUBJECT         :   "subject",
+    POST            :   "post",
+    DOWNLOAD        :   "download"
 }
