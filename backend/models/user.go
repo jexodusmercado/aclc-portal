@@ -13,6 +13,7 @@ type User struct {
 	LastName   	string     		`json:"last_name"`
 	Email      	string     		`gorm:"unique;default:null;" json:"email"`
 	Username   	string     		`gorm:"unique" json:"username"`
+	Image		*string			`gorm:"default:null;" json:"image"`
 	Password   	string     		`json:"password"`
 	Birthday   	time.Time  		`json:"birthday"`
 	Type       	string     		`json:"type"`
