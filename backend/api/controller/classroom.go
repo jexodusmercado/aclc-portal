@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"portal/api/service"
 	"portal/models"
@@ -29,7 +28,6 @@ func (cr *ClassroomController) CreateClassroom(c *gin.Context) {
 	var students []models.User
 
 	if err := c.ShouldBind(&classroom); err != nil {
-		fmt.Println(err)
 		util.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
@@ -115,22 +113,13 @@ func (cr ClassroomController) UpdateClassroom(c *gin.Context) {
 		return
 	}
 
-	fmt.Println()
-	fmt.Println()
-	fmt.Println()
-	fmt.Println(classroom.Title)
-
 	updatedClassroom, err := cr.service.Update(classroom)
 	if err != nil {
 		util.CustomErrorJson(c, http.StatusBadRequest, "error in update")
-		fmt.Println(err)
 		return
 	}
 
 	response := updatedClassroom.ResponseMap()
-
-	fmt.Println("-----")
-	fmt.Println(response)
 
 	c.JSON(http.StatusOK, &util.Response{
 		Success: true,

@@ -49,7 +49,21 @@ func (c CommentRepository) Create(comment models.CommentCreation) error {
 
 }
 
-func (c CommentRepository) FindAllByPostID(comment models.Comment) ([]models.Comment, int64, error) {
+func (c CommentRepository) Update(comment models.Comment) (models.Comment, error) {
+
+	err := c.db.DB.
+		Model(&models.Comment{}).
+		Where(&comment).
+		Updates(&comment).Error
+	if err != nil {
+		return comment, err
+	}
+
+	return comment, nil
+
+}
+
+func (c CommentRepository) FindAllByPostID(PostID string) ([]models.Comment, int64, error) {
 
 	var comments []models.Comment
 	var totalRows int64 = 0
@@ -59,9 +73,15 @@ func (c CommentRepository) FindAllByPostID(comment models.Comment) ([]models.Com
 		Preload("User").
 		Order("created_at desc").
 		Model(&models.Comment{}).
-		Where("post_id = ?", comment.PostID).
+		Where("post_id = ?", PostID).
 		Find(&comments).
 		Count(&totalRows).Error
 
 	return comments, totalRows, err
+}
+
+func (c CommentRepository) DeleteByID(CommentID string) error {
+
+	return c.db.DB.Delete(&models.Comment{}, CommentID).Error
+
 }

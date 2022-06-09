@@ -7,14 +7,14 @@ import (
 )
 
 func init() {
-    infrastructure.LoadEnv()
+	infrastructure.LoadEnv()
 }
 
 func main() {
 
-    router := infrastructure.NewGinRouter() //router has been initialized and configured
-    setup.InitializeServices(router) //passing router
-    router.Gin.Run(":8000") //server started on 8000 port
-    
-    // router.Gin.Use(cors.Default())
+	router := infrastructure.NewGinRouter() //router has been initialized and configured
+	setup.InitializeServices(router)        //passing router
+	router.Gin.Run(":8000")                 //server started on 8000 port
+
+	// router.Gin.Use(cors.Default())
 }

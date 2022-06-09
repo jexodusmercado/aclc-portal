@@ -61,6 +61,13 @@ func InitializeServices(router infrastructure.GinRouter) {
 	schoolYearRoute := routes.NewSchoolYearRoute(schoolYearController, router)
 	schoolYearRoute.Setup()
 
+	//comment
+	commentRepository := repository.NewCommentRepository(db)
+	commentService := service.NewCommentService(commentRepository)
+	commentController := controller.NewCommentController(commentService)
+	commentRoute := routes.NewCommentRoute(commentController, router)
+	commentRoute.Setup()
+
 	// migrating User model to datbase table
 	if err := db.DB.AutoMigrate(
 		&models.Course{},
