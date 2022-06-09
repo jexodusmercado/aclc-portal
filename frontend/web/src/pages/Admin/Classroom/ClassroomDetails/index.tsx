@@ -14,8 +14,7 @@ import RichTextEditor, {EditorValue} from 'react-rte';
 import { FileIcon } from 'react-file-icon';
 import { createPostRequest } from 'redux/post/action'
 import parse from 'html-react-parser'
-import { publicRequest } from 'services/request'
-import { AxiosResponse } from 'axios'
+import * as yup from 'yup'
 
 interface IForm {
     classroomId:    number
@@ -23,6 +22,11 @@ interface IForm {
     body:           string
     file:           File | null
 }
+
+const formSchema = yup.object({
+    title: yup.string().trim().required('*Title is required'),
+}).required()
+
 
 const ClassroomDetails = () => {
     const params                            = useParams()
@@ -46,12 +50,9 @@ const ClassroomDetails = () => {
         console.log(comment)
     }
 
-    const onDownload = (filename: string) => {
-        publicRequest.getDownloadRequest(filename)
-    }
-
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm<IForm>({
+    const { register, handleSubmit, formState: { errors } } = useForm<IForm>({
         mode: "onChange",
+        resolver: yupResolver(formSchema)
     })
 
     const handleAttachment = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,7 +186,7 @@ const ClassroomDetails = () => {
                                                         {post.title}
                                                     </span>
                                                     
-                                                    <p className='pt-4 px-2 bg-gray-50 text-sm h-16'>
+                                                    <p className='pt-4 px-2 bg-gray-50 text-sm h-auto'>
                                                         {parse(post.body)}
                                                     </p>
                                                 </div>
