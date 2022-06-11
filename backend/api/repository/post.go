@@ -6,19 +6,16 @@ import (
 	// "gorm.io/gorm/clause"
 )
 
-//PostRepository -> Post responsible for accessing database
 type PostRepository struct {
     db infrastructure.Database
 }
 
-//NewPostRepository -> creates a instance on PostRepository
 func NewPostRepository(db infrastructure.Database) PostRepository {
     return PostRepository{
         db: db,
     }
 }
 
-//CreateUser -> method for saving user to database
 func (p PostRepository) Create(post models.PostCreation) error {
 
     var dbPost models.Post
@@ -34,7 +31,6 @@ func (p PostRepository) Create(post models.PostCreation) error {
     return p.db.DB.Create(&dbPost).Error
 }
 
-//FindAll -> method for returning all classrooms
 func (p PostRepository) FindAll(post models.Post, keyword string) (*[]models.Post, int64, error) {
 
     var posts []models.Post
@@ -55,7 +51,6 @@ func (p PostRepository) FindAll(post models.Post, keyword string) (*[]models.Pos
     return &posts, totalRows, err
 }
 
-//Find -> Method for fetching post by id
 func (p PostRepository) Find(post models.Post) (models.Post, error) {
     var posts models.Post
     err := p.db.DB.
@@ -68,7 +63,11 @@ func (p PostRepository) Find(post models.Post) (models.Post, error) {
     return posts, err
 }
 
-//Update -> Method for updating Post
 func (p PostRepository) Update(post models.Post) error {
     return p.db.DB.Save(&post).Error
+}
+
+func (c PostRepository) DeleteByID(PostID string) error {
+	return c.db.DB.Delete(&models.Post{}, PostID).Error
+
 }

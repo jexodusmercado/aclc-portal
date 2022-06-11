@@ -7,19 +7,16 @@ import (
 	"errors"
 )
 
-//SubjectRepository -> SubjectRepository resposible for accessing database
 type SubjectRepository struct {
     db infrastructure.Database
 }
 
-//NewSubjectRepository -> creates a instance on SubjectRepository
 func NewSubjectRepository(db infrastructure.Database) SubjectRepository {
     return SubjectRepository{
         db: db,
     }
 }
 
-//CreateSubject -> method for saving user to database
 func (s SubjectRepository) Create(subject models.SubjectCreation) error {
 
     var dbSubject models.Subject
@@ -38,7 +35,6 @@ func (s SubjectRepository) Create(subject models.SubjectCreation) error {
 }
 
 
-//FindAll -> method for returning all users
 func (s SubjectRepository) FindAll(subject models.Subject, keyword string) (*[]models.Subject, int64, error) {
 
     var subjects []models.Subject    
@@ -59,7 +55,6 @@ func (s SubjectRepository) FindAll(subject models.Subject, keyword string) (*[]m
     return &subjects, totalRows, err
 }
 
-//Find -> Method for fetching post by id
 func (s SubjectRepository) Find(subject models.Subject) (models.Subject, error) {
     var subjects models.Subject
     err := s.db.DB.
@@ -70,7 +65,11 @@ func (s SubjectRepository) Find(subject models.Subject) (models.Subject, error) 
     return subjects, err
 }
 
-//Update -> Method for updating Post
 func (s SubjectRepository) Update(subject models.Subject) error {
     return s.db.DB.Save(&subject).Error
+}
+
+func (c SubjectRepository) DeleteByID(SubjectID string) error {
+	return c.db.DB.Delete(&models.Subject{}, SubjectID).Error
+
 }

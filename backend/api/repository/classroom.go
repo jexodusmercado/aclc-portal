@@ -44,7 +44,6 @@ func (c ClassroomRepository) Create(classroom models.ClassroomCreation, students
 
 	}
 
-
 	dbClassroom.Title = classroom.Title
 	dbClassroom.Body = classroom.Body
 	dbClassroom.SubjectID = classroom.SubjectID
@@ -52,13 +51,10 @@ func (c ClassroomRepository) Create(classroom models.ClassroomCreation, students
 	dbClassroom.Students = users
 	dbClassroom.IsActive = true
 
-
 	return c.db.DB.Create(&dbClassroom).Error
 	// if err != nil {
 	// 	return err
 	// }
-
-
 
 	// return c.db.DB.Model(&dbClassroom).Association("Students").Append(&users)
 }
@@ -69,10 +65,12 @@ func (c ClassroomRepository) FindAll(classroom models.Classroom, keyword string)
 	var classrooms []models.Classroom
 	var totalRows int64 = 0
 
-	queryBuilder := c.db.DB.Preload("Subject").
+	queryBuilder := c.db.DB.
+		Preload("Subject").
 		Preload("Students.Course").
 		Preload("Teacher").
-		Preload("Posts.User").
+		// Preload("Posts.User").
+		// Preload("Posts.Comments.User").
 		Order("created_at desc").
 		Model(&models.Classroom{})
 
@@ -98,13 +96,13 @@ func (u ClassroomRepository) Find(classroom models.Classroom) (models.Classroom,
 		Preload("Students.Course").
 		Preload("Teacher").
 		Preload("Posts.User").
+		Preload("Posts.Comments.User").
 		Model(&models.Classroom{}).
 		Where(&classroom).
 		Take(&classrooms).Error
 	return classrooms, err
 }
 
-//Update -> Method for updating Post
 func (u ClassroomRepository) Update(response models.ClassroomUpdate) (models.Classroom, error) {
 	var teacher models.User
 	var subject models.Subject
@@ -159,49 +157,25 @@ func (u ClassroomRepository) Update(response models.ClassroomUpdate) (models.Cla
 		students = append(students, user)
 	}
 
-	// classroom.TeacherID = response.TeacherID
-	// classroom.SubjectID = response.SubjectID
-	classroom.Title		= response.Title
-	classroom.Students 	= students
-	classroom.Subject 	= subject
-	classroom.Teacher 	= teacher
+	classroom.Title = response.Title
+	classroom.Students = students
+	classroom.Subject = subject
+	classroom.Teacher = teacher
 
 	u.db.DB.Model(&models.Classroom{}).Where(&classroom).Association("Teacher").Append(&teacher)
 
 	u.db.DB.Model(&models.Classroom{}).Where(&classroom).Association("Subject").Append(&subject)
 
- 	u.db.DB.Model(&classroom).Association("Students").Replace(&students)
-
-
-	// err = u.db.DB.Model(&models.Classroom{}).Where(&classroom).Association("Teacher").Append(&teacher)
-	// if err != nil {
-	// 	return classroom, err
-	// }
-
-	// err = u.db.DB.Model(&models.Classroom{}).Where(&classroom).Association("Subject").Append(&subject)
-	// if err != nil {
-	// 	return classroom, err
-	// }
-
-	// err = u.db.DB.Model(&classroom).Association("Students").Delete(&classroom.Students)
-	// if err != nil {
-	// 	return classroom, err
-	// }
-
-	// err = u.db.DB.Model(&classroom).Association("Students").Replace(&students)
-	// if err != nil {
-	// 	return classroom, err
-	// }
+	u.db.DB.Model(&classroom).Association("Students").Replace(&students)
 
 	err = u.db.DB.Session(&gorm.Session{FullSaveAssociations: true}).Save(&classroom).Error
 	if err != nil {
 		return classroom, err
 	}
 
-	// err = u.db.DB.Model(&models.Classroom{}).Where(&classroom).Updates(&classroom).Error
-	// if err != nil {
-	// 	return classroom, err
-	// }
-	
 	return classroom, nil
+}
+
+func (c ClassroomRepository) DeleteByID(ClassroomID string) error {
+	return c.db.DB.Delete(&models.Classroom{}, ClassroomID).Error
 }

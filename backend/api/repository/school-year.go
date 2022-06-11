@@ -2,9 +2,9 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 	"portal/infrastructure"
 	"portal/models"
-	"fmt"
 
 	"gorm.io/gorm/clause"
 )
@@ -111,4 +111,9 @@ func (s SchoolYearRepository) GetActiveYear() (models.SchoolYear, error) {
 		Take(&schoolyears).Error
 
 	return schoolyears, err
+}
+
+func (c SchoolYearRepository) DeleteByID(SchoolYearID string) error {
+	return c.db.DB.Delete(&models.SchoolYear{}, SchoolYearID).Error
+
 }

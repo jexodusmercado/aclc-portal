@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios';
 import { IPayload } from 'interfaces';
 import { PostInitialState } from 'redux/post/types';
 import { UserInitialState } from '../users/types'
@@ -18,7 +17,7 @@ export const ClassroomInitialState  = {
                 body: "",
                 created_at: "",
                 id: 0,
-                posts: [],
+                posts: PostState,
                 student : UsersState,
                 subject: {
                   ID: 0,
@@ -30,7 +29,6 @@ export const ClassroomInitialState  = {
                   code: "",
                   unit: 0,
                   is_active: false,
-                  Classrooms: null
                 },
                 subject_id: 0,
                 teacher: UserState,

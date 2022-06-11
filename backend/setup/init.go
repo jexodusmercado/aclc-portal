@@ -79,6 +79,7 @@ func InitializeServices(router infrastructure.GinRouter) {
 		&models.StudentGrade{},
 		&models.Department{},
 		&models.User{},
+		&models.Comment{},
 	); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
 
 		if err := db.DB.First(&models.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {

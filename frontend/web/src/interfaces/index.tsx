@@ -36,4 +36,5 @@ export interface IMenu {
 
 export interface IPayload {
     onSuccess?: () => void
+    onFailed?: () => void
 }

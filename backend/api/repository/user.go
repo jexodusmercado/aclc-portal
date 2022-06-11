@@ -184,3 +184,7 @@ func (u UserRepository) AddUserToClassroom(user models.User, classroom models.Cl
 
 	return u.db.DB.Model(&users).Association("Classrooms").Append(&classrooms)
 }
+
+func (c UserRepository) DeleteByID(UserID string) error {
+	return c.db.DB.Delete(&models.User{}, UserID).Error
+}

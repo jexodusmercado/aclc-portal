@@ -1,13 +1,13 @@
 package controller
 
 import (
-    "portal/api/service"
-    "portal/models"
-    "portal/util"
-    "net/http"
+	"net/http"
+	"portal/api/service"
+	"portal/models"
+	"portal/util"
 	"strconv"
 
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 )
 
 //SubjectController struct
@@ -91,8 +91,7 @@ func (s SubjectController) GetSubject(c *gin.Context) {
 
 }
 
-//UpdatePost : get update by id
-func (s SubjectController) UpdateUser(c *gin.Context) {
+func (s SubjectController) UpdateSubject(c *gin.Context) {
     idParam := c.Param("id")
 
     id, err := strconv.ParseUint(idParam, 10, 64)
@@ -126,4 +125,20 @@ func (s SubjectController) UpdateUser(c *gin.Context) {
         Message: "Successfully Updated Post",
         Data:    response,
     })
+}
+
+func (p SubjectController) DeleteByID(c *gin.Context) {
+
+	SubjectID := c.Param("id")
+
+	err := p.service.DeleteSubject(SubjectID)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	util.SuccessJSON(c, http.StatusOK, gin.H{
+		"message": "deleted",
+	})
+
 }

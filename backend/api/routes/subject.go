@@ -29,8 +29,10 @@ func (c SubjectRoute) Setup() {
     {
 		subjects.Use(middleware.Authenticate())
 		subjects.GET("", c.Controller.GetSubjects)
-		subjects.GET("/:id", c.Controller.GetSubject)
-        subjects.POST("/create", c.Controller.CreateSubject)
+		subjects.GET(":id", c.Controller.GetSubject)
+        subjects.POST("", c.Controller.CreateSubject)
+        subjects.PATCH(":id", c.Controller.UpdateSubject)
+        subjects.DELETE(":id", c.Controller.DeleteByID)
     }
 
 }

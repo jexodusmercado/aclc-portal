@@ -1,5 +1,5 @@
 import { Transition, Dialog, Menu } from '@headlessui/react'
-import { XIcon, MenuAlt2Icon, BellIcon, ServerIcon, HomeIcon, UsersIcon, AcademicCapIcon, OfficeBuildingIcon, CogIcon, PresentationChartBarIcon } from '@heroicons/react/solid'
+import { XIcon, MenuAlt2Icon, BellIcon, ServerIcon, HomeIcon, UsersIcon, AcademicCapIcon, CogIcon, PresentationChartBarIcon, BookOpenIcon } from '@heroicons/react/solid'
 import { Fragment, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { classNames } from 'utility'
@@ -16,6 +16,7 @@ import { GetActiveSchoolYear } from 'redux/school-year/action'
 const adminNavigation = [
     { name: 'Dashboard', href: '/dashboard', icon: PresentationChartBarIcon, end: true},
     { name: 'Classroom', href: '/dashboard/classroom', icon: HomeIcon, end: true},
+    { name: 'Subject', href: '/dashboard/subject', icon: BookOpenIcon, end: true},
     { name: 'Faculty', href: '/dashboard/faculty', icon: AcademicCapIcon, end: false},
     { name: 'Student', href: '/dashboard/student', icon: UsersIcon, end: false},
     { name: 'Course', href: '/dashboard/course', icon: ServerIcon, end: false},

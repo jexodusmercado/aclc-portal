@@ -35,7 +35,7 @@ const CustomRoute = () => {
                                 <Route element={<CheckRole type='ADMIN' />} >
 
                                     {/* Department */}
-                                    <Route path='department'>
+                                    <Route path='subject'>
                                         <Route index element={<DepartmentIndex />} />
                                         <Route path="create" element={<DepartmentForm />} />
                                     </Route>

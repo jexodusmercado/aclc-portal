@@ -1,17 +1,14 @@
-import { useUpdateEffect } from 'hooks'
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useRef } from 'react'
 
 interface IProps {
-    onValue:  Dispatch<SetStateAction<string>>
-    onSubmit: () => void
+    setState:  Dispatch<SetStateAction<string>>
+    onSubmit: () => void,
+    ref?: React.MutableRefObject<null>
 }
 
-const TextArea: React.FC<IProps> = ({onSubmit, onValue}) => {
-  const [text, setText] = useState<string>('')
+const TextArea: React.FC<IProps> = ({onSubmit, setState}) => {
 
-  useUpdateEffect(() => {
-    onValue(text)
-  }, [text])
+  const textArea = useRef(null);
 
   return (
     <div className="flex items-start space-x-4">
@@ -34,11 +31,12 @@ const TextArea: React.FC<IProps> = ({onSubmit, onValue}) => {
               id="comment"
               className="block w-full py-3 border-0 resize-none focus:ring-0 sm:text-sm"
               placeholder="Add your comment..."
-              value={text}
               onChange={(e) => {
-                setText((e.target as any).value)
+                setState((e.target as any).value)
               }}
-              onBlur={() => setText('')}
+              onFocus={(e) => setState((e.target as any).value)}
+              ref={textArea}
+
             />
 
             {/* Spacer element to match the height of the toolbar */}
@@ -55,7 +53,11 @@ const TextArea: React.FC<IProps> = ({onSubmit, onValue}) => {
               <button
                 type="button"
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                onClick={onSubmit}
+                onClick={() => {
+                  onSubmit();
+                  (textArea.current as any).value = null;
+                }}
+                onFocus={() => setState((textArea.current as any).value)}
               >
                 Post
               </button>

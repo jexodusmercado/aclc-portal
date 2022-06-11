@@ -30,10 +30,11 @@ func (c PostRoute) Setup() {
 		post:= classroom.Group("/post")
 		{
 			post.Use(middleware.Authenticate())
-			post.GET("/:id", c.Controller.GetPost)
-			post.POST("/create", c.Controller.CreatePost)
-			post.PATCH("/:id", c.Controller.UpdatePost)
-            post.POST("/test", c.Controller.TestUpload)
+			post.GET(":id", c.Controller.GetPost)
+			post.POST("create", c.Controller.CreatePost)
+			post.PATCH(":id", c.Controller.UpdatePost)
+            post.POST("test", c.Controller.TestUpload)
+            post.DELETE(":id", c.Controller.DeleteByID)
 		}
     }
     

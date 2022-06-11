@@ -25,22 +25,22 @@ func (subject *Subject) TableName() string {
 
 //Create Subject
 type SubjectCreation struct {
-	Name         string `form:"name" binding:"required"`
-	Code         string `form:"code" binding:"required"`
-	Unit         uint   `form:"unit" binding:"required"`
-	SchoolYearID uint   `form:"school_year_id" binding:"required"`
+	Name         string `form:"name" json:"name" binding:"required"`
+	Code         string `form:"code" json:"code" binding:"required"`
+	Unit         uint   `form:"unit" json:"unit" binding:"required"`
+	SchoolYearID uint   `form:"school_year_id" json:"school_year_id" binding:"required"`
 }
 
 //ResponseMap -> response map method of User
 func (subject *Subject) ResponseMap() map[string]interface{} {
 	resp := make(map[string]interface{})
 
-	resp["ID"] = subject.ID
-	resp["name"] = subject.Name
-	resp["code"] = subject.Code
-	resp["is_active"] = subject.IsActive
-	resp["created_at"] = subject.CreatedAt
-	resp["updated_at"] = subject.UpdatedAt
+	resp["ID"] 			= subject.ID
+	resp["name"] 		= subject.Name
+	resp["code"] 		= subject.Code
+	resp["is_active"] 	= subject.IsActive
+	resp["created_at"] 	= subject.CreatedAt
+	resp["updated_at"] 	= subject.UpdatedAt
 
 	return resp
 }

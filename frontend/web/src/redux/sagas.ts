@@ -7,6 +7,7 @@ import schoolYearSaga   from './school-year/saga'
 import classroomSaga from './classroom/saga';
 import SubjectSaga from './subject/saga';
 import PostSaga from './post/saga';
+import CommentSaga from './comment/saga';
 
 export default function* rootSaga(): Generator<StrictEffect> {
     yield all([
@@ -17,6 +18,7 @@ export default function* rootSaga(): Generator<StrictEffect> {
         ...schoolYearSaga,
         ...classroomSaga,
         ...SubjectSaga,
-        ...PostSaga
+        ...PostSaga,
+        ...CommentSaga
     ])
 }

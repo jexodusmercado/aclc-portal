@@ -1,22 +1,22 @@
-
+import { IPayload } from "interfaces";
+import { initialState as CommentInitialState } from "redux/comment/types";
 export type PostState = typeof PostInitialState;
+
+const CommentState = CommentInitialState.comments.data
 
 export const PostInitialState = {
     posts: {
         data: [
             {
                 author: {
+                    id: 0,
                     birthday: "",
-                    created_at: "",
                     email: "",
-                    first_name: "",
-                    id: 1,
-                    is_active: true,
-                    last_name: "",
+                    full_name: "",
                     type: "",
-                    updated_at: "",
                     username: ""
                 },
+                comments: CommentState, 
                 body: "",
                 created_at: "",
                 extension: "",
@@ -71,7 +71,7 @@ export type CreatePostAction = {
     payload: CreatePostPayload
 }
 
-export interface CreatePostPayload {
+export interface CreatePostPayload extends IPayload {
     classroomId:    number
     // title:          string
     // body:           string

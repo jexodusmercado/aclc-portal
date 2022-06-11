@@ -1,11 +1,10 @@
 package repository
 
 import (
-    "portal/infrastructure"
-    "portal/models"
-    "errors"
-
-    // "gorm.io/gorm/clause"
+	"errors"
+	"portal/infrastructure"
+	"portal/models"
+	// "gorm.io/gorm/clause"
 )
 
 type CourseRepository struct {
@@ -81,4 +80,8 @@ func (c CourseRepository) Find(course models.Course) (models.Course, error) {
 
 func (c CourseRepository) Update(course models.Course) error {
     return c.db.DB.Save(&course).Error
+}
+
+func (c CourseRepository) DeleteByID(CourseID string) error {
+	return c.db.DB.Delete(&models.Course{}, CourseID).Error
 }

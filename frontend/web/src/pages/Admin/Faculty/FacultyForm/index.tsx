@@ -14,6 +14,7 @@ import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
 import { List } from 'interfaces'
 import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
 import SelectMenu from 'components/SelectMenu'
+import toast from 'react-hot-toast'
 
 interface FormData {
     username        : string
@@ -41,9 +42,10 @@ const FacultyForm = () => {
     const createdState                  = useUserCreated();
     const schoolyears                   = useSchoolYears()
     const activeSchoolyear              = useActiveSchoolYear()
-    const [startDate, setStartDate]     = useState<Date | null>(null);
+    const [startDate, setStartDate]     = useState<Date | null>(null)
     const [schoolYear, setSchoolYear]   = useState<List | null>(null)
     const [yearList, setYearList]       = useState<List[]>([])
+    const [picture, setPicture]         = useState<File>()
 
     const cancelForm = () => navigate('/dashboard/faculty');
 
@@ -57,6 +59,18 @@ const FacultyForm = () => {
         data.letter_type    = "f"
 
         dispatch(createUserRequest(data))
+    }
+
+    const handleAttachement = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        if(e.target.files?.length){
+            if(e.target.files[0].type.split('/')[0] !== 'image') {
+                setPicture(undefined)
+                toast.error('File type is not supported.')
+                return
+            }
+            setPicture(e.target.files[0])
+        }
     }
 
     useEffectOnce(() => {
@@ -98,114 +112,153 @@ const FacultyForm = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mx-auto my-10">
                 <div className='flex align-middle'>
-                    <h3 className='leading-6 text-2xl mr-auto text-gray-500'>
+                    <h3 className='leading-6 text-2xl mr-auto text-gray-600'>
                         Add Faculty Member
                     </h3>
                 </div>
             </div>
 
-            <div className="md:grid md:grid-cols-3 md:gap-6">
-                <div className="md:col-span-1">
-                    <div className="px-4 sm:px-0">
-                        <h1 className="text-lg font-medium text-gray-500 leading-6"> Profile </h1>
-                        <p className="mt-1 text-sm text-gray-500 opacity-60">
-                            Fill out the form for the new faculty member.
-                        </p>
-                    </div>
-                </div>
-                <div className="mt-5 md:mt-0 md:col-span-2">
-                    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                        <CardContainer padding='p-10' footer={true} cancelOnclick={cancelForm} loading={createdState.loading}>
-                            <div className="grid grid-cols-4 gap-6">
-                                <div className="col-span-4 sm:col-span-4">
-                                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                                        Username
-                                    </label>
-                                    <div className="mt-1 flex rounded-md shadow">
-                                        <input
-                                            type="text"
-                                            id="username"
-                                            className={classNames(errors.username ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
-                                            {...register('username')}
-                                        />
-                                    </div>
-                                    {errors.username && <p className='text-sm text-red-400'> {errors.username.message} </p>}
-                                </div>
+            <div className="">
+                <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                    <CardContainer padding='' footer={true} cancelOnclick={cancelForm} loading={createdState.loading}>
+                    
+                        <div className="p-4 sm:px-0">
+                            <h1 className="text-lg font-medium text-gray-500 leading-6"> Profile </h1>
+                            <p className="mt-1 text-sm text-gray-500 opacity-60">
+                                Fill out the form for the new faculty member.
+                            </p>
+                        </div>
+                        
+                        <div className="grid grid-cols-4 gap-6">
 
-                                <div className="col-span-3 sm:col-span-2">
-                                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                                        First name
-                                    </label>
-                                    <div className="mt-1 flex rounded-md shadow">
-                                        <input
-                                            type="text"
-                                            id="firstName"
-                                            className={classNames(errors.first_name ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
-                                            {...register('first_name')}
-                                        />
-                                    </div>
-                                    {errors.first_name && <p className='text-sm text-red-400'> {errors.first_name.message} </p>}
-                                </div>
+                            <div className="col-span-3">
+                                <label className="block text-sm font-medium text-gray-700">Photo</label>
+                                <div className="mt-1 flex items-center">
+                                    {
+                                        picture &&
+                                        <>
+                                           <img
+                                                className="inline-block h-14 w-14 rounded-full"
+                                                src={URL.createObjectURL(picture)}
+                                                alt=""
+                                            />
+                                            <button
+                                                className='ml-5 bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                                                onClick={() => setPicture(undefined)}
+                                            >
+                                                Cancel
+                                            </button>
+                                        </>
+                                    }
 
-                                <div className="col-span-3 sm:col-span-2">
-                                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                                        Last name
-                                    </label>
-                                    <div className="mt-1 flex rounded-md shadow">
-                                        <input
-                                            type="text"
-                                            id="lastName"
-                                            className={classNames(errors.last_name ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
-                                            {...register('last_name')}
-                                        />
+                                    {
+                                        !picture &&
+                                        <>
+                                        <span className="inline-block bg-gray-100 rounded-full overflow-hidden h-12 w-12">
+                                            <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                                            </svg>
+                                        </span>
+                                        <label
+                                        htmlFor='attachment'
+                                        className="ml-5 bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        >
+                                            Upload
+                                        </label>
+                                        <input type='file' id='attachment' name='attachement' onChange={(e) => handleAttachement(e)} hidden />
+                                    </>
+                                    }
                                     </div>
-                                    {errors.last_name && <p className='text-sm text-red-400'> {errors.last_name.message} </p>}
-                                </div>
-
-                                <div className="col-span-2 sm:col-span-2">
-                                    <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
-                                        Date of Birth
-                                    </label>
-                                    <div className="mt-1 flex rounded-md shadow">
-                                        <DatePicker 
-                                            id='birthday'
-                                            name='birthday'
-                                            selected={startDate}
-                                            onChange={e => setStartDate(e)}
-                                            className="input-text"
-                                        />
-                                    </div>
-                                    {errors.birthday && <p className='text-sm text-red-400'> *Date is required </p>}
-                                </div>
-
-                                <div className="col-span-2 sm:col-span-2">
-                                    <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
-                                        School Year
-                                    </label>
-                                    <div className="mt-1 flex rounded-md shadow">
-                                        <SelectMenu selected={schoolYear} setSelected={setSchoolYear} lists={yearList} className='max-w-sm mt-0 pt-0'/>
-                                    </div>
-                                    {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>}
-                                </div>
-
-                                <div className="col-span-4 sm:col-span-4">
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                        Email Address <span className='text-xs opacity-75'> *optional  </span>
-                                    </label>
-                                    <div className="mt-1 flex rounded-md shadow">
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            className={classNames(errors.email ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
-                                            {...register('email')}
-                                        />
-                                    </div>
-                                    {errors.email && <p className='text-sm text-red-400'> {errors.email.message} </p>}
-                                </div>
                             </div>
-                        </CardContainer>
-                    </form>
-                </div>
+
+                            <div className="col-span-4 sm:col-span-4">
+                                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                                    Username
+                                </label>
+                                <div className="mt-1 flex rounded-md shadow">
+                                    <input
+                                        type="text"
+                                        id="username"
+                                        className={classNames(errors.username ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
+                                        {...register('username')}
+                                    />
+                                </div>
+                                {errors.username && <p className='text-sm text-red-400'> {errors.username.message} </p>}
+                            </div>
+
+                            <div className="col-span-3 sm:col-span-2">
+                                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                                    First name
+                                </label>
+                                <div className="mt-1 flex rounded-md shadow">
+                                    <input
+                                        type="text"
+                                        id="firstName"
+                                        className={classNames(errors.first_name ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
+                                        {...register('first_name')}
+                                    />
+                                </div>
+                                {errors.first_name && <p className='text-sm text-red-400'> {errors.first_name.message} </p>}
+                            </div>
+
+                            <div className="col-span-3 sm:col-span-2">
+                                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                                    Last name
+                                </label>
+                                <div className="mt-1 flex rounded-md shadow">
+                                    <input
+                                        type="text"
+                                        id="lastName"
+                                        className={classNames(errors.last_name ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
+                                        {...register('last_name')}
+                                    />
+                                </div>
+                                {errors.last_name && <p className='text-sm text-red-400'> {errors.last_name.message} </p>}
+                            </div>
+
+                            <div className="col-span-2 sm:col-span-2">
+                                <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
+                                    Date of Birth
+                                </label>
+                                <div className="mt-1 flex rounded-md shadow">
+                                    <DatePicker 
+                                        id='birthday'
+                                        name='birthday'
+                                        selected={startDate}
+                                        onChange={e => setStartDate(e)}
+                                        className="input-text"
+                                    />
+                                </div>
+                                {errors.birthday && <p className='text-sm text-red-400'> *Date is required </p>}
+                            </div>
+
+                            <div className="col-span-2 sm:col-span-2">
+                                <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
+                                    School Year
+                                </label>
+                                <div className="mt-1 flex rounded-md shadow">
+                                    <SelectMenu selected={schoolYear} setSelected={setSchoolYear} lists={yearList} className='max-w-sm mt-0 pt-0'/>
+                                </div>
+                                {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>}
+                            </div>
+
+                            <div className="col-span-4 sm:col-span-4">
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                    Email Address <span className='text-xs opacity-75'> *optional  </span>
+                                </label>
+                                <div className="mt-1 flex rounded-md shadow">
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        className={classNames(errors.email ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
+                                        {...register('email')}
+                                    />
+                                </div>
+                                {errors.email && <p className='text-sm text-red-400'> {errors.email.message} </p>}
+                            </div>
+                        </div>
+                    </CardContainer>
+                </form>
             </div>
         </div>
     )

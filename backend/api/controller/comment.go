@@ -5,6 +5,7 @@ import (
 	"portal/api/service"
 	"portal/models"
 	"portal/util"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,35 +23,57 @@ func NewCommentController(s service.CommentService) CommentController {
 func (cr *CommentController) CreateComment(c *gin.Context) {
 	var comment models.CommentCreation
 
-	if err := c.ShouldBind(&comment); err != nil {
-		util.ErrorJSON(c, http.StatusBadRequest, err)
-		return
-	}
+	PostID := c.Param("id")
+	UserID := c.Keys["UserID"].(float64)
 
-	err := cr.service.CreateComment(comment)
+	convPostID, err := strconv.ParseUint(PostID, 10, 64)
+
+	comment.PostID = uint(convPostID)
+	comment.UserID = uint(UserID)
+
 	if err != nil {
 		util.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
 
-	util.SuccessJSON(c, http.StatusOK, "Successfully Created Classroom")
+	if err := c.ShouldBind(&comment); err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	err = cr.service.CreateComment(comment)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	util.SuccessJSON(c, http.StatusOK, "Created comment")
 }
 
 func (cr *CommentController) UpdateComment(c *gin.Context) {
 	var comment models.Comment
 
+	CommentID := c.Param("id")
+	UserID := c.Keys["UserID"].(float64)
+
+	convCommentID, err := strconv.ParseUint(CommentID, 10, 64)
+	comment.ID = uint(convCommentID)
+	comment.UserID = uint(UserID)
+
 	if err := c.ShouldBind(&comment); err != nil {
 		util.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
 
-	result, err := cr.service.UpdateComment(comment)
+	err = cr.service.UpdateComment(comment)
 	if err != nil {
 		util.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
 
-	util.SuccessJSON(c, http.StatusOK, result)
+	util.SuccessJSON(c, http.StatusOK, gin.H{
+		"message": "Updated!",
+	})
 }
 
 func (cr *CommentController) FindAllByPostID(c *gin.Context) {

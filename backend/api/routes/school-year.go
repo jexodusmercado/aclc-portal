@@ -32,5 +32,6 @@ func (c SchoolYearRoute) Setup() {
 		schoolyear.PATCH("/:id", c.Controller.UpdateSchoolYear)
 		schoolyear.GET("/active", c.Controller.GetActiveYear)
 		schoolyear.GET("/change-active/:id", c.Controller.ChangeActiveYear)
+		schoolyear.DELETE(":id", c.Controller.DeleteByID)
 	}
 }

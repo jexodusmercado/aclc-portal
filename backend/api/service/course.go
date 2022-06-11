@@ -1,7 +1,8 @@
 package service
+
 import (
-    "portal/api/repository"
-    "portal/models"
+	"portal/api/repository"
+	"portal/models"
 )
 
 type CourseService struct {
@@ -28,4 +29,8 @@ func (u CourseService) FindAll(course models.Course, keyword string) (*[]models.
 
 func (u CourseService) Find(course models.Course) (models.Course, error) {
     return u.repo.Find(course)
+}
+
+func (u CourseService) DeleteCourse(classroomID string) error {
+	return u.repo.DeleteByID(classroomID)
 }

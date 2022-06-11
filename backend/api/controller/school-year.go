@@ -1,12 +1,12 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"portal/api/service"
 	"portal/models"
 	"portal/util"
 	"strconv"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -180,4 +180,20 @@ func (p SchoolYearController) GetActiveYear(c *gin.Context) {
 		Message: "Successfully fetched active school year",
 		Data:    response,
 	})
+}
+
+func (p SchoolYearController) DeleteByID(c *gin.Context) {
+
+	SchoolYearID := c.Param("id")
+
+	err := p.service.DeleteSchoolYear(SchoolYearID)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	util.SuccessJSON(c, http.StatusOK, gin.H{
+		"message": "deleted",
+	})
+
 }

@@ -1,14 +1,14 @@
 package controller
 
 import (
-    "portal/api/service"
-    "portal/models"
-    "portal/util"
-    "net/http"
+	"fmt"
+	"net/http"
+	"portal/api/service"
+	"portal/models"
+	"portal/util"
 	"strconv"
-    "fmt"
 
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 )
 
 type CourseController struct {
@@ -126,4 +126,20 @@ func (p CourseController) UpdateCourse(c *gin.Context) {
         Message: "Successfully Updated Course",
         Data:    response,
     })
+}
+
+func (cr CourseController) DeleteByID(c *gin.Context) {
+
+	CourseID := c.Param("id")
+
+	err := cr.service.DeleteCourse(CourseID)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	util.SuccessJSON(c, http.StatusOK, gin.H{
+		"message": "deleted",
+	})
+
 }

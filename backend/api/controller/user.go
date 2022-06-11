@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"portal/api/service"
 	"portal/constants"
 	"portal/models"
@@ -14,6 +14,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"github.com/twinj/uuid"
 )
 
 //UserController struct
@@ -30,6 +31,9 @@ func NewUserController(s service.UserService) UserController {
 
 //CreateUser ->  calls CreateUser services for validated user
 func (u *UserController) CreateUser(c *gin.Context) {
+	var newFileName string
+	var extension string
+
 	var user models.UserRegister
 	var schoolyear models.SchoolYear
 	if err := c.ShouldBind(&user); err != nil {
@@ -40,7 +44,6 @@ func (u *UserController) CreateUser(c *gin.Context) {
 	year, month, day := time.Time.Date(user.Birthday)
 
 	generatedPassword := user.LastName + strconv.Itoa(year) + strconv.Itoa(int(month)) + strconv.Itoa(day)
-	fmt.Println(generatedPassword)
 	hashPassword, _ := util.HashPassword(generatedPassword)
 	user.Password = hashPassword
 	user.Type = constants.USER_TYPE[user.Type]
@@ -50,7 +53,28 @@ func (u *UserController) CreateUser(c *gin.Context) {
 		util.CustomErrorJson(c, http.StatusBadRequest, "No existing role")
 	}
 
-	err := u.service.CreateUser(user, schoolyear)
+	file, err := c.FormFile("file")
+
+	newPath := filepath.Join(".", "public", "users")
+	err = os.MkdirAll(newPath, os.ModePerm)
+
+	if err == nil && file != nil {
+
+		extension = filepath.Ext(file.Filename)
+		newFileName = uuid.NewV4().String() + extension
+
+		user.Image = &newFileName
+
+		if err := c.SaveUploadedFile(file, "./public/users/"+newFileName); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+				"message": "Unable to save the file",
+			})
+			return
+		}
+	}
+
+
+	err = u.service.CreateUser(user, schoolyear)
 	if err != nil {
 		util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
 		return
@@ -251,6 +275,22 @@ func (u *UserController) AddUsertoClassroom(c *gin.Context) {
 	c.JSON(http.StatusOK, &util.Response{
 		Success: true,
 		Message: "Successfully Updated Post",
+	})
+
+}
+
+func (p *UserController) DeleteByID(c *gin.Context) {
+
+	UserID := c.Param("id")
+
+	err := p.service.DeleteUser(UserID)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	util.SuccessJSON(c, http.StatusOK, gin.H{
+		"message": "deleted",
 	})
 
 }

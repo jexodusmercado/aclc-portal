@@ -24,7 +24,7 @@ func (c CommentService) FindAllByPostID(PostID string) ([]models.Comment, int64,
 	return c.repo.FindAllByPostID(PostID)
 }
 
-func (c CommentService) UpdateComment(comment models.Comment) (models.Comment, error) {
+func (c CommentService) UpdateComment(comment models.Comment) error {
 	return c.repo.Update(comment)
 }
 

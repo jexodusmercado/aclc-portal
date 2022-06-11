@@ -26,3 +26,7 @@ export const handleAxiosError = (error: AxiosError): ErrorPayload | undefined =>
     return payload;
     
 }
+
+export const order = (a: any, b: any) => {
+    return a < b ? ( a > b ? 1 : 0) : -1
+}

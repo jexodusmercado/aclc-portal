@@ -1,20 +1,43 @@
-import { DownloadIcon, PaperClipIcon, PencilAltIcon, PlusCircleIcon, PlusIcon, XCircleIcon } from '@heroicons/react/solid'
-import Card from 'components/CardContainer'
-import Feeds from 'components/Feeds'
-import Modal from 'components/Modal'
-import TextArea from 'components/TextArea'
-import { useEffectOnce, useGetClassroom, useIsomorphicLayoutEffect } from 'hooks'
-import React, { Fragment, useState } from 'react'
+import React, { 
+    Fragment, 
+    useState 
+} from 'react'
+
+import RichTextEditor, {
+    EditorValue
+} from 'react-rte'
+
+import { 
+    DownloadIcon, 
+    PaperClipIcon, 
+    PencilAltIcon, 
+    PlusCircleIcon, 
+    PlusIcon, 
+    XCircleIcon 
+} from '@heroicons/react/solid'
+
+import { 
+    useEffectOnce, 
+    useGetClassroom, 
+    useIsomorphicLayoutEffect
+} from 'hooks'
+
+import { order } from 'utility'
 import { useDispatch } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
 import { getClassroom } from 'redux/classroom/action'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import RichTextEditor, {EditorValue} from 'react-rte';
 import { FileIcon } from 'react-file-icon';
 import { createPostRequest } from 'redux/post/action'
-import parse from 'html-react-parser'
+import { createCommentRequest } from 'redux/comment/action'
 import * as yup from 'yup'
+import Card from 'components/CardContainer'
+import Feeds from 'components/Feeds'
+import Modal from 'components/Modal'
+import parse from 'html-react-parser'
+import toast from 'react-hot-toast'
+import TextArea from 'components/TextArea'
 
 interface IForm {
     classroomId:    number
@@ -36,7 +59,7 @@ const ClassroomDetails = () => {
     const [attachment, setAttachment]       = useState<File>()
     const [extension, setExtension]         = useState<string>('')
     const [comment, setComment]             = useState<string>('')
-    const [updateModal, setUpdateModal]     = useState<boolean>(false)
+    const [createModal, setCreateModal]     = useState<boolean>(false)
     const [richText, setRichText]           = useState<EditorValue>(RichTextEditor.createEmptyValue())
 
 
@@ -46,8 +69,29 @@ const ClassroomDetails = () => {
         }
     }
 
-    const onPostSubmit = () => {
-        console.log(comment)
+    const onCommentSuccess = () => {
+        fetchData()
+        setComment('')
+    }
+
+    const onPostSuccess = () => {
+        fetchData()
+        setCreateModal(false)
+        toast.success('Successfully created post')
+    }
+
+    const onPostFailed = () => {
+        toast.error('Failed to create post.')
+    }
+
+    const onPostSubmit = (id: number) => {
+        dispatch(
+            createCommentRequest({
+                postId: id, 
+                message:comment,
+                onSuccess: onCommentSuccess,
+            })
+        )
     }
 
     const { register, handleSubmit, formState: { errors } } = useForm<IForm>({
@@ -74,12 +118,13 @@ const ClassroomDetails = () => {
             fd.append('file', attachment)
         }
         
-        const payload = {
+        dispatch(createPostRequest({
             classroomId: Number(params!.id),
-            formdata: fd
-        }
+            formdata: fd,
+            onSuccess: onPostSuccess,
+            onFailed: onPostFailed
 
-        dispatch(createPostRequest(payload))
+        }))
     }
 
 
@@ -88,38 +133,8 @@ const ClassroomDetails = () => {
     })
 
     useIsomorphicLayoutEffect(() => {
-        console.log(comment)
-    }, [comment])
-
-    const comments = [
-        {
-            id: 1,
-            person: {
-                image:"https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-                name: "Test data"
-            },
-            body: "test data test data test data",
-            createdAt: "02-03-2022"
-        },
-        {
-            id: 2,
-            person: {
-                image:"https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-                name: "Test data 1"
-            },
-            body: "test data test data test data",
-            createdAt: "02-03-2022"
-        },
-        {
-            id: 3,
-            person: {
-                image:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-                name: "Test data 2"
-            },
-            body: "test data test data test data",
-            createdAt: "02-03-2022"
-        }
-    ]
+        console.log(classData)
+    }, [classData])
 
     return(
         <>
@@ -135,7 +150,7 @@ const ClassroomDetails = () => {
                     </span>
 
                     <div className='ml-auto space-x-3'>
-                        <button className='button-primary' onClick={() => setUpdateModal(true)}>
+                        <button className='button-primary' onClick={() => setCreateModal(true)}>
                             <PlusIcon className='-ml-1 mr-2 h-5 w-5' aria-hidden='true'/>
                             Create Post
                         </button>
@@ -164,7 +179,7 @@ const ClassroomDetails = () => {
 
                         {
                             !classData.data?.posts &&
-                            <div className='relative mt-8 border-2 rounded-lg border-gray-300 border-dashed p-10 hover:border-gray-400 cursor-pointer' onClick={() => setUpdateModal(true)}>
+                            <div className='relative mt-8 border-2 rounded-lg border-gray-300 border-dashed p-10 hover:border-gray-400 cursor-pointer' onClick={() => setCreateModal(true)}>
                                 <div className='relative flex justify-center'>
                                     <div className='basis-1/4 flex flex-col items-center space-y-2'>
                                         <PlusCircleIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/>
@@ -175,20 +190,25 @@ const ClassroomDetails = () => {
                         }
                         {
                             classData.data?.posts &&
-                            <div className='space-y-10'>
+                            <div className='mt-5 space-y-10'>
                                 {
                                     classData.data?.posts.map((post, index) => 
-                                        <Fragment key={post.id}>
+                                        <Fragment key={index}>
                                             <Card className='space-y-3'>
                                                 {/* texts */}
                                                 <div className='space-y-4'>
-                                                    <span className='leading-6 text-xl mr-auto'> 
-                                                        {post.title}
-                                                    </span>
+                                                    <div className='flex flex-col'>
+                                                        <span className='leading-6 text-xl mr-auto'> 
+                                                            {post.title}
+                                                        </span>
+                                                        <span className='text-gray-500 text-sm'>
+                                                            {post.author.full_name}
+                                                        </span>
+                                                    </div>
                                                     
-                                                    <p className='pt-4 px-2 bg-gray-50 text-sm h-auto'>
+                                                    <div className='p-4 border-2 border-dashed bg-gray-50 text-sm h-auto'>
                                                         {parse(post.body)}
-                                                    </p>
+                                                    </div>
                                                 </div>
 
                                                 {/* attachments */}
@@ -213,15 +233,25 @@ const ClassroomDetails = () => {
                                                     </a>
                                                 }
                                                 
-
                                                 {/* comment area */}
                                                 <div className='pt-5 space-y-3'>
-                                                    <Feeds lists={comments} />
-                                                    <TextArea onValue={setComment} onSubmit={onPostSubmit} />
+                                                    {
+                                                        post.comments && 
+                                                        <Feeds lists={post.comments.map(comment => {
+                                                            return {
+                                                                id: comment.id,
+                                                                message: comment.message,
+                                                                full_name: comment.user.full_name,
+                                                                image: comment.user.email,
+                                                                createdAt: comment.created_at
+                                                            }
+                                                        })} />
+                                                    }
+                                                    <TextArea setState={setComment} onSubmit={() => onPostSubmit(post.id)} />
                                                 </div>
                                             </Card>
                                         </Fragment>
-                                    )
+                                    ).sort(order)
                                 }
                             </div>
                         }
@@ -254,7 +284,7 @@ const ClassroomDetails = () => {
                     </div>
                 </div>
             </div>
-            <Modal setOpen={setUpdateModal} open={updateModal}>
+            <Modal setOpen={setCreateModal} open={createModal}>
                 <div className='leading-6 text-lg pb-2 mb-2 border-b-2 border-gray-200'>
                         Create Post
                 </div>

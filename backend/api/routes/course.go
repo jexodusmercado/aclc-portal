@@ -1,8 +1,8 @@
 package routes
 
 import (
-    "portal/api/controller"
-    "portal/infrastructure"
+	"portal/api/controller"
+	"portal/infrastructure"
 	"portal/middleware"
 )
 
@@ -27,9 +27,10 @@ func (c CourseRoute) Setup() {
     {
 		course.Use(middleware.Authenticate())
         course.GET("", c.Controller.GetCourses)
-        course.GET("/:id", c.Controller.GetCourse)
+        course.GET(":id", c.Controller.GetCourse)
         course.POST("", c.Controller.Create)
-        course.PATCH("/:id", c.Controller.UpdateCourse)
+        course.PATCH(":id", c.Controller.UpdateCourse)
+        course.DELETE(":id", c.Controller.DeleteByID)
     }
 
 }

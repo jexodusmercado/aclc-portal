@@ -10,19 +10,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//ClassroomController struct
 type ClassroomController struct {
 	service service.ClassroomService
 }
 
-//NewClassroomController : NewClassroomController
 func NewClassroomController(s service.ClassroomService) ClassroomController {
 	return ClassroomController{
 		service: s,
 	}
 }
 
-//CreateClassroom ->  calls CreateClassroom services for validated classroom
 func (cr *ClassroomController) CreateClassroom(c *gin.Context) {
 	var classroom models.ClassroomCreation
 	var students []models.User
@@ -41,7 +38,6 @@ func (cr *ClassroomController) CreateClassroom(c *gin.Context) {
 	util.SuccessJSON(c, http.StatusOK, "Successfully Created Classroom")
 }
 
-//GetClassrooms : GetClassrooms controller
 func (cr ClassroomController) GetClassrooms(c *gin.Context) {
 	var classrooms models.Classroom
 
@@ -69,7 +65,6 @@ func (cr ClassroomController) GetClassrooms(c *gin.Context) {
 		}})
 }
 
-//GetClassroom : get classroom by id
 func (cr *ClassroomController) GetClassroom(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.ParseUint(idParam, 10, 64) //type conversion string to int64
@@ -93,7 +88,6 @@ func (cr *ClassroomController) GetClassroom(c *gin.Context) {
 
 }
 
-//UpdatePost : get update by id
 func (cr ClassroomController) UpdateClassroom(c *gin.Context) {
 	idParam := c.Param("id")
 
@@ -109,7 +103,6 @@ func (cr ClassroomController) UpdateClassroom(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&classroom); err != nil {
 		util.CustomErrorJson(c, http.StatusBadRequest, err)
-		// util.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
 
@@ -126,4 +119,20 @@ func (cr ClassroomController) UpdateClassroom(c *gin.Context) {
 		Message: "Successfully Updated Post",
 		Data:    response,
 	})
+}
+
+func (cr ClassroomController) DeleteByID(c *gin.Context) {
+
+	ClassroomID := c.Param("id")
+
+	err := cr.service.DeleteClassroom(ClassroomID)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	util.SuccessJSON(c, http.StatusOK, gin.H{
+		"message": "deleted",
+	})
+
 }

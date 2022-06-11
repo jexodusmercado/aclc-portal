@@ -30,8 +30,9 @@ func (c ClassroomRoute) Setup() {
         classroom.Use(middleware.Authenticate())
         classroom.POST("/create", c.Controller.CreateClassroom)
 		classroom.GET("", c.Controller.GetClassrooms)
-		classroom.GET("/:id", c.Controller.GetClassroom)
-        classroom.PATCH("/:id", c.Controller.UpdateClassroom)
+		classroom.GET(":id", c.Controller.GetClassroom)
+        classroom.PATCH(":id", c.Controller.UpdateClassroom)
+        classroom.DELETE(":id", c.Controller.DeleteByID)
     }
 
 }

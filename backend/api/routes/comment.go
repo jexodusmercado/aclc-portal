@@ -25,9 +25,10 @@ func (c CommentRoute) Setup() {
 	comment := c.Handler.Gin.Group("/comment")
 	{
 		comment.Use(middleware.Authenticate())
-		comment.POST("", c.Controller.CreateComment)
+		comment.POST(":id", c.Controller.CreateComment)
 		comment.GET(":id", c.Controller.FindAllByPostID)
 		comment.PATCH(":id", c.Controller.UpdateComment)
+		comment.DELETE(":id", c.Controller.DeleteByID)
 	}
 
 }

@@ -3,11 +3,9 @@ import React from 'react'
 
 interface ListData {
     id:         number
-    person: {
-        image:  string
-        name:   string
-    }
-    body:       string
+    image:  string
+    full_name:   string
+    message:    string
     createdAt:  string
 } 
 
@@ -18,9 +16,10 @@ interface IProps {
 const Feeds : React.FC<IProps> = ({lists}) => {
 
     return(
-        <>
             <Disclosure>
-                <Disclosure.Button> View {lists.length} Comments</Disclosure.Button>
+            {({ open }) => (
+                <>
+                <Disclosure.Button> {open ? 'Hide' : 'View'} {lists?.length ?? 0} Comments</Disclosure.Button>
 
                 <Transition
                     enter="transition duration-100 ease-out"
@@ -33,26 +32,34 @@ const Feeds : React.FC<IProps> = ({lists}) => {
                     <Disclosure.Panel>
 
                         <ul className="divide-y divide-gray-200">
-                            {lists.map((list) => (
-                                <li key={list.id} className="py-4">
-                                    <div className="flex space-x-3">
-                                        <img className="h-6 w-6 rounded-full" src={list.person.image} alt="" />
-                                        <div className="flex-1 space-y-1">
-                                            <div className="flex items-center justify-between">
-                                                <h3 className="text-sm font-medium">{list.person.name}</h3>
-                                                <p className="text-sm text-gray-500">{list.createdAt}</p>
+                            {
+                                lists?.length ? 
+                                lists.map((list) => (
+                                    <li key={list.id} className="py-4">
+                                        <div className="flex space-x-3">
+                                            <img className="h-6 w-6 rounded-full" src={"https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} alt="" />
+                                            <div className="flex-1 space-y-1">
+                                                <div className="flex items-center justify-between">
+                                                    <h3 className="text-sm font-medium">{list.full_name}</h3>
+                                                    <p className="text-sm text-gray-500">{list.createdAt}</p>
+                                                </div>
+                                                <p className="text-sm text-gray-500">
+                                                    {list.message}
+                                                </p>
                                             </div>
-                                            <p className="text-sm text-gray-500" dangerouslySetInnerHTML={{__html: list.body}} />
                                         </div>
-                                    </div>
-                                </li>
-                            ))}
+                                    </li>
+                                ))
+                                :
+                                <></>
+                        }
                         </ul>
 
                     </Disclosure.Panel>
                 </Transition>
+                </>
+            )}
             </Disclosure>
-        </>
     )
 
 }

@@ -38,3 +38,7 @@ func (u SchoolYearService) GetActiveYear() (models.SchoolYear, error) {
 func (u SchoolYearService) ChangeActiveYear(schoolyear models.SchoolYear) error {
 	return u.repo.ChangeActiveYear(schoolyear)
 }
+
+func (u SchoolYearService) DeleteSchoolYear(schoolyearID string) error {
+	return u.repo.DeleteByID(schoolyearID)
+}

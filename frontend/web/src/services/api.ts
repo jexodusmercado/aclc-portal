@@ -13,5 +13,6 @@ export const END_POINTS = {
     CREATE          :   "create",
     SUBJECT         :   "subject",
     POST            :   "post",
-    DOWNLOAD        :   "download"
+    DOWNLOAD        :   "download",
+    COMMENT         :   "comment"
 }

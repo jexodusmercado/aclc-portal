@@ -7,6 +7,7 @@ import { ChangeActiveSchoolYearPayload, CreateSchoolYearPayload } from "redux/sc
 import { CreateClassroomPayload, GetAllClassroomPayload, GetClassroomPayload, UpdateClassroomPayload } from "redux/classroom/types";
 import { GetSubjectsPayload } from "redux/subject/types";
 import { CreatePostPayload } from "redux/post/types";
+import { CreateUpdatePayload, GetDeletePayload } from "redux/comment/types";
 
 
 export const authRequest = {
@@ -73,6 +74,17 @@ export const postRequest = {
                 }
             }
         )
+}
+
+export const commentRequest = {
+    createComment: (params: CreateUpdatePayload) =>
+        apiInstance.post(`${END_POINTS.COMMENT}/${params.postId}`, params),
+    getAllComment: (params: GetDeletePayload) =>
+        apiInstance.get(`${END_POINTS.COMMENT}/${params.postId}`),
+    updateComment: (params: CreateUpdatePayload) =>
+        apiInstance.patch(`${END_POINTS.COMMENT}/${params.commentId}`, params),
+    deleteComment: (params: GetDeletePayload) =>
+        apiInstance.delete(`${END_POINTS.COMMENT}/${params.commentId}`)
 }
 
 export const publicRequest = {
