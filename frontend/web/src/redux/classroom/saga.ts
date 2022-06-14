@@ -91,7 +91,7 @@ function* createClassroom({payload} : types.CreateClassroomAction){
         const payload = handleAxiosError(error as AxiosError)
 
         yield put({
-            type: types.UPDATE_CLASSROOM_FAILED,
+            type: types.CREATE_CLASSROOM_FAILED,
             payload
         })
     }

@@ -6,8 +6,8 @@ import Dashboard from 'components/Dashboard'
 import Layout from 'components/Layout'
 import CheckRole from 'router/CheckRole'
 import FacultyIndex from 'pages/Admin/Faculty'
-import DepartmentIndex from 'pages/Admin/Department'
-import DepartmentForm from 'pages/Admin/Department/DepartmentForm'
+import Subject from 'pages/Admin/Subject'
+import SubjectForm from 'pages/Admin/Subject/SubjectForm'
 import FacultyForm from 'pages/Admin/Faculty/FacultyForm'
 import FacultyProfile from 'pages/Admin/Faculty/FacultyProfile'
 import StudentIndex from 'pages/Admin/Student'
@@ -21,6 +21,7 @@ import ClassroomPage from 'pages/Admin/Classroom'
 import ClassroomForm from 'pages/Admin/Classroom/ClassroomForm'
 import UpdateClassroomForm from 'pages/Admin/Classroom/UpdateClassroomForm'
 import ClassroomDetails from 'pages/Admin/Classroom/ClassroomDetails'
+import UpdateSubjectForm from 'pages/Admin/Subject/UpdateSubjectForm'
 
 const CustomRoute = () => {
     return (
@@ -36,8 +37,9 @@ const CustomRoute = () => {
 
                                     {/* Department */}
                                     <Route path='subject'>
-                                        <Route index element={<DepartmentIndex />} />
-                                        <Route path="create" element={<DepartmentForm />} />
+                                        <Route index element={<Subject />} />
+                                        <Route path="create" element={<SubjectForm />} />
+                                        <Route path="update/:id" element={<UpdateSubjectForm />} />
                                     </Route>
 
                                     {/* Classroom */}

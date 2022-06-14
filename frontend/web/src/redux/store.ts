@@ -6,6 +6,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import rootSaga from './sagas';
 import rootReducer from './reducers';
+import { configureStore } from '@reduxjs/toolkit';
 
 const persistConfig = {
     key: "root",
@@ -21,10 +22,10 @@ const composeEnhancers = composeWithDevTools({
     trace: true
 });
 
-const store = createStore(
-    persistedReducer,
-    composeEnhancers(applyMiddleware(sagaMiddleware))
-);
+const store = configureStore({
+    reducer: persistedReducer,
+    middleware: [sagaMiddleware]
+});
 
 sagaMiddleware.run(rootSaga);
 

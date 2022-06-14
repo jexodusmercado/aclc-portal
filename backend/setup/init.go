@@ -11,7 +11,6 @@ import (
 
 	"errors"
 	"log"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -83,11 +82,13 @@ func InitializeServices(router infrastructure.GinRouter) {
 	); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
 
 		if err := db.DB.First(&models.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-			layout := time.RFC3339[:len("1994-12-17")]
-			t, err := time.Parse(layout, "1994-12-17")
-			if err != nil {
-				log.Fatalf(err.Error())
-			}
+			// layout := time.RFC3339[:len("1994-12-17")]
+			// t, err := time.Parse(constants.DATE_LAYOUT, "1994-12-17")
+			// t, _ := time.Parse(constants.DATE_LAYOUT, "1994-12-17")
+			// year, month, day := time.Time.Date(t)
+			// if err != nil {
+			// 	log.Fatalf(err.Error())
+			// }
 
 			hashPassword, err := util.HashPassword("password")
 			if err != nil {
@@ -101,7 +102,7 @@ func InitializeServices(router infrastructure.GinRouter) {
 					LastName:  "Admin",
 					Username:  "11109111",
 					Password:  hashPassword,
-					Birthday:  t,
+					Birthday:  "1994-12-17",
 					Type:      "ADMIN",
 					IsActive:  true,
 				},

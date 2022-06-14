@@ -44,19 +44,19 @@ func (c ClassroomRepository) Create(classroom models.ClassroomCreation, students
 
 	}
 
-	dbClassroom.Title = classroom.Title
-	dbClassroom.Body = classroom.Body
-	dbClassroom.SubjectID = classroom.SubjectID
-	dbClassroom.TeacherID = classroom.TeacherID
-	dbClassroom.Students = users
-	dbClassroom.IsActive = true
+	dbClassroom.Title 		= classroom.Title
+	dbClassroom.Body 		= classroom.Body
+	dbClassroom.SubjectID 	= classroom.SubjectID
+	dbClassroom.TeacherID	= classroom.TeacherID
+	dbClassroom.Students 	= users
+	dbClassroom.IsActive 	= true
 
-	return c.db.DB.Create(&dbClassroom).Error
-	// if err != nil {
-	// 	return err
-	// }
+	err := c.db.DB.Create(&dbClassroom).Error
+	if err != nil {
+		return err
+	}
 
-	// return c.db.DB.Model(&dbClassroom).Association("Students").Append(&users)
+	return c.db.DB.Model(&dbClassroom).Association("Students").Replace(&users)
 }
 
 //FindAll -> method for returning all classrooms

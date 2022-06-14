@@ -15,7 +15,7 @@ type Classroom struct {
 	IsActive  bool    `json:"is_active"`
 	Subject   Subject
 	Teacher   User    `gorm:"foreignKey:TeacherID"`
-	Students  []*User `gorm:"many2many:students_classroom"`
+	Students  []*User `gorm:"many2many:students_classroom;save_association:false"`
 	Posts     []Post
 }
 

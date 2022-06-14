@@ -40,15 +40,16 @@ func (u UserRepository) CreateUser(user models.UserRegister, schoolyear models.S
 		return err
 	}
 
-	dbUser.Email = user.Email
-	dbUser.FirstName = user.FirstName
-	dbUser.LastName = user.LastName
-	dbUser.Password = user.Password
-	dbUser.Username = user.Username
-	dbUser.Birthday = user.Birthday
-	dbUser.Type = user.Type
-	dbUser.IsActive = true
-	dbUser.SchoolYear = append([]*models.SchoolYear{}, schoolyears)
+	dbUser.Email 		= user.Email
+	dbUser.FirstName 	= user.FirstName
+	dbUser.LastName 	= user.LastName
+	dbUser.Password 	= user.Password
+	dbUser.Username 	= user.Username
+	dbUser.Birthday 	= user.Birthday
+	dbUser.Type 		= user.Type
+	dbUser.Image		= user.Image
+	dbUser.IsActive 	= true
+	dbUser.SchoolYear 	= append([]*models.SchoolYear{}, schoolyears)
 
 	return u.db.DB.Create(&dbUser).Error
 }
@@ -70,16 +71,17 @@ func (u UserRepository) CreateStudent(user models.StudentRegister, schoolyear mo
 		return err
 	}
 
-	dbUser.Email = user.Email
-	dbUser.FirstName = user.FirstName
-	dbUser.LastName = user.LastName
-	dbUser.Password = user.Password
-	dbUser.Username = user.Username
-	dbUser.Birthday = user.Birthday
-	dbUser.Type = user.Type
-	dbUser.CourseID = user.CourseID
-	dbUser.IsActive = true
-	dbUser.SchoolYear = append([]*models.SchoolYear{}, schoolyears)
+	dbUser.Email 		= user.Email
+	dbUser.FirstName 	= user.FirstName
+	dbUser.LastName 	= user.LastName
+	dbUser.Password 	= user.Password
+	dbUser.Username 	= user.Username
+	dbUser.Birthday 	= user.Birthday
+	dbUser.Type 		= user.Type
+	dbUser.CourseID 	= user.CourseID
+	dbUser.Image		= user.Image
+	dbUser.IsActive 	= true
+	dbUser.SchoolYear 	= append([]*models.SchoolYear{}, schoolyears)
 
 	return u.db.DB.Create(&dbUser).Error
 }

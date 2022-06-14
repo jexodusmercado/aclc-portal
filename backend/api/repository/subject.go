@@ -23,7 +23,7 @@ func (s SubjectRepository) Create(subject models.SubjectCreation) error {
 
 	err := s.db.DB.Where("code = ?", subject.Code).First(&dbSubject).Error
 	if err == nil {
-		return errors.New("Subject code already exist")
+		return errors.New("SUBJECT CODE DOES NOT EXIST")
 	}
 
     dbSubject.Name	 		= subject.Name
@@ -45,7 +45,7 @@ func (s SubjectRepository) FindAll(subject models.Subject, keyword string) (*[]m
     if keyword != "" {
         queryKeyword := "%" + keyword + "%"
         queryBuilder = queryBuilder.Where(
-            s.db.DB.Where("user.title LIKE ? ", queryKeyword))
+            s.db.DB.Where("subject.name LIKE ? ", queryKeyword).Or("subject.code LIKE ? ", queryKeyword))
     }
 
     err := queryBuilder.

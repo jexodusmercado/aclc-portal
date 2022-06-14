@@ -5,7 +5,7 @@ import { CreateUserPayload, GetUserPayload, GetUsersPayload } from "redux/users/
 import { CreateCoursePayload } from "redux/courses/types";
 import { ChangeActiveSchoolYearPayload, CreateSchoolYearPayload } from "redux/school-year/types";
 import { CreateClassroomPayload, GetAllClassroomPayload, GetClassroomPayload, UpdateClassroomPayload } from "redux/classroom/types";
-import { GetSubjectsPayload } from "redux/subject/types";
+import { CreateSubjectsPayload, DeleteSubjectPayload, GetAllSubjectPayload, GetSubjectPayload, UpdateSubjectPayload } from "redux/subject/types";
 import { CreatePostPayload } from "redux/post/types";
 import { CreateUpdatePayload, GetDeletePayload } from "redux/comment/types";
 
@@ -19,7 +19,7 @@ export const authRequest = {
 
 export const usersRequest = {
     createUserRequest: (params: CreateUserPayload) =>
-        apiInstance.post(`${END_POINTS.AUTH}/${params.letter_type}/${END_POINTS.REGISTER}`, params),
+        apiInstance.post(`${END_POINTS.AUTH}/${params.letter_type}/${END_POINTS.REGISTER}`, params.formData),
 
     getAllUsersRequest: (params?: GetUsersPayload) =>
         apiInstance.get(END_POINTS.USERS, { params }),
@@ -59,8 +59,22 @@ export const classroomRequest = {
 }
 
 export const subjectRequest = {
-    getSubjects: (params: GetSubjectsPayload) =>
-        apiInstance.get(END_POINTS.SUBJECT, { params })
+    getAllSubject: (params: GetAllSubjectPayload) =>
+        apiInstance.get(END_POINTS.SUBJECT, { params }),
+
+    getSubject: (param: GetSubjectPayload) =>
+        apiInstance.get(`${END_POINTS.SUBJECT}/${param.id}`),
+
+    createSubject: (params: CreateSubjectsPayload) =>
+        apiInstance.post(END_POINTS.SUBJECT, params),
+
+    updateSubject: (params: UpdateSubjectPayload) =>{
+        const {id, ...rest} = params
+        return apiInstance.patch(`${END_POINTS.SUBJECT}/${id}`, rest)
+    },
+    
+    deleteSubject: (params: DeleteSubjectPayload) =>
+        apiInstance.delete(`${END_POINTS.SUBJECT}/${params.id}`)
 }
 
 export const postRequest = {

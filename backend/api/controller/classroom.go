@@ -31,7 +31,7 @@ func (cr *ClassroomController) CreateClassroom(c *gin.Context) {
 
 	err := cr.service.CreateClassroom(classroom, students)
 	if err != nil {
-		util.ErrorJSON(c, http.StatusBadRequest, err)
+		util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

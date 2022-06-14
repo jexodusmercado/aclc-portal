@@ -36,12 +36,37 @@ func (u *UserController) CreateUser(c *gin.Context) {
 
 	var user models.UserRegister
 	var schoolyear models.SchoolYear
+
+	file, err := c.FormFile("file")
+
+	if err == nil && file != nil {
+
+		extension = filepath.Ext(file.Filename)
+		newFileName = uuid.NewV4().String() + extension
+
+		user.Image = newFileName
+
+		if err := c.SaveUploadedFile(file, "./public/users/"+newFileName); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+				"message": "Unable to save the file",
+			})
+			return
+		}
+	}
+
 	if err := c.ShouldBind(&user); err != nil {
-		util.ErrorJSON(c, http.StatusBadRequest, err)
+
+		util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	year, month, day := time.Time.Date(user.Birthday)
+	t, _ := time.Parse(constants.DATE_LAYOUT, user.Birthday)
+	// if err != nil {
+	// 	util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
+	// 	return
+	// }
+
+	year, month, day := time.Time.Date(t)
 
 	generatedPassword := user.LastName + strconv.Itoa(year) + strconv.Itoa(int(month)) + strconv.Itoa(day)
 	hashPassword, _ := util.HashPassword(generatedPassword)
@@ -53,26 +78,13 @@ func (u *UserController) CreateUser(c *gin.Context) {
 		util.CustomErrorJson(c, http.StatusBadRequest, "No existing role")
 	}
 
-	file, err := c.FormFile("file")
 
 	newPath := filepath.Join(".", "public", "users")
 	err = os.MkdirAll(newPath, os.ModePerm)
 
-	if err == nil && file != nil {
-
-		extension = filepath.Ext(file.Filename)
-		newFileName = uuid.NewV4().String() + extension
-
-		user.Image = &newFileName
-
-		if err := c.SaveUploadedFile(file, "./public/users/"+newFileName); err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-				"message": "Unable to save the file",
-			})
-			return
-		}
+	if err != nil {
+		util.CustomErrorJson(c, http.StatusBadRequest, "Folder already exist")
 	}
-
 
 	err = u.service.CreateUser(user, schoolyear)
 	if err != nil {
@@ -85,14 +97,37 @@ func (u *UserController) CreateUser(c *gin.Context) {
 
 //CreateStudent -> create student user
 func (u *UserController) CreateStudent(c *gin.Context) {
+
+	var newFileName string
+	var extension string
+
 	var user models.StudentRegister
 	var schoolyear models.SchoolYear
+
 	if err := c.ShouldBind(&user); err != nil {
 		util.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
 
-	year, month, day := time.Time.Date(user.Birthday)
+	file, err := c.FormFile("file")
+
+	if err == nil && file != nil {
+
+		extension = filepath.Ext(file.Filename)
+		newFileName = uuid.NewV4().String() + extension
+
+		user.Image = newFileName
+
+		if err := c.SaveUploadedFile(file, "./public/users/"+newFileName); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+				"message": "Unable to save the file",
+			})
+			return
+		}
+	}
+
+	t, _ := time.Parse(constants.DATE_LAYOUT, user.Birthday)
+	year, month, day := time.Time.Date(t)
 
 	generatedPassword := user.LastName + strconv.Itoa(year) + strconv.Itoa(int(month)) + strconv.Itoa(day)
 
@@ -105,7 +140,7 @@ func (u *UserController) CreateStudent(c *gin.Context) {
 		util.CustomErrorJson(c, http.StatusBadRequest, "Student type only")
 	}
 
-	err := u.service.CreateStudent(user, schoolyear)
+	err = u.service.CreateStudent(user, schoolyear)
 	if err != nil {
 		util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
 		return

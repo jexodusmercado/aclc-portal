@@ -15,8 +15,9 @@ import { List } from 'interfaces'
 import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
 import SelectMenu from 'components/SelectMenu'
 import toast from 'react-hot-toast'
+import dayjs from 'dayjs'
 
-interface FormData {
+interface IForm {
     username        : string
     first_name      : string
     last_name       : string
@@ -49,16 +50,27 @@ const FacultyForm = () => {
 
     const cancelForm = () => navigate('/dashboard/faculty');
 
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<IForm>({
         mode: "onChange",
         resolver: yupResolver(facultySchema)
     });
 
-    const onSubmit: SubmitHandler<FormData> = (data) => {
-        data.type           = "faculty"
-        data.letter_type    = "f"
+    const onSubmit: SubmitHandler<IForm> = (data) => {
+        const fd = new FormData()
 
-        dispatch(createUserRequest(data))
+        for( var key in data) {
+            fd.append(key, (data as any)[key])
+        }
+        
+        fd.set('type', 'faculty')
+
+        fd.set('birthday', dayjs(data.birthday).format("YYYY-MM-DD"))
+
+        if(picture){
+            fd.append('file', picture)
+        }
+
+        dispatch(createUserRequest({type:'faculty', letter_type:'f', formData: fd}))
     }
 
     const handleAttachement = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,6 +92,7 @@ const FacultyForm = () => {
 
     useUpdateEffect(() => {
         setValue('birthday', startDate)
+        console.log(dayjs(startDate).format("YYYY-MM-DD"))
     },[startDate])
 
     useUpdateEffect(() => {
@@ -118,148 +131,146 @@ const FacultyForm = () => {
                 </div>
             </div>
 
-            <div className="">
-                <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                    <CardContainer padding='' footer={true} cancelOnclick={cancelForm} loading={createdState.loading}>
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                <CardContainer padding='' footer={true} cancelOnclick={cancelForm} loading={createdState.loading}>
+                
+                    <div className="p-4 sm:px-0">
+                        <h1 className="text-lg font-medium text-gray-500 leading-6"> Profile </h1>
+                        <p className="mt-1 text-sm text-gray-500 opacity-60">
+                            Fill out the form for the new faculty member.
+                        </p>
+                    </div>
                     
-                        <div className="p-4 sm:px-0">
-                            <h1 className="text-lg font-medium text-gray-500 leading-6"> Profile </h1>
-                            <p className="mt-1 text-sm text-gray-500 opacity-60">
-                                Fill out the form for the new faculty member.
-                            </p>
-                        </div>
-                        
-                        <div className="grid grid-cols-4 gap-6">
+                    <div className="grid grid-cols-4 gap-6">
 
-                            <div className="col-span-3">
-                                <label className="block text-sm font-medium text-gray-700">Photo</label>
-                                <div className="mt-1 flex items-center">
-                                    {
-                                        picture &&
-                                        <>
-                                           <img
-                                                className="inline-block h-14 w-14 rounded-full"
-                                                src={URL.createObjectURL(picture)}
-                                                alt=""
-                                            />
-                                            <button
-                                                className='ml-5 bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                                                onClick={() => setPicture(undefined)}
-                                            >
-                                                Cancel
-                                            </button>
-                                        </>
-                                    }
-
-                                    {
-                                        !picture &&
-                                        <>
-                                        <span className="inline-block bg-gray-100 rounded-full overflow-hidden h-12 w-12">
-                                            <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                                            </svg>
-                                        </span>
-                                        <label
-                                        htmlFor='attachment'
-                                        className="ml-5 bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        <div className="col-span-3">
+                            <label className="block text-sm font-medium text-gray-700">Photo</label>
+                            <div className="mt-1 flex items-center">
+                                {
+                                    picture &&
+                                    <>
+                                        <img
+                                            className="inline-block h-14 w-14 rounded-full"
+                                            src={URL.createObjectURL(picture)}
+                                            alt=""
+                                        />
+                                        <button
+                                            className='ml-5 bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                                            onClick={() => setPicture(undefined)}
                                         >
-                                            Upload
-                                        </label>
-                                        <input type='file' id='attachment' name='attachement' onChange={(e) => handleAttachement(e)} hidden />
+                                            Cancel
+                                        </button>
                                     </>
-                                    }
-                                    </div>
-                            </div>
+                                }
 
-                            <div className="col-span-4 sm:col-span-4">
-                                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                                    Username
-                                </label>
-                                <div className="mt-1 flex rounded-md shadow">
-                                    <input
-                                        type="text"
-                                        id="username"
-                                        className={classNames(errors.username ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
-                                        {...register('username')}
-                                    />
+                                {
+                                    !picture &&
+                                    <>
+                                    <span className="inline-block bg-gray-100 rounded-full overflow-hidden h-12 w-12">
+                                        <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        </svg>
+                                    </span>
+                                    <label
+                                    htmlFor='attachment'
+                                    className="ml-5 bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    >
+                                        Upload
+                                    </label>
+                                    <input type='file' id='attachment' name='attachement' onChange={(e) => handleAttachement(e)} hidden />
+                                </>
+                                }
                                 </div>
-                                {errors.username && <p className='text-sm text-red-400'> {errors.username.message} </p>}
-                            </div>
-
-                            <div className="col-span-3 sm:col-span-2">
-                                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                                    First name
-                                </label>
-                                <div className="mt-1 flex rounded-md shadow">
-                                    <input
-                                        type="text"
-                                        id="firstName"
-                                        className={classNames(errors.first_name ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
-                                        {...register('first_name')}
-                                    />
-                                </div>
-                                {errors.first_name && <p className='text-sm text-red-400'> {errors.first_name.message} </p>}
-                            </div>
-
-                            <div className="col-span-3 sm:col-span-2">
-                                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                                    Last name
-                                </label>
-                                <div className="mt-1 flex rounded-md shadow">
-                                    <input
-                                        type="text"
-                                        id="lastName"
-                                        className={classNames(errors.last_name ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
-                                        {...register('last_name')}
-                                    />
-                                </div>
-                                {errors.last_name && <p className='text-sm text-red-400'> {errors.last_name.message} </p>}
-                            </div>
-
-                            <div className="col-span-2 sm:col-span-2">
-                                <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
-                                    Date of Birth
-                                </label>
-                                <div className="mt-1 flex rounded-md shadow">
-                                    <DatePicker 
-                                        id='birthday'
-                                        name='birthday'
-                                        selected={startDate}
-                                        onChange={e => setStartDate(e)}
-                                        className="input-text"
-                                    />
-                                </div>
-                                {errors.birthday && <p className='text-sm text-red-400'> *Date is required </p>}
-                            </div>
-
-                            <div className="col-span-2 sm:col-span-2">
-                                <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
-                                    School Year
-                                </label>
-                                <div className="mt-1 flex rounded-md shadow">
-                                    <SelectMenu selected={schoolYear} setSelected={setSchoolYear} lists={yearList} className='max-w-sm mt-0 pt-0'/>
-                                </div>
-                                {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>}
-                            </div>
-
-                            <div className="col-span-4 sm:col-span-4">
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                    Email Address <span className='text-xs opacity-75'> *optional  </span>
-                                </label>
-                                <div className="mt-1 flex rounded-md shadow">
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        className={classNames(errors.email ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
-                                        {...register('email')}
-                                    />
-                                </div>
-                                {errors.email && <p className='text-sm text-red-400'> {errors.email.message} </p>}
-                            </div>
                         </div>
-                    </CardContainer>
-                </form>
-            </div>
+
+                        <div className="col-span-4 sm:col-span-4">
+                            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                                Username
+                            </label>
+                            <div className="mt-1 flex rounded-md shadow">
+                                <input
+                                    type="text"
+                                    id="username"
+                                    className={classNames(errors.username ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
+                                    {...register('username')}
+                                />
+                            </div>
+                            {errors.username && <p className='text-sm text-red-400'> {errors.username.message} </p>}
+                        </div>
+
+                        <div className="col-span-3 sm:col-span-2">
+                            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                                First name
+                            </label>
+                            <div className="mt-1 flex rounded-md shadow">
+                                <input
+                                    type="text"
+                                    id="firstName"
+                                    className={classNames(errors.first_name ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
+                                    {...register('first_name')}
+                                />
+                            </div>
+                            {errors.first_name && <p className='text-sm text-red-400'> {errors.first_name.message} </p>}
+                        </div>
+
+                        <div className="col-span-3 sm:col-span-2">
+                            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                                Last name
+                            </label>
+                            <div className="mt-1 flex rounded-md shadow">
+                                <input
+                                    type="text"
+                                    id="lastName"
+                                    className={classNames(errors.last_name ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
+                                    {...register('last_name')}
+                                />
+                            </div>
+                            {errors.last_name && <p className='text-sm text-red-400'> {errors.last_name.message} </p>}
+                        </div>
+
+                        <div className="col-span-2 sm:col-span-2">
+                            <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
+                                Date of Birth
+                            </label>
+                            <div className="mt-1 flex rounded-md shadow">
+                                <DatePicker 
+                                    id='birthday'
+                                    name='birthday'
+                                    selected={startDate}
+                                    onChange={e => setStartDate(e)}
+                                    className="input-text"
+                                />
+                            </div>
+                            {errors.birthday && <p className='text-sm text-red-400'> *Date is required </p>}
+                        </div>
+
+                        <div className="col-span-2 sm:col-span-2">
+                            <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
+                                School Year
+                            </label>
+                            <div className="mt-1 flex rounded-md shadow">
+                                <SelectMenu selected={schoolYear} setSelected={setSchoolYear} lists={yearList} className='mt-0 pt-0'/>
+                            </div>
+                            {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>}
+                        </div>
+
+                        <div className="col-span-4 sm:col-span-4">
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                Email Address <span className='text-xs opacity-75'> *optional  </span>
+                            </label>
+                            <div className="mt-1 flex rounded-md shadow">
+                                <input
+                                    type="email"
+                                    id="email"
+                                    className={classNames(errors.email ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
+                                    {...register('email')}
+                                />
+                            </div>
+                            {errors.email && <p className='text-sm text-red-400'> {errors.email.message} </p>}
+                        </div>
+                    </div>
+                </CardContainer>
+            </form>
         </div>
     )
 }

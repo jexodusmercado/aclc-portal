@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 
 	"net/http"
@@ -28,6 +29,8 @@ func NewGinRouter() GinRouter {
         "Content-Type",
         "Authorization",
     }
+
+    httpRouter.Use(static.Serve("/public", static.LocalFile("./public", true)))
 
     httpRouter.GET("/", func(c *gin.Context) {
         c.JSON(http.StatusOK, gin.H{"data": "Up and Running..."})

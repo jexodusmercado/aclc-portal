@@ -19,6 +19,7 @@ export const UserInitialState  = {
                 first_name: "",
                 last_name: "",
                 birthday: "",
+                image: "",
                 type: "",
                 is_active: false,
                 updated_at: "",
@@ -121,13 +122,14 @@ export interface GetUserPayload {
 }
 
 export interface CreateUserPayload {
-    username        : string
-    first_name      : string
-    last_name       : string
-    birthday        : Date | null
+    // username        : string
+    // first_name      : string
+    // last_name       : string
+    // birthday        : Date | null
     type            : string
-    email?          : string
+    // email?          : string
     letter_type     : string
-    course_id?      : number
-    schoolyear_id   : number
+    // course_id?      : number
+    // schoolyear_id   : number
+    formData      : FormData
 }
