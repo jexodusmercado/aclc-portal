@@ -1,0 +1,9 @@
+{
+    "[go]": {
+        "editor.formatOnSave": false 
+    },
+    "go.buildOnSave": "package",
+    "go.lintOnSave": "package",
+    "go.vetOnSave": "package",
+    "go.autocompleteUnimportedPackages": true
+}

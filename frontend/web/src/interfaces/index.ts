@@ -12,13 +12,6 @@ export interface List {
 export interface ListWithAvatar extends List {
     avatar?: string
 }
-
-export interface IDepartment {
-    id: number
-    name: string
-    description: string
-    courses: Array<string>
-}
 export interface IFaculty {
     id: number,
     firstName: string
