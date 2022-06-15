@@ -14,6 +14,8 @@ export const initialState = {
             first_name : "",
             is_active : false,
             last_name : "",
+            image: "",
+            phone: "",
             type : "",
             updated_at : "",
             username : "",

@@ -27,6 +27,7 @@ interface IForm {
     type            : string
     letter_type     : string
     course_id       : number
+    phone           : string
     schoolyear_id   : number
 }
 
@@ -37,6 +38,7 @@ const facultySchema = yup.object({
     birthday        : yup.date().required('*Birthday is required'),
     email           : yup.string().trim().email('*Input correct email format'),
     course_id       : yup.number().required('*Course is required'),
+    phone           : yup.string().required('*Phone number is required'),
     schoolyear_id   : yup.number().required('*School Year is required')
 }).required()
 
@@ -317,6 +319,21 @@ const StudentForm = () => {
                                 />
                             </div>
                             {errors.email && <p className='text-sm text-red-400'> {errors.email.message} </p>}
+                        </div>
+
+                        <div className="col-span-4 sm:col-span-4">
+                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                                Phone Number
+                            </label>
+                            <div className="mt-1 flex rounded-md shadow">
+                                <input
+                                    type="phone"
+                                    id="phone"
+                                    className={classNames(errors.phone ? "border border-red-300 focus:ring-red-300 focus:border-red-300" : "", "input-text")}
+                                    {...register('phone')}
+                                />
+                            </div>
+                            {errors.phone && <p className='text-sm text-red-400'> {errors.phone.message} </p>}
                         </div>
                     </div>
                 </CardContainer>

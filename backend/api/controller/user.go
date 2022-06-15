@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -60,15 +61,31 @@ func (u *UserController) CreateUser(c *gin.Context) {
 		return
 	}
 
-	t, _ := time.Parse(constants.DATE_LAYOUT, user.Birthday)
-	// if err != nil {
-	// 	util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
-	// 	return
-	// }
+	t, err := time.Parse(constants.DATE_LAYOUT, user.Birthday)
+	if err != nil {
+		util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
+		return
+	}
 
 	year, month, day := time.Time.Date(t)
 
+
+
 	generatedPassword := user.LastName + strconv.Itoa(year) + strconv.Itoa(int(month)) + strconv.Itoa(day)
+
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
+	fmt.Println("year")
+	fmt.Println(year)
+	fmt.Println("month")
+	fmt.Println(month)
+	fmt.Println("day")
+	fmt.Println(day)
+	fmt.Println("password generated is")
+	fmt.Println(generatedPassword)
+	
 	hashPassword, _ := util.HashPassword(generatedPassword)
 	user.Password = hashPassword
 	user.Type = constants.USER_TYPE[user.Type]
@@ -126,11 +143,26 @@ func (u *UserController) CreateStudent(c *gin.Context) {
 		}
 	}
 
-	t, _ := time.Parse(constants.DATE_LAYOUT, user.Birthday)
-	year, month, day := time.Time.Date(t)
+	t, err := time.Parse(constants.DATE_LAYOUT, user.Birthday)
+	if err != nil {
+		util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	year, month, day := t.Date()
 
 	generatedPassword := user.LastName + strconv.Itoa(year) + strconv.Itoa(int(month)) + strconv.Itoa(day)
-
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
+	fmt.Println("year")
+	fmt.Println(year)
+	fmt.Println("month")
+	fmt.Println(month)
+	fmt.Println("day")
+	fmt.Println(day)
+	fmt.Println("password generated is")
+	fmt.Println(generatedPassword)
 	hashPassword, _ := util.HashPassword(generatedPassword)
 	user.Password = hashPassword
 	user.Type = constants.USER_TYPE[user.Type]

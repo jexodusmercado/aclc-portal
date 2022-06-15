@@ -12,6 +12,7 @@ import { useIsomorphicLayoutEffect, useUserData } from 'hooks'
 import { IMenu } from 'interfaces'
 import { ActiveSchoolYearState } from 'redux/school-year/types'
 import { GetActiveSchoolYear } from 'redux/school-year/action'
+import { BASE_URL } from 'services/api'
 
 const adminNavigation = [
     { name: 'Dashboard', href: '/dashboard', icon: PresentationChartBarIcon, end: true},
@@ -26,10 +27,16 @@ const adminNavigation = [
 
 const studentNavigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, end: true},
+  { name: 'Classroom', href: '/dashboard', icon: HomeIcon, end: true},
+  { name: 'Grade', href: '/dashboard', icon: HomeIcon, end: true},
+
 ]
 
 const facultyNavigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, end: true},
+  { name: 'Classroom', href: '/dashboard/classroom', icon: HomeIcon, end: true},
+  { name: 'Student', href: '/dashboard/student', icon: UsersIcon, end: false},
+  { name: 'Settings', href: '/dashboard/settings', icon: CogIcon, end: false},
 ]
 
 const userNavigation = [
@@ -230,7 +237,7 @@ const Navigation = () => {
                                         <span className="sr-only">Open user menu</span>
                                         <img
                                             className="h-8 w-8 rounded-full"
-                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                            src={ BASE_URL + '/' + user.image}
                                             alt=""
                                         />
                                         </Menu.Button>

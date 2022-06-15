@@ -48,6 +48,7 @@ func (u UserRepository) CreateUser(user models.UserRegister, schoolyear models.S
 	dbUser.Birthday 	= user.Birthday
 	dbUser.Type 		= user.Type
 	dbUser.Image		= user.Image
+	dbUser.Phone		= user.Phone
 	dbUser.IsActive 	= true
 	dbUser.SchoolYear 	= append([]*models.SchoolYear{}, schoolyears)
 
@@ -80,6 +81,7 @@ func (u UserRepository) CreateStudent(user models.StudentRegister, schoolyear mo
 	dbUser.Type 		= user.Type
 	dbUser.CourseID 	= user.CourseID
 	dbUser.Image		= user.Image
+	dbUser.Phone		= user.Phone
 	dbUser.IsActive 	= true
 	dbUser.SchoolYear 	= append([]*models.SchoolYear{}, schoolyears)
 

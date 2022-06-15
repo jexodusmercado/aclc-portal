@@ -20,6 +20,7 @@ export const UserInitialState  = {
                 last_name: "",
                 birthday: "",
                 image: "",
+                phone: "",
                 type: "",
                 is_active: false,
                 updated_at: "",
