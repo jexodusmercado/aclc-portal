@@ -10,9 +10,10 @@ interface Props {
     setState:           React.Dispatch<React.SetStateAction<SubjectsDataState["data"]>>
     checkbox:           React.MutableRefObject<HTMLInputElement | null>
     toggleAll:          () => void
+    onDelete:           () => void
 }
 
-const SubjectTable: React.FC<Props> = ({state, setState, subjects, checkbox, checked, toggleAll}) => {
+const SubjectTable: React.FC<Props> = ({state, setState, subjects, checkbox, checked, toggleAll, onDelete}) => {
     return (
         <div className="mt-5 w-full sm:px-6 ">
             <div className="flex flex-col">
@@ -30,6 +31,7 @@ const SubjectTable: React.FC<Props> = ({state, setState, subjects, checkbox, che
                             <button
                                 type="button"
                                 className="button-primary bg-red-700"
+                                onClick={onDelete}
                             >
                                 Delete
                             </button>

@@ -6,7 +6,7 @@ interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const FormModal: React.FC<IProps> = ({open, setOpen, children}) => {
+const Modal: React.FC<IProps> = ({open, setOpen, children}) => {
 
     const cancelButtonRef = useRef(null)
 
@@ -47,4 +47,4 @@ const FormModal: React.FC<IProps> = ({open, setOpen, children}) => {
     )
 }
 
-export default FormModal;
+export default Modal;
