@@ -67,6 +67,27 @@ func InitializeServices(router infrastructure.GinRouter) {
 	commentRoute := routes.NewCommentRoute(commentController, router)
 	commentRoute.Setup()
 
+	//grade
+	gradeRepository := repository.NewGradeRepository(db)
+	gradeService := service.NewGradeService(gradeRepository)
+	gradeController := controller.NewGradeController(gradeService)
+	gradeRoute := routes.NewGradeRoute(gradeController, router)
+	gradeRoute.Setup()
+
+	//grade-period
+	gradePeriodRepository := repository.NewGradePeriodRepository(db)
+	gradePeriodService := service.NewGradePeriodService(gradePeriodRepository)
+	gradePeriodController := controller.NewGradePeriodController(gradePeriodService)
+	gradePeriodRoute := routes.NewGradePeriodRoute(gradePeriodController, router)
+	gradePeriodRoute.Setup()
+
+	//quiz
+	quizRepository := repository.NewQuizRepository(db)
+	quizService := service.NewQuizService(quizRepository)
+	quizController := controller.NewQuizController(quizService)
+	quizRoute := routes.NewQuizRoute(quizController, router)
+	quizRoute.Setup()
+
 	// migrating User model to datbase table
 	if err := db.DB.AutoMigrate(
 		&models.Course{},
@@ -79,6 +100,9 @@ func InitializeServices(router infrastructure.GinRouter) {
 		&models.Department{},
 		&models.User{},
 		&models.Comment{},
+		&models.Grade{},
+		&models.GradePeriod{},
+		&models.Quiz{},
 	); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
 
 		if err := db.DB.First(&models.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {

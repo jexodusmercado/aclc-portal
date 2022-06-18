@@ -7,6 +7,13 @@ var USER_TYPE = map[string]string {
 	"faculty"	: "FACULTY",
 }
 
+var PERIOD_TYPE = map[string]string {
+	"prelim"	: "PRELIM",
+	"midterm"	: "MIDTERM",
+	"prefinal"	: "PREFINAL",
+	"final"		: "FINAL",
+}
+
 const USER_TYPE_ADMIN	= "ADMIN"
 const USER_TYPE_STUDENT = "STUDENT"
 const USER_TYPE_FACULTY = "FACULTY"

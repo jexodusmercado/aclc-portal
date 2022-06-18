@@ -238,7 +238,7 @@ func (u UserController) GetUsers(c *gin.Context) {
 		util.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
-	respArr := make([]map[string]interface{}, 0, 0)
+	respArr := make([]map[string]interface{}, 0)
 
 	if strings.ToUpper(userType) == constants.USER_TYPE_STUDENT {
 		for _, n := range *data {

@@ -27,7 +27,7 @@ func (c ClassroomRepository) Create(classroom models.ClassroomCreation, students
 	var dbClassroom models.Classroom
 	var users []*models.User
 
-	for _, u := range classroom.StudentsID {
+	for _, u := range classroom.StudentID {
 		var user *models.User
 
 		err := c.db.DB.
@@ -44,19 +44,16 @@ func (c ClassroomRepository) Create(classroom models.ClassroomCreation, students
 
 	}
 
-	dbClassroom.Title 		= classroom.Title
-	dbClassroom.Body 		= classroom.Body
-	dbClassroom.SubjectID 	= classroom.SubjectID
-	dbClassroom.TeacherID	= classroom.TeacherID
-	dbClassroom.Students 	= users
-	dbClassroom.IsActive 	= true
+	dbClassroom.Title 			= 	classroom.Title
+	dbClassroom.Body 			= 	classroom.Body
+	dbClassroom.SubjectID 		= 	classroom.SubjectID
+	dbClassroom.TeacherID		= 	classroom.TeacherID
+	dbClassroom.SchoolYearID	=	*classroom.SchoolYearID
+	dbClassroom.Students 		= 	users
+	dbClassroom.IsActive 		= 	true
 
-	err := c.db.DB.Create(&dbClassroom).Error
-	if err != nil {
-		return err
-	}
+	return c.db.DB.Preload("Records").Create(&dbClassroom).Association("Students").Error
 
-	return c.db.DB.Model(&dbClassroom).Association("Students").Replace(&users)
 }
 
 //FindAll -> method for returning all classrooms
@@ -137,7 +134,7 @@ func (u ClassroomRepository) Update(response models.ClassroomUpdate) (models.Cla
 		}
 	}
 
-	for _, id := range response.StudentsID {
+	for _, id := range response.StudentID {
 		var user *models.User
 
 		err := u.db.DB.
