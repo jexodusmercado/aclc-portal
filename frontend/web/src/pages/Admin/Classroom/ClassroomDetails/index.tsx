@@ -3,13 +3,8 @@ import React, {
     useState 
 } from 'react'
 
-import RichTextEditor, {
-    EditorValue
-} from 'react-rte'
-
 import { 
     DownloadIcon, 
-    PaperClipIcon, 
     PencilAltIcon, 
     PlusCircleIcon, 
     PlusIcon, 
@@ -18,54 +13,48 @@ import {
 
 import { 
     useEffectOnce, 
-    useGetClassroom, 
-    useIsomorphicLayoutEffect
+    useGetClassroom,
+    useUserData
 } from 'hooks'
 
 import { order } from 'utility'
 import { useDispatch } from 'react-redux'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getClassroom } from 'redux/classroom/action'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { FileIcon } from 'react-file-icon';
-import { createPostRequest } from 'redux/post/action'
 import { createCommentRequest } from 'redux/comment/action'
-import * as yup from 'yup'
 import Card from 'components/CardContainer'
 import Feeds from 'components/Feeds'
-import Modal from 'components/Modal'
 import parse from 'html-react-parser'
-import toast from 'react-hot-toast'
 import TextArea from 'components/TextArea'
+import DotsVerticalDropdown from 'components/DotsVerticalDropdown'
+import { PostDataState } from 'redux/post/types'
+import PostFormModal from '../Modals/PostFormModal'
+import ConfirmModal from 'components/Modals/ConfirmModal'
+import { deletePostRequest } from 'redux/post/action'
+import toast from 'react-hot-toast'
+import { BASE_URL } from 'services/api'
+import Avatar from 'components/Avatar'
 
-interface IForm {
-    classroomId:    number
-    title:          string
-    body:           string
-    file:           File | null
-}
-
-const formSchema = yup.object({
-    title: yup.string().trim().required('*Title is required'),
-}).required()
 
 
 const ClassroomDetails = () => {
+    const [comment, setComment]             = useState<string>('')
+    const [createModal, setCreateModal]     = useState<boolean>(false)
+    const [deleteModal, setDeleteModal]     = useState<boolean>(false)
+    const [deleteID, setDeleteID]           = useState<string>('')
+    
     const params                            = useParams()
     const dispatch                          = useDispatch()
     const classData                         = useGetClassroom()
-
-    const [attachment, setAttachment]       = useState<File>()
-    const [extension, setExtension]         = useState<string>('')
-    const [comment, setComment]             = useState<string>('')
-    const [createModal, setCreateModal]     = useState<boolean>(false)
-    const [richText, setRichText]           = useState<EditorValue>(RichTextEditor.createEmptyValue())
-
+    const navigate                          = useNavigate()
+    const user                              = useUserData()
 
     const fetchData = () => {
         if(params?.id){
             dispatch(getClassroom({classroomId: params.id}))
+        } else {
+            navigate('/dashboard/classroom')
         }
     }
 
@@ -74,14 +63,14 @@ const ClassroomDetails = () => {
         setComment('')
     }
 
-    const onPostSuccess = () => {
+    const onPostDeleteSuccess = () => {
         fetchData()
-        setCreateModal(false)
-        toast.success('Successfully created post')
+        setDeleteModal(false)
+        toast.success('Post deleted!')
     }
 
-    const onPostFailed = () => {
-        toast.error('Failed to create post.')
+    const onPostDeleteFailed = () => {
+        toast.success('Post deleted!')
     }
 
     const onPostSubmit = (id: number) => {
@@ -94,47 +83,37 @@ const ClassroomDetails = () => {
         )
     }
 
-    const { register, handleSubmit, formState: { errors } } = useForm<IForm>({
-        mode: "onChange",
-        resolver: yupResolver(formSchema)
-    })
-
-    const handleAttachment = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if(e.target.files?.length){
-            console.log(e.target.files[0])
-            setAttachment(e.target.files[0])
-            setExtension(e.target.files[0].name.split(".").pop()!)
-        }
-        // console.log(e)
-        // setExtension(e?.name.split(".").pop()!)
+    const onDeletePost = () => {
+        dispatch(
+            deletePostRequest({
+                classroomId: params.id!.toString(),
+                postId: deleteID,
+                onSuccess: onPostDeleteSuccess,
+                onFailed: onPostDeleteFailed
+            })
+        )
     }
 
-    const onSubmit: SubmitHandler<IForm> = (data) => {
-        const fd = new FormData()
-
-        fd.append('title', data.title)
-        fd.append('body', richText.toString('html'))
-        if(attachment){
-            fd.append('file', attachment)
-        }
-        
-        dispatch(createPostRequest({
-            classroomId: Number(params!.id),
-            formdata: fd,
-            onSuccess: onPostSuccess,
-            onFailed: onPostFailed
-
-        }))
+    const openDeleteModal = (post: PostDataState) => {
+        setDeleteModal(true)
+        setDeleteID(post.id.toString())
     }
 
+    const menus = (post: PostDataState) => ([
+        // {
+        //     name: 'Update',
+        //     onClick: () => console.log('update')
+        // },
+        {
+            name: 'Delete',
+            onClick: () => openDeleteModal(post)
+        },
+    ])
 
     useEffectOnce(() => {
         fetchData()
     })
 
-    useIsomorphicLayoutEffect(() => {
-        console.log(classData)
-    }, [classData])
 
     return(
         <>
@@ -197,14 +176,23 @@ const ClassroomDetails = () => {
                                             <Card className='space-y-3'>
                                                 {/* texts */}
                                                 <div className='space-y-4'>
-                                                    <div className='flex flex-col'>
-                                                        <span className='leading-6 text-xl mr-auto'> 
-                                                            {post.title}
-                                                        </span>
-                                                        <span className='text-gray-500 text-sm'>
-                                                            {post.author.full_name}
-                                                        </span>
+                                                    <div className='flex justify-between'>
+                                                        <div className='flex flex-col'>
+                                                            <span className='leading-6 text-xl mr-auto'> 
+                                                                {post.title}
+                                                            </span>
+                                                            <span className='text-gray-500 text-sm'>
+                                                                {post.author.full_name}
+                                                            </span>
+                                                        </div>
+
+                                                        <div>
+                                                        <div className="flex top">
+                                                            <DotsVerticalDropdown menus={menus(post)} />
+                                                        </div>
+                                                        </div>
                                                     </div>
+                                                    
                                                     
                                                     <div className='p-4 border-2 border-dashed bg-gray-50 text-sm h-auto'>
                                                         {parse(post.body)}
@@ -258,7 +246,7 @@ const ClassroomDetails = () => {
                         
                     </div>
                     <div>
-                        <Card className='min-h-min h-52'>
+                        <Card className='min-h-min'>
                             <div>
                                 <h3 className='text-lg leading-6'>
                                     Students
@@ -272,7 +260,14 @@ const ClassroomDetails = () => {
 
                                     {classData.data?.student && classData.data?.student.map((student) => (
                                         <li key={student.id} className="py-4 flex items-center">
-                                            <img className="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                                            <Avatar
+                                                rounded
+                                                height={8}
+                                                width={8}
+                                                avatar={BASE_URL + student.image}
+                                                name={student.first_name + " " + student.last_name}
+                                            />
+                                            {/* <img className="h-10 w-10 rounded-full" src={FILE_PATH + student.image} alt="" /> */}
                                             <div className="ml-3">
                                                 <p className="text-sm font-medium text-gray-900">{student.first_name} {student.last_name}</p>
                                             </div>
@@ -284,65 +279,20 @@ const ClassroomDetails = () => {
                     </div>
                 </div>
             </div>
-            <Modal setOpen={setCreateModal} open={createModal}>
-                <div className='leading-6 text-lg pb-2 mb-2 border-b-2 border-gray-200'>
-                        Create Post
-                </div>
-                <form className='space-y-4' onSubmit={handleSubmit(onSubmit)}>
-                    <div>
-                        <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                            Title
-                        </label>
-                        <div className="mt-1">
-                            <input
-                            type="text"
-                            id="title"
-                            className="input-text"
-                            placeholder="Ex. Computer Science 1"
-                            {...register('title')}
-                            />
-                        </div>
-                        {errors.title && <p className='text-sm text-red-400'> {errors.title.message} </p>}
-                    </div>
-                    <div>
-                        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                            Content
-                        </label>
-                        <RichTextEditor 
-                            value={richText} 
-                            onChange={setRichText} 
-                            className='h-full'
-                        />
-                    </div>
-                    <div className='flex justify-between'>
-                        <div className='overflow-hidden relative'>
-                            {
-                                !attachment &&
-                                <label htmlFor='attachment' className='cursor-pointer'>
-                                    <input type='file' id='attachment' onChange={(e) => handleAttachment(e)} hidden />
-                                    <PaperClipIcon className='h-5 w-5'/>
-                                </label>
-                            }
-
-                            {
-                                attachment &&
-                                <div className="flex space-x-2 justify-center items-center">
-                                    <div className='h-6 w-6'>
-                                        <FileIcon extension={extension} />
-                                    </div>
-                                    <span className='text-sm truncate'>
-                                        { attachment.name }
-                                    </span>
-                                </div>
-                            }
-                            
-                        </div>
-
-                        <button className='button-primary'>Post</button>
-                    </div>
-                    
-                </form>
-            </Modal>
+            <PostFormModal 
+                setCreateModal={setCreateModal} 
+                createModal={createModal} 
+                classroomId={Number(params.id)} 
+                fetchData={fetchData} 
+            />
+            <ConfirmModal
+                setOpen={setDeleteModal}
+                open={deleteModal}
+                title={'DELETE POST'}
+                phrase={'Are you sure to delete this post? This action is irreversible.'}
+                confirmButtonName={'Delete'}
+                handleOnClick={onDeletePost}
+            />
         </>
     )
 }

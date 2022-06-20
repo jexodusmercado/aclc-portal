@@ -1,114 +1,146 @@
 import Card from 'components/CardContainer';
 import SelectMenu from 'components/SelectMenu';
 import MultipleSelectMenu from 'components/MultipleSelectMenu';
-import { useEffectOnce, useUpdateEffect } from 'hooks';
+import { useEffectOnce, useGetClassroom, useIsomorphicLayoutEffect, useUpdateEffect, useUserData } from 'hooks';
 import { List, ListWithAvatar } from 'interfaces';
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { getAllSubjects } from 'redux/subject/action';
 import { usersRequest } from 'services/request';
-import { useFilteredSubjects } from 'hooks';
-import { useNavigate } from 'react-router-dom';
+import { getClassroom, updateClassroom } from 'redux/classroom/action';
+import { useNavigate, useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import { createClassroom } from 'redux/classroom/action';
-import toast from 'react-hot-toast';
-import { useFilteredSchoolYears, useSchoolYears } from 'hooks/schoolyear';
-import { GetAllSchoolYears } from 'redux/school-year/action';
+import * as yup from 'yup'
+import { useFilteredSubjects } from 'hooks/subject';
 
 const formSchema = yup.object({
-    title           : yup.string().trim().required('*Title is required'),
-    subject_id      : yup.number().required('*Subject is required'),
-    teacher_id      : yup.number().required('*Teacher is required'),
-    student_id      : yup.array().of(yup.number()).required(),
-    school_year_id  : yup.number().required('*School Year is required')
+    title: yup.string().trim().required('*Title is required'),
+    subject_id: yup.number().required('*Subject is required'),
+    teacher_id: yup.number().required('*Subject is required'),
+    student_id: yup.array(yup.number())
 })
 
 interface IForm {
+    classroomId:    string
     title:          string
     teacher_id:     number
     subject_id:     number
     student_id:     Array<number>
-    school_year_id:  number
 }
 
-const ClassroomForm = () => {
+const FacultyUpdateClassroomForm = () => {
     const [subject, setSubject]                 = useState<List | null>(null)
     const [teacher, setTeacher]                 = useState<List | null>(null)
-    const [schoolYear, setSchoolYear]           = useState<List | null>(null)
     const [students, setStudents]               = useState<ListWithAvatar[]>([])
     const [teacherOptions, setTeacherOptions]   = useState<List[]>([])
     const [studentOptions, setStudentOptions]   = useState<ListWithAvatar[]>([])
+    const classroom                             = useGetClassroom()
     const subjects                              = useFilteredSubjects()
-    const listSchoolYear                        = useFilteredSchoolYears()
-    const dispatch                              = useDispatch();
-    const navigate                              = useNavigate();
-    
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm<IForm>({
+    const navigate                              = useNavigate()
+    const dispatch                              = useDispatch()
+    const user                                  = useUserData()
+    const { id }                                = useParams()
+
+    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm<IForm>({
         mode: "onChange",
         resolver: yupResolver(formSchema)
     })
-
+    
     const fetchInitialData = () => {
-        dispatch(getAllSubjects({keyword:""}))
-        usersRequest.getAllUsersRequest({type:"FACULTY"}).then(({data}) => {
-            const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
-                return {
-                    id: row.id,
-                    name: row.first_name + " " + row.last_name,
-                    avatar: ""
-                }
+        if(id){
+            setValue('classroomId', id)
+            dispatch(getClassroom({classroomId: id}))
+            dispatch(getAllSubjects({keyword:""}))
+            usersRequest.getAllUsersRequest({type:"FACULTY"}).then(({data}) => {
+                const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
+                    return {
+                        id: row.id,
+                        name: row.first_name + " " + row.last_name,
+                        avatar: ""
+                    }
+                })
+                setTeacherOptions(filtered)
+            });
+            usersRequest.getAllUsersRequest({type:"STUDENT"}).then(({data}) => {
+                const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
+                    return {
+                        id: row.id,
+                        name: row.first_name + " " + row.last_name,
+                        avatar: ""
+                    }
+                })
+                setStudentOptions(filtered)
             })
-            setTeacherOptions(filtered)
-        });
-        usersRequest.getAllUsersRequest({type:"STUDENT"}).then(({data}) => {
-            const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
-                return {
-                    id: row.id,
-                    name: row.first_name + " " + row.last_name,
-                    avatar: ""
-                }
-            })
-            setStudentOptions(filtered)
-        })
 
-        dispatch(GetAllSchoolYears())
+            setValue('title', classroom.data.title)
+        } else {
+            navigate('/dashboard/classroom')
+        }
     }
 
-    const onSuccess = () => {
-        navigate("/dashboard/classroom")
-        toast.success('Classroom created!')
-    }
-
-    const onFailed = () => {
-        toast.error('Something went wrong')
+    const success = () => {
+        navigate(`/dashboard/classroom/${id}`)
     }
 
     const onSubmit : SubmitHandler<IForm> = (data) => {
-        // console.log(data)
         const params = {
             ...data,
-            onSuccess: onSuccess,
-            onFailed: onFailed
+            onSuccess: success
         }
-        dispatch(createClassroom(params))
+        dispatch(updateClassroom(params))
     }
 
     useEffectOnce(() => {
-        fetchInitialData();
+        reset()
+        setSubject(null)
+        setStudents([])
+        fetchInitialData()
+        setValue('teacher_id', user.id)
+        setTeacher({id: user.id, name: user.full_name})
     })
 
-    useUpdateEffect(() => {
-        if(subject) {
-            setValue('subject_id', subject.id)
+    useIsomorphicLayoutEffect(() => {
+        setValue('title', classroom?.data?.title)
+        
+        if(classroom?.data?.subject_id){
+            setValue('subject_id', classroom?.data?.subject_id)
+            const filtered = {
+                id: classroom?.data?.subject.ID,
+                name: classroom?.data?.subject.name
+            }
+            setSubject(filtered)
         }
+        
+        if(classroom?.data?.teacher_id){
+            setValue('teacher_id', classroom?.data?.teacher_id)
+            const filtered = {
+                id: classroom?.data?.teacher.id,
+                name: classroom?.data?.teacher?.first_name + ' ' + classroom?.data?.teacher?.last_name,
+                avatar: ""
+            }
+            setTeacher(filtered)
+        }
+
+        if(classroom?.data?.student){
+            setValue('student_id', classroom?.data?.student?.map(user => user.id))
+            const filtered = classroom?.data?.student?.map(user => {
+                return {
+                    id: user.id,
+                    name: user.first_name + ' ' + user.last_name,
+                    avatar: ''
+                }
+            })
+            setStudents(filtered)
+        }
+    }, [classroom.data])
+
+    useUpdateEffect(() => {
+        setValue('subject_id', subject!.id)
     },[subject])
 
     useUpdateEffect(() => {
-        if(teacher) {
-            setValue('teacher_id', teacher.id)
-        }
+        setValue('teacher_id', teacher!.id)
     }, [teacher])
 
     useUpdateEffect(() => {
@@ -119,26 +151,21 @@ const ClassroomForm = () => {
         }
     },[students])
 
-    useUpdateEffect(() => {
-        if(schoolYear) {
-            setValue('school_year_id', schoolYear.id)
-        }
-    }, [schoolYear])
-
     return (
         <div className='containerized'>
 
             <div className='flex justify-center'>
                 <div className='flex-1 max-w-2xl'>
+                
                     <Card className='space-y-5'>
                         <div className="mx-auto">
                             <div className='flex align-middle'>
                                 <h3 className='leading-6 text-2xl mr-auto text-gray-500'>
-                                    Create Classroom
+                                    Update Classroom
                                 </h3>
                             </div>
                         </div>
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                        <form onSubmit={handleSubmit(onSubmit)} className='space-y-5'>
                             <div>
                                 <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                                     Title
@@ -148,8 +175,8 @@ const ClassroomForm = () => {
                                     type="text"
                                     id="title"
                                     className="input-text"
-                                    placeholder="Ex. Computer Science 1"
-                                    {...register('title')}
+                                    placeholder="Computer Science 1"
+                                    { ...register('title')}
                                     />
                                 </div>
                                 {errors.title && <p className='text-sm text-red-400'> {errors.title.message} </p>}
@@ -168,7 +195,7 @@ const ClassroomForm = () => {
                                     Teacher
                                 </label>
                                 <div className="mt-1 flex rounded-md shadow">
-                                    <SelectMenu selected={teacher} setSelected={setTeacher} lists={teacherOptions} className='mt-0 pt-0'/>
+                                    <SelectMenu selected={teacher} setSelected={setTeacher} lists={teacherOptions} className='mt-0 pt-0' isDisabled={true}/>
                                 </div>
                                 {errors.teacher_id && <p className='text-sm text-red-400'> {errors.teacher_id.message} </p>}
                             </div>
@@ -179,17 +206,7 @@ const ClassroomForm = () => {
                                 <div className="mt-1 flex rounded-md shadow">
                                     <MultipleSelectMenu selectedAvatars={students} setSelectedAvatars={setStudents} list={studentOptions}/>
                                 </div>
-                                {errors.student_id && <p className='text-sm text-red-400'> {"*Students are required"} </p>}
-                            </div>
-
-                            <div>
-                                <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
-                                    School Year
-                                </label>
-                                <div className="mt-1 flex rounded-md shadow">
-                                    <SelectMenu selected={schoolYear} setSelected={setSchoolYear} lists={listSchoolYear} className='mt-0 pt-0'/>
-                                </div>
-                                {errors.school_year_id && <p className='text-sm text-red-400'> {errors.school_year_id.message} </p>}
+                                {errors.student_id && <p className='text-sm text-red-400'> {errors.student_id[0].message} </p>}
                             </div>
 
                             <div className='flex border-t justify-end pt-5 space-x-3'>
@@ -197,6 +214,7 @@ const ClassroomForm = () => {
                                 <button type="submit" className='button-primary'> Submit </button>
                             </div>
                         </form>
+
                     </Card>
                 </div>
             </div>
@@ -205,4 +223,4 @@ const ClassroomForm = () => {
     )
 }
 
-export default ClassroomForm;
+export default FacultyUpdateClassroomForm;

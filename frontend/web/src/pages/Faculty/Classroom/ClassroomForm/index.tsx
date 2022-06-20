@@ -1,7 +1,7 @@
 import Card from 'components/CardContainer';
 import SelectMenu from 'components/SelectMenu';
 import MultipleSelectMenu from 'components/MultipleSelectMenu';
-import { useEffectOnce, useUpdateEffect } from 'hooks';
+import { useEffectOnce, useUpdateEffect, useUserData } from 'hooks';
 import { List, ListWithAvatar } from 'interfaces';
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
@@ -33,7 +33,7 @@ interface IForm {
     school_year_id:  number
 }
 
-const ClassroomForm = () => {
+const FacultyClassroomForm = () => {
     const [subject, setSubject]                 = useState<List | null>(null)
     const [teacher, setTeacher]                 = useState<List | null>(null)
     const [schoolYear, setSchoolYear]           = useState<List | null>(null)
@@ -43,6 +43,7 @@ const ClassroomForm = () => {
     const subjects                              = useFilteredSubjects()
     const listSchoolYear                        = useFilteredSchoolYears()
     const dispatch                              = useDispatch();
+    const user                                  = useUserData();
     const navigate                              = useNavigate();
     
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<IForm>({
@@ -97,6 +98,8 @@ const ClassroomForm = () => {
 
     useEffectOnce(() => {
         fetchInitialData();
+        setValue('teacher_id', user.id)
+        setTeacher({id: user.id, name: user.full_name})
     })
 
     useUpdateEffect(() => {
@@ -168,7 +171,7 @@ const ClassroomForm = () => {
                                     Teacher
                                 </label>
                                 <div className="mt-1 flex rounded-md shadow">
-                                    <SelectMenu selected={teacher} setSelected={setTeacher} lists={teacherOptions} className='mt-0 pt-0'/>
+                                    <SelectMenu selected={teacher} setSelected={setTeacher} lists={teacherOptions} className='mt-0 pt-0' isDisabled={true}/>
                                 </div>
                                 {errors.teacher_id && <p className='text-sm text-red-400'> {errors.teacher_id.message} </p>}
                             </div>
@@ -205,4 +208,4 @@ const ClassroomForm = () => {
     )
 }
 
-export default ClassroomForm;
+export default FacultyClassroomForm;

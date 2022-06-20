@@ -9,21 +9,22 @@ import (
 //User -> User struct to save user on database
 type User struct {
 	gorm.Model
-	FirstName  	string     		`json:"first_name"`
-	LastName   	string     		`json:"last_name"`
-	Email      	string     		`gorm:"unique;default:null;" json:"email"`
-	Username   	string     		`gorm:"unique" json:"username"`
-	Image      	string    		`gorm:"default:null;" json:"image"`
-	Phone		string			`json:"phone"`
-	Password   	string     		`json:"password"`
-	Birthday   	string	  		`json:"birthday"`
-	Type       	string     		`json:"type"`
-	IsActive   	bool       		`json:"is_active"`
-	Subjects   	[]*Subject 		`gorm:"many2many:user_subjects;"`
-	CourseID   	uint          	`gorm:"default:null;" json:"course_id"`
-	SchoolYear 	[]*SchoolYear 	`gorm:"many2many:user_schoolyear" json:"school_year,omitempty"`
-	Students   	[]*Classroom  	`gorm:"many2many:students_classroom;save_association:false"`
-	Course     	Course
+	FirstName  		string     		`json:"first_name"`
+	LastName   		string     		`json:"last_name"`
+	Email      		string     		`gorm:"unique;default:null;" json:"email"`
+	Username   		string     		`gorm:"unique" json:"username"`
+	Image      		string    		`gorm:"default:null;" json:"image"`
+	Phone			string			`json:"phone"`
+	Password   		string     		`json:"password"`
+	Birthday   		string	  		`json:"birthday"`
+	Type       		string     		`json:"type"`
+	IsActive   		bool       		`json:"is_active"`
+	Subjects   		[]*Subject 		`gorm:"many2many:user_subjects;"`
+	CourseID   		uint          	`gorm:"default:null;" json:"course_id"`
+	SchoolYear 		[]*SchoolYear 	`gorm:"many2many:user_schoolyear" json:"school_year"`
+	Classroom  		[]*Classroom  	`gorm:"many2many:students_classroom"`
+	TeacherRoom		[]*Classroom	`gorm:"foreignKey:TeacherID"`
+	Course     		Course
 }
 
 
@@ -125,6 +126,11 @@ func (user *User) BasicUserAndIDResponse() map[string]interface{} {
 func (user *User) ResponseStudent() map[string]interface{} {
 	resp := make(map[string]interface{})
 	var image string
+	var classroom []map[string]interface{}
+
+	for _, v := range user.Classroom {
+		classroom = append(classroom, v.BasicResponse())
+	}
 
 	if len(user.Image) == 0 {
 		image = ""
@@ -145,8 +151,46 @@ func (user *User) ResponseStudent() map[string]interface{} {
 	resp["updated_at"] 	= user.UpdatedAt
 	resp["phone"]		= user.Phone
 	resp["course"] 		= user.Course.ResponseMap()
+	resp["classroom"]	= classroom
 	resp["image"]		= image
 
+
+	return resp
+}
+
+func (user *User) ResponseFaculty() map[string]interface{} {
+	resp := make(map[string]interface{})
+	var image string
+	var classroom []map[string]interface{}
+	
+	studentCount := 0
+
+	for _, v := range user.TeacherRoom {
+		classroom = append(classroom, v.SubjectAndStudentsResponse())
+		studentCount += len(v.Students)
+	}
+
+	if len(user.Image) == 0 {
+		image = ""
+	} else {
+		image = constants.PUBLIC_DIR + user.Image
+	}
+
+	resp["id"] 				= user.ID
+	resp["email"] 			= user.Email
+	resp["username"] 		= user.Username
+	resp["birthday"] 		= user.Birthday
+	resp["first_name"] 		= user.FirstName
+	resp["last_name"] 		= user.LastName
+	resp["full_name"] 		= user.FirstName + " " + user.LastName
+	resp["type"] 			= user.Type
+	resp["is_active"] 		= user.IsActive
+	resp["created_at"] 		= user.CreatedAt
+	resp["updated_at"] 		= user.UpdatedAt
+	resp["phone"]			= user.Phone
+	resp["classes"]			= classroom
+	resp["image"]			= image
+	resp["student_count"]	= studentCount
 
 	return resp
 }

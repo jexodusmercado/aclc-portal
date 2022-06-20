@@ -1,6 +1,7 @@
 import { useIsomorphicLayoutEffect, useUserData } from 'hooks'
 import HomePage from 'pages/Admin/Home'
 import React, { useState } from 'react'
+import { Navigate } from 'react-router-dom'
 
 const DashboardComponent = () => {
     const user = useUserData()
@@ -20,7 +21,7 @@ const DashboardComponent = () => {
     }
 
     if(type === "FACULTY"){
-        return <> faculty </>
+        return <Navigate to={'/faculty/classroom'} />
     }
 
     return (

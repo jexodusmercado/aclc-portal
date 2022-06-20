@@ -4,6 +4,8 @@ import { UserInitialState } from '../users/types'
 
 export type ClassroomState = typeof ClassroomInitialState;
 
+export type ClassroomData  = typeof ClassroomInitialState.classrooms.data[0]
+
 const UsersState = UserInitialState.users.data
 
 const UserState = UserInitialState.user
@@ -34,7 +36,8 @@ export const ClassroomInitialState  = {
                 teacher: UserState,
                 teacher_id: 0,
                 title: "",
-                updated_at: ""
+                updated_at: "",
+                totalStudents: 0
               }
         ],
         loading: false
@@ -69,6 +72,9 @@ export const ClassroomInitialState  = {
     created: {
         loading: false,
         success: false
+    },
+    deleted: {
+        loading: false
     }
 }
 
@@ -87,6 +93,15 @@ export const GET_CLASSROOMS_FAILED      =   "GET_CLASSROOMS_FAILED"
 export const GET_CLASSROOM_REQUEST      =   "GET_CLASSROOM_REQUEST"
 export const GET_CLASSROOM_SUCCESS      =   "GET_CLASSROOM_SUCCESS"
 export const GET_CLASSROOM_FAILED       =   "GET_CLASSROOM_FAILED"
+
+export const DELETE_CLASSROOM_REQUEST   =   "DELETE_CLASSROOM_REQUEST"
+export const DELETE_CLASSROOM_SUCCESS   =   "DELETE_CLASSROOM_SUCCESS"
+export const DELETE_CLASSROOM_FAILED    =   "DELETE_CLASSROOM_FAILED"
+
+export const GET_ALL_CLASSROOM_TEACHER_ID_REQUEST   =   "GET_ALL_CLASSROOM_TEACHER_ID_REQUEST"
+export const GET_ALL_CLASSROOM_TEACHER_ID_SUCCESS   =   "GET_ALL_CLASSROOM_TEACHER_ID_SUCCESS"
+export const GET_ALL_CLASSROOM_TEACHER_ID_FAILED    =   "GET_ALL_CLASSROOM_TEACHER_ID_FAILED"
+
 
 
 export type CreateClassroomAction = {
@@ -109,22 +124,39 @@ export type GetClassroomsAction = {
     payload: GetAllClassroomPayload
 }
 
+export type DeleteClassroomAction = {
+    type: typeof DELETE_CLASSROOM_REQUEST
+    payload: GetClassroomPayload
+}
+
+export type GetByTeacherIDAction = {
+    type: typeof GET_ALL_CLASSROOM_TEACHER_ID_REQUEST
+    payload: GetByTeacherIDPayload
+}
+
+
 export interface CreateClassroomPayload extends IPayload { 
     teacher_id: number
     subject_id: number
     student_id: Array<number>
     body?:      string
     title:      string
+    school_year_id: number
 }
 
 export interface UpdateClassroomPayload extends Partial<CreateClassroomPayload> {
     classroomId: string
 }
 
-export interface GetClassroomPayload {
+export interface GetClassroomPayload extends IPayload {
     classroomId: string
 }
 
 export interface GetAllClassroomPayload {
+    keyword: string
+}
+
+export interface GetByTeacherIDPayload {
+    teacherId: string
     keyword: string
 }

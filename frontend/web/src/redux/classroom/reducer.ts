@@ -4,6 +4,7 @@ import { AnyAction } from "redux";
 const classroomReducer = ( state: types.ClassroomState = types.ClassroomInitialState, action: AnyAction): types.ClassroomState => {
     switch (action.type) {
 
+        case types.GET_ALL_CLASSROOM_TEACHER_ID_REQUEST:
         case types.GET_CLASSROOMS_REQUEST:
             return {
                 ...state,
@@ -13,6 +14,7 @@ const classroomReducer = ( state: types.ClassroomState = types.ClassroomInitialS
                 }
             }
 
+        case types.GET_ALL_CLASSROOM_TEACHER_ID_SUCCESS:
         case types.GET_CLASSROOMS_SUCCESS:
             return {
                 ...state,
@@ -22,6 +24,7 @@ const classroomReducer = ( state: types.ClassroomState = types.ClassroomInitialS
                 }
             }
 
+        case types.GET_ALL_CLASSROOM_TEACHER_ID_FAILED:
         case types.GET_CLASSROOMS_FAILED:
             return {
                 ...state,
@@ -76,7 +79,24 @@ const classroomReducer = ( state: types.ClassroomState = types.ClassroomInitialS
                     loading: false
                 }
             }
+        
+        case types.DELETE_CLASSROOM_REQUEST:
+            return{
+                ...state,
+                deleted: {
+                    loading: true
+                }
+            }
 
+        case types.DELETE_CLASSROOM_SUCCESS:
+        case types.DELETE_CLASSROOM_FAILED:
+            return {
+                ...state,
+                deleted: {
+                    loading: false
+                }
+            }
+        
         default: 
             return state
     }

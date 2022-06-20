@@ -1,4 +1,8 @@
+const PUBLIC_PATH = "public"
+
 export let BASE_URL: string | undefined = process.env.REACT_APP_API_URL
+
+export const FILE_PATH: string = BASE_URL + "/"
 
 export const END_POINTS = {
     LOGIN           :   "login",
@@ -14,5 +18,6 @@ export const END_POINTS = {
     SUBJECT         :   "subject",
     POST            :   "post",
     DOWNLOAD        :   "download",
-    COMMENT         :   "comment"
+    COMMENT         :   "comment",
+    TEACHER         :   "teacher"
 }

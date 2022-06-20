@@ -4,9 +4,9 @@ import { LoginPayload } from "redux/auth/types";
 import { CreateUserPayload, GetUserPayload, GetUsersPayload } from "redux/users/types";
 import { CreateCoursePayload } from "redux/courses/types";
 import { ChangeActiveSchoolYearPayload, CreateSchoolYearPayload } from "redux/school-year/types";
-import { CreateClassroomPayload, GetAllClassroomPayload, GetClassroomPayload, UpdateClassroomPayload } from "redux/classroom/types";
+import { CreateClassroomPayload, DeleteClassroomAction, GetAllClassroomPayload, GetByTeacherIDAction, GetByTeacherIDPayload, GetClassroomPayload, UpdateClassroomPayload } from "redux/classroom/types";
 import { CreateSubjectsPayload, DeleteSubjectPayload, GetAllSubjectPayload, GetSubjectPayload, UpdateSubjectPayload } from "redux/subject/types";
-import { CreatePostPayload } from "redux/post/types";
+import { CreatePostPayload, DeletePostPayload } from "redux/post/types";
 import { CreateUpdatePayload, GetDeletePayload } from "redux/comment/types";
 
 
@@ -53,8 +53,12 @@ export const classroomRequest = {
         apiInstance.get(`${END_POINTS.CLASSROOM}/${params.classroomId}`),
     getAllClassrooms: (params: GetAllClassroomPayload) =>
         apiInstance.get(END_POINTS.CLASSROOM, {params}),
+    getByTeacherID: (params: GetByTeacherIDPayload) =>
+        apiInstance.get(`${END_POINTS.CLASSROOM}/${END_POINTS.TEACHER}/${params.teacherId}`, { params }),
     updateClassroom: (params: UpdateClassroomPayload) =>
-        apiInstance.patch(`${END_POINTS.CLASSROOM}/${params.classroomId}`, params)
+        apiInstance.patch(`${END_POINTS.CLASSROOM}/${params.classroomId}`, params),
+    deleteClassroom : (params: GetClassroomPayload) =>
+        apiInstance.delete(`${END_POINTS.CLASSROOM}/${params.classroomId}`)
     
 }
 
@@ -87,7 +91,9 @@ export const postRequest = {
                     'content-type': 'multipart/form-data'
                 }
             }
-        )
+        ),
+    deletePost: (params: DeletePostPayload) =>
+        apiInstance.delete(`${END_POINTS.CLASSROOM}/${params.classroomId}/${END_POINTS.POST}/${params.postId}`)
 }
 
 export const commentRequest = {

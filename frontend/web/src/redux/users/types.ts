@@ -6,6 +6,8 @@ export type CreateState         = typeof UserInitialState.created
 export type GetAllUsersState    = typeof UserInitialState.users
 export type GetUserState        = typeof UserInitialState.user
 
+
+
 /**
  * STATES
  */
@@ -32,7 +34,28 @@ export const UserInitialState  = {
                     is_active: false,
                     name: "",
                     updated_at: "",
-                }
+                },
+                classroom: [
+                    {
+                        body: "",
+                        created_at: "",
+                        id: 0,
+                        subject: {
+                            ID: 0,
+                            CreatedAt: "",
+                            UpdatedAt: "",
+                            DeletedAt: null,
+                            UserID: 0,
+                            name: "",
+                            code: "",
+                            unit: 0,
+                            is_active: false,
+                            Classrooms: null
+                        },
+                        title: "",
+                        updated_at: ""
+                    }
+                ]
             }
         ],
         loading: false

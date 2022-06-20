@@ -65,6 +65,39 @@ func (cr ClassroomController) GetClassrooms(c *gin.Context) {
 		}})
 }
 
+func (cr ClassroomController) FindByTeacherID(c *gin.Context) {
+	var classroom models.Classroom
+	teacherParam := c.Param("teacherID")
+	keyword := c.Query("keyword")
+	teacherID, err := strconv.ParseUint(teacherParam, 10, 64) //type conversion string to int64
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	classroom.TeacherID = uint(teacherID)
+
+	classrooms, total, err := cr.service.FindByTeacherID(classroom, keyword)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+	respArr := make([]map[string]interface{}, 0, 0)
+
+	for _, n := range classrooms {
+		resp := n.ResponseMap()
+		respArr = append(respArr, resp)
+	}
+
+	c.JSON(http.StatusOK, &util.Response{
+		Success: true,
+		Message: "Post result set",
+		Data: map[string]interface{}{
+			"rows":       respArr,
+			"total_rows": total,
+		}})
+}
+
 func (cr *ClassroomController) GetClassroom(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.ParseUint(idParam, 10, 64) //type conversion string to int64

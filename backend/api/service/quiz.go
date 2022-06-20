@@ -18,3 +18,11 @@ func NewQuizService(repo repository.QuizRepository) QuizService {
 func (u QuizService) Create(quiz models.QuizCreation) (models.Quiz, error) {
 	return u.repo.Create(quiz)
 }
+
+func (u QuizService) Find(quiz models.Quiz) (models.Quiz, error) {
+    return u.repo.Find(quiz)
+}
+
+func (u QuizService) FindByClassroomID(quiz models.Quiz) ([]models.Quiz, error) {
+    return u.repo.FindByClassroomID(quiz)
+} 

@@ -37,15 +37,15 @@ const Avatar: React.FC<IProps> = ({name, avatar, width, height, rounded, fontCol
 
     useIsomorphicLayoutEffect(() => {
         if(avatar){
-        setIsError(false)
+            setIsError(false)
         }
     }, [avatar])
 
     return isError
         ? 
         <span className={classNames(
-            height ? `h-${height}` : "h-full",
-            width ? `w-${width}` : "w-full",
+            height ? `h-${height}` : "h-10",
+            width ? `w-${width}` : "w-10",
             rounded ? "rounded-full" : "",
             "inline-flex items-center justify-center bg-blue-700 border border-white"
         )}>

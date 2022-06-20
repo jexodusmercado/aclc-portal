@@ -35,6 +35,10 @@ func (u ClassroomService) Find(classroom models.Classroom) (models.Classroom, er
 	return u.repo.Find(classroom)
 }
 
+func (u ClassroomService) FindByTeacherID(classroom models.Classroom, keyword string) ([]models.Classroom, int64, error) {
+	return u.repo.FindByTeacherID(classroom, keyword)
+}
+
 func (u ClassroomService) DeleteClassroom(classroomID string) error {
 	return u.repo.DeleteByID(classroomID)
 }

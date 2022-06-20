@@ -12,6 +12,7 @@ export const initialState = {
             created_at : "",
             email : "",
             first_name : "",
+            full_name: "",
             is_active : false,
             last_name : "",
             image: "",
@@ -19,7 +20,41 @@ export const initialState = {
             type : "",
             updated_at : "",
             username : "",
-            schoolyear: ""
+            schoolyear: "",
+            student_count: 0,
+            classes: [
+                {
+                    body: "",
+                    created_at: "",
+                    id: 0,
+                    students: [
+                        {
+                        birthday: "",
+                        email: "",
+                        first_name: "",
+                        full_name: "",
+                        id: 3,
+                        image: "",
+                        last_name: "",
+                        phone: "",
+                        type: "",
+                        username: ""
+                        },
+                    ],
+                    subject: {
+                        ID: 0,
+                        code: "",
+                        created_at: "",
+                        is_active: false,
+                        name: "",
+                        unit: 0,
+                        updated_at: ""
+                    },
+                    title: "",
+                    updated_at: "",
+                }
+            ]
+            
         },
         error : {
             status : 0,

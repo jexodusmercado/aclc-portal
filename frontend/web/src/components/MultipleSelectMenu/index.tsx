@@ -1,5 +1,6 @@
 import { Listbox, Transition } from '@headlessui/react';
 import { SelectorIcon, CheckIcon } from '@heroicons/react/solid';
+import Avatar from 'components/Avatar';
 import { ListWithAvatar } from 'interfaces';
 import React, { Fragment } from 'react'
 import { classNames } from 'utility';
@@ -38,7 +39,15 @@ const MultipleSelectMenu: React.FC<IProps> = ({list, selectedAvatars, setSelecte
                                     selectedAvatars.map((selected, index) => (
                                         <div key={index}>
                                             <span className="inline-flex rounded-full items-center py-0.5 pl-2.5 pr-2.5 text-sm font-medium bg-indigo-100 text-blue-700">
-                                                <img src={selected.avatar} alt="" className="flex-shrink-0 h-6 w-6 rounded-full" />
+                                                <Avatar
+                                                    name={selected?.name ?? ''}
+                                                    avatar={selected.avatar}
+                                                    rounded
+                                                    height={6}
+                                                    width={6}
+                                                    fontSize={'xs'}
+                                                />
+                                                {/* <img src={selected.avatar} alt="" className="flex-shrink-0 h-6 w-6 rounded-full" /> */}
                                                 <span className="ml-3 block truncate">{selected.name}</span>
                                                 <button
                                                     type="button"
@@ -85,7 +94,15 @@ const MultipleSelectMenu: React.FC<IProps> = ({list, selectedAvatars, setSelecte
                                 {({ selected, active }) => (
                                 <>
                                     <div className="flex items-center">
-                                        <img src={item.avatar} alt="" className="flex-shrink-0 h-6 w-6 rounded-full" />
+                                        <Avatar
+                                            name={item?.name ?? ''}
+                                            avatar={item.avatar}
+                                            rounded
+                                            height={6}
+                                            width={6}
+                                            fontSize={'xs'}
+                                        />
+                                        {/* <img src={item.avatar} alt="" className="flex-shrink-0 h-6 w-6 rounded-full" /> */}
                                         <span
                                             className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}
                                         >

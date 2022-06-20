@@ -6,3 +6,10 @@ export const createPostRequest = (payload: types.CreatePostPayload): types.Creat
         payload
     }
 }
+
+export const deletePostRequest = (payload: types.DeletePostPayload): types.DeletePostAction => {
+    return {
+        type: types.DELETE_POST_REQUEST,
+        payload
+    }
+}

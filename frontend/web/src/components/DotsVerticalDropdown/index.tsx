@@ -25,7 +25,7 @@ interface IProps {
  */
 const DotsVerticalDropdown: React.FC<IProps> = ({menus}) => {
     return(
-        <Menu as="div" className="relative inline-block text-left z-20">
+        <Menu as="div" className="relative inline-block text-left z-10">
             <div>
                 <Menu.Button className="inline-flex justify-center w-full rounded-md bg-white text-sm font-medium text-gray-700 focus:outline-none focus:ring-0">
                     <DotsVerticalIcon className="-mr-1 ml-2 h-5 w-5 hover:text-gray-700" aria-hidden="true" />

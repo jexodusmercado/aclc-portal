@@ -233,7 +233,7 @@ func (p PostController) DownloadFile(c *gin.Context) {
 
 func (p PostController) DeleteByID(c *gin.Context) {
 
-	PostID := c.Param("id")
+	PostID := c.Param("postID")
 
 	err := p.service.DeletePost(PostID)
 	if err != nil {

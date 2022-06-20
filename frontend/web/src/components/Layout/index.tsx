@@ -13,6 +13,7 @@ import { IMenu } from 'interfaces'
 import { ActiveSchoolYearState } from 'redux/school-year/types'
 import { GetActiveSchoolYear } from 'redux/school-year/action'
 import { BASE_URL } from 'services/api'
+import Avatar from 'components/Avatar'
 
 const adminNavigation = [
     { name: 'Dashboard', href: '/dashboard', icon: PresentationChartBarIcon, end: true},
@@ -26,17 +27,17 @@ const adminNavigation = [
 ]
 
 const studentNavigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, end: true},
-  { name: 'Classroom', href: '/dashboard', icon: HomeIcon, end: true},
-  { name: 'Grade', href: '/dashboard', icon: HomeIcon, end: true},
-
+    { name: 'Classroom', href: '/faculty/classroom', icon: HomeIcon, end: true},
+    { name: 'Quiz', href: '/faculty/quiz', icon: HomeIcon, end: true},
+    { name: 'Grade', href: '/faculty/grade', icon: HomeIcon, end: true},
+    { name: 'Settings', href: '/dashboard/settings', icon: CogIcon, end: false},
 ]
 
 const facultyNavigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, end: true},
-  { name: 'Classroom', href: '/dashboard/classroom', icon: HomeIcon, end: true},
-  { name: 'Student', href: '/dashboard/student', icon: UsersIcon, end: false},
-  { name: 'Settings', href: '/dashboard/settings', icon: CogIcon, end: false},
+    { name: 'Classroom', href: '/faculty/classroom', icon: HomeIcon, end: true},
+    { name: 'Quiz', href: '/faculty/quiz', icon: HomeIcon, end: true},
+    { name: 'Grade', href: '/faculty/grade', icon: HomeIcon, end: true},
+    { name: 'Settings', href: '/dashboard/settings', icon: CogIcon, end: false},
 ]
 
 const userNavigation = [
@@ -233,12 +234,14 @@ const Navigation = () => {
                                 {/* Profile dropdown */}
                                 <Menu as="div" className="ml-3 relative">
                                     <div>
-                                        <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        <Menu.Button className="items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                         <span className="sr-only">Open user menu</span>
-                                        <img
-                                            className="h-8 w-8 rounded-full"
-                                            src={ BASE_URL + '/' + user.image}
-                                            alt=""
+                                        <Avatar
+                                            name={user.first_name + ' ' + user.last_name}
+                                            avatar={BASE_URL + user.image}
+                                            width={8}
+                                            height={8}
+                                            rounded
                                         />
                                         </Menu.Button>
                                     </div>

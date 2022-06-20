@@ -11,7 +11,8 @@ const postReducer = ( state: types.PostState = types.PostInitialState, action: A
                 loading: true
             }
         }
-    
+
+    case types.CREATE_POST_FAILED:
     case types.CREATE_POST_SUCCESS:
         return {
             ...state,
@@ -20,10 +21,19 @@ const postReducer = ( state: types.PostState = types.PostInitialState, action: A
             }
         }
 
-    case types.CREATE_POST_FAILED:
+    case types.DELETE_POST_REQUEST:
         return {
             ...state,
-            created: {
+            deleted: {
+                loading: true
+            }
+        }
+
+    case types.DELETE_POST_FAILED:
+    case types.DELETE_POST_SUCCESS:
+        return {
+            ...state,
+            deleted: {
                 loading: false
             }
         }

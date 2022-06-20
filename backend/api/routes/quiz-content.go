@@ -6,29 +6,28 @@ import (
 	"portal/middleware"
 )
 
-type QuizRoute struct {
+type QuizContentRoute struct {
     Handler    infrastructure.GinRouter
-    Controller controller.QuizController
+    Controller controller.QuizContentController
 }
 
-func NewQuizRoute(
-    controller controller.QuizController,
+func NewQuizContentRoute(
+    controller controller.QuizContentController,
     handler infrastructure.GinRouter,
-) QuizRoute {
-    return QuizRoute{
+) QuizContentRoute {
+    return QuizContentRoute{
         Handler:    handler,
         Controller: controller,
     }
 }
 
 //Setup -> setups user routes
-func (c QuizRoute) Setup() {
-    grade := c.Handler.Gin.Group("/quiz")
+func (c QuizContentRoute) Setup() {
+    grade := c.Handler.Gin.Group("/quiz/:id")
     {
 		grade.Use(middleware.Authenticate())
 		grade.POST("", c.Controller.Create)
-        grade.GET(":id", c.Controller.Find)
-        grade.GET("classroom/:id", c.Controller.FindByClassroomID)
+        grade.POST("/answer/:contentID", c.Controller.Answer)
     }
 
 }

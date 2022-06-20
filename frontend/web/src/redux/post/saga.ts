@@ -30,8 +30,31 @@ function* CreatePostAction ({ payload }: types.CreatePostAction) {
     }
 }
 
+function* DeletePostAction ({payload} : types.DeletePostAction) {
+    try {
+        const response : AxiosResponse = yield call(postRequest.deletePost, payload);
+
+        yield put({
+            type: types.CREATE_POST_SUCCESS,
+            payload: response.data
+        })   
+        
+        if(payload.onSuccess) payload.onSuccess()
+    } catch (error) {
+        const err = handleAxiosError(error as AxiosError)
+
+        yield put({
+            type: types.CREATE_POST_FAILED,
+            err
+        })
+
+        if(payload.onFailed) payload.onFailed()
+    }
+}
+
 const PostSaga: ForkEffect[] = [
-    takeLatest(types.CREATE_POST_REQUEST, CreatePostAction)
+    takeLatest(types.CREATE_POST_REQUEST, CreatePostAction),
+    takeLatest(types.DELETE_POST_REQUEST, DeletePostAction)
 ]
 
 export default PostSaga;

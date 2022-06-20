@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -71,21 +70,8 @@ func (u *UserController) CreateUser(c *gin.Context) {
 
 
 
-	generatedPassword := user.LastName + strconv.Itoa(year) + strconv.Itoa(int(month)) + strconv.Itoa(day)
+	generatedPassword := strings.ToLower(user.LastName) + strconv.Itoa(year) + strconv.Itoa(int(month)) + strconv.Itoa(day)
 
-	fmt.Println()
-	fmt.Println()
-	fmt.Println()
-	fmt.Println()
-	fmt.Println("year")
-	fmt.Println(year)
-	fmt.Println("month")
-	fmt.Println(month)
-	fmt.Println("day")
-	fmt.Println(day)
-	fmt.Println("password generated is")
-	fmt.Println(generatedPassword)
-	
 	hashPassword, _ := util.HashPassword(generatedPassword)
 	user.Password = hashPassword
 	user.Type = constants.USER_TYPE[user.Type]
@@ -150,19 +136,8 @@ func (u *UserController) CreateStudent(c *gin.Context) {
 	}
 	year, month, day := t.Date()
 
-	generatedPassword := user.LastName + strconv.Itoa(year) + strconv.Itoa(int(month)) + strconv.Itoa(day)
-	fmt.Println()
-	fmt.Println()
-	fmt.Println()
-	fmt.Println()
-	fmt.Println("year")
-	fmt.Println(year)
-	fmt.Println("month")
-	fmt.Println(month)
-	fmt.Println("day")
-	fmt.Println(day)
-	fmt.Println("password generated is")
-	fmt.Println(generatedPassword)
+	generatedPassword := strings.ToLower(user.LastName) + strconv.Itoa(year) + strconv.Itoa(int(month)) + strconv.Itoa(day)
+
 	hashPassword, _ := util.HashPassword(generatedPassword)
 	user.Password = hashPassword
 	user.Type = constants.USER_TYPE[user.Type]
@@ -183,9 +158,9 @@ func (u *UserController) CreateStudent(c *gin.Context) {
 
 //LoginUser : Generates JWT Token for validated user
 func (u *UserController) LoginUser(c *gin.Context) {
-	var user models.UserLogin
-
-	hmacSampleSecret := []byte(os.Getenv("JWT_SECRET"))
+	var user 			models.UserLogin
+	var userData 		map[string]interface{}
+	hmacSampleSecret 	:= []byte(os.Getenv("JWT_SECRET"))
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 
@@ -205,18 +180,27 @@ func (u *UserController) LoginUser(c *gin.Context) {
 		"LastName":  dbUser.LastName,
 	})
 
+	if strings.ToUpper(dbUser.Type) != constants.USER_TYPE_FACULTY {
+		userData = dbUser.ResponseStudent()
+	} else {
+		userData = dbUser.ResponseFaculty()
+	}
+
+
 	tokenString, err := token.SignedString(hmacSampleSecret)
 	if err != nil {
 		util.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
 
+	
+
 	response := &util.Response{
 		Success: true,
 		Message: "Token generated sucessfully",
 		Data: map[string]interface{}{
 			"token": tokenString,
-			"user":  dbUser.ResponseMap(),
+			"user":  userData,
 		}}
 
 	util.SuccessJSON(c, http.StatusOK, response)

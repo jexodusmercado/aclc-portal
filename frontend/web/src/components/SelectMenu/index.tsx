@@ -4,6 +4,7 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import { classNames } from 'utility'
 import { ListWithAvatar } from 'interfaces'
+import Avatar from 'components/Avatar'
 
 
 
@@ -14,17 +15,31 @@ interface Props {
     name?: string
     className?: string
     placeholderText? : string
+    isDisabled?: boolean
 }
 
-const SelectMenu: React.FC<Props> = ({selected, setSelected, lists, name, className, placeholderText = "Select.."}) => {
+const SelectMenu: React.FC<Props> = ({selected, setSelected, lists, name, className, placeholderText = "Select..", isDisabled = false}) => {
     return (
-        <Listbox value={selected} onChange={setSelected}>
+        <Listbox value={selected} onChange={setSelected} disabled={isDisabled}>
             {({ open }) => (
                 <div className={`w-full ${className}`}>
                     { name && <Listbox.Label className="block text-sm font-light text-gray-600">{name}</Listbox.Label>}
                     <div className={`${name ? 'mt-1' : ''} relative`}>
-                        <Listbox.Button className="bg-white relative w-full border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            <span className="flex items-center">
+                        <Listbox.Button className="bg-white relative w-full border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default disabled:cursor-not-allowed disabled:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <span className="flex items-center space-x-2">
+                                {
+                                    selected !== null ? 
+                                    <Avatar
+                                        name={selected?.name ?? ''}
+                                        avatar={selected.avatar}
+                                        rounded
+                                        height={9}
+                                        width={9}
+                                    />
+                                    // <img src={selected.avatar} alt="" className="flex-shrink-0 h-6 w-6 rounded-full" />
+                                    :
+                                    null
+                                }
                                 {
                                     selected ?
                                     <span className="block truncate">{selected.name ?? 'Select..'}</span>
@@ -32,12 +47,7 @@ const SelectMenu: React.FC<Props> = ({selected, setSelected, lists, name, classN
                                     <span className="block truncate">{placeholderText}</span>
                                 }
                                 
-                                {
-                                    selected !== null && selected.avatar ? 
-                                    <img src={selected.avatar} alt="" className="flex-shrink-0 h-6 w-6 rounded-full" />
-                                    :
-                                    null
-                                }
+                                
                             </span>
                             <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                                 <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />

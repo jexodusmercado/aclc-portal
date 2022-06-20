@@ -95,7 +95,12 @@ func (u UserRepository) Login(user models.UserLogin) (*models.User, error) {
 	username := user.Username
 	password := user.Password
 
-	err := u.db.DB.Where("username = ?", username).First(&dbUser).Error
+	err := u.db.DB.
+		Preload("TeacherRoom.Subject").
+		Preload("TeacherRoom.Students").
+		Preload("Course").
+		Where("username = ?", username).
+		First(&dbUser).Error
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +119,7 @@ func (u UserRepository) FindAll(user models.User, keyword, userType, courseId st
 	var users []models.User
 	var totalRows int64 = 0
 
-	queryBuilder := u.db.DB.Preload("Course").Preload(clause.Associations).Order("created_at desc").Model(&models.User{})
+	queryBuilder := u.db.DB.Preload("Course").Preload("Classroom.Subject").Preload(clause.Associations).Order("created_at desc").Model(&models.User{})
 
 	if keyword != "" {
 		queryKeyword := "%" + keyword + "%"

@@ -100,6 +100,35 @@ func (u ClassroomRepository) Find(classroom models.Classroom) (models.Classroom,
 	return classrooms, err
 }
 
+func (u ClassroomRepository) FindByTeacherID(classroom models.Classroom, keyword string) ([]models.Classroom, int64, error) {
+	var classrooms []models.Classroom
+	var totalRows int64 = 0
+
+	queryBuilder := u.db.DB.
+		Debug().
+		Preload("Subject").
+		Preload("Students.Course").
+		Preload("Teacher").
+		// Preload("Posts.User").
+		// Preload("Posts.Comments.User").
+		Order("created_at desc").
+		Model(&models.Classroom{})
+
+	
+	if keyword != "" {
+		queryKeyword := "%" + keyword + "%"
+		queryBuilder = queryBuilder.Where(
+			u.db.DB.Where("classroom.Title LIKE ? ", queryKeyword))
+	}
+
+	err := queryBuilder.
+		Where(classroom).
+		Find(&classrooms).
+		Count(&totalRows).Error
+
+	return classrooms, totalRows, err
+}
+
 func (u ClassroomRepository) Update(response models.ClassroomUpdate) (models.Classroom, error) {
 	var teacher models.User
 	var subject models.Subject
@@ -112,7 +141,7 @@ func (u ClassroomRepository) Update(response models.ClassroomUpdate) (models.Cla
 		Where("ID = ?", response.ID).
 		Take(&classroom).Error
 
-	if response.TeacherID != nil {
+	if response.TeacherID != 0 {
 		err = u.db.DB.
 			Debug().
 			Model(&models.User{}).

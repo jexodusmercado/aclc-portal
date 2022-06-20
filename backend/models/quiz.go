@@ -14,8 +14,6 @@ type Quiz struct {
 	CreatorID		uint			`json:"creator_id"`
 	CreatedBy		User			`gorm:"foreignKey:CreatorID;"`
 	Students  		[]User			`gorm:"many2many:quizzes_students;"`
-	Score			int				`json:"score"`
-	TotalPoints		int				`json:"total_points"`
 	Classroom		Classroom
 	QuizContent		[]QuizContent
 	Subject			Subject
@@ -26,7 +24,7 @@ func (quiz *Quiz) TableName() string {
 }
 
 type QuizCreation struct {
-	GradePeriodID	string			`json:"grade_period_id" binding:"required"`
+	GradePeriodID	uint			`json:"grade_period_id" binding:"required"`
 	CreatorID		uint			`json:"creator_id" binding:"required"`
 	SubjectID		uint			`json:"subject_id" binding:"required"`
 	ClassroomID		uint			`json:"classroom_id" binding:"required"`
@@ -41,6 +39,11 @@ type UpdateQuiz struct {
 	ClassroomID		uint			`json:"classroom_id"`
 	IsPublished		bool			`json:"is_published"`
 	EndDate			string			`json:"end_date"`
+}
+
+type AnsweredBy struct {
+	UserID	uint
+	QuizID	uint
 }
 
 func (u *Quiz) ResponseMap() map[string]interface{} {
@@ -58,17 +61,17 @@ func (u *Quiz) ResponseMap() map[string]interface{} {
 	}
 
     resp["id"]				= u.ID
-	resp["subject"]			= u.Subject
-	resp["classroom"]		= u.Classroom
-	resp["grade_period_id"]	= u.GradePeriodID
 	resp["is_published"]	= u.IsPublished
 	resp["end_date"]		= u.EndDate
-	resp["students"]		= students
-	resp["contents"]		= quizContent
-	resp["created_by"]		= u.CreatedBy.BasicUserAndIDResponse()
-	resp["students"]		= u.Students
+	resp["grade_period_id"]	= u.GradePeriodID
 	resp["created_at"]		= u.CreatedAt
 	resp["updated_at"]		= u.UpdatedAt
+	resp["students"]		= students
+	resp["contents"]		= quizContent
+	resp["subject"]			= u.Subject.ResponseMap()
+	resp["classroom"]		= u.Classroom.BasicResponse()
+	resp["created_by"]		= u.CreatedBy.BasicUserAndIDResponse()
 
 	return resp
 }
+

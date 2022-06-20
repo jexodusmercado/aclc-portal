@@ -34,7 +34,7 @@ func (c PostRoute) Setup() {
 			post.POST("create", c.Controller.CreatePost)
 			post.PATCH(":id", c.Controller.UpdatePost)
             post.POST("test", c.Controller.TestUpload)
-            post.DELETE(":id", c.Controller.DeleteByID)
+            post.DELETE(":postID", c.Controller.DeleteByID)
 		}
     }
     

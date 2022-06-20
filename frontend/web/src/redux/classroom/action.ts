@@ -27,3 +27,17 @@ export const createClassroom = (payload: types.CreateClassroomPayload): types.Cr
         payload
     }
 }
+
+export const deleteClassroom = (payload: types.GetClassroomPayload): types.DeleteClassroomAction => {
+    return {
+        type: types.DELETE_CLASSROOM_REQUEST,
+        payload
+    }
+}
+
+export const getByTeacherId = (payload: types.GetByTeacherIDPayload): types.GetByTeacherIDAction => {
+    return {
+        type: types.GET_ALL_CLASSROOM_TEACHER_ID_REQUEST,
+        payload
+    }
+}

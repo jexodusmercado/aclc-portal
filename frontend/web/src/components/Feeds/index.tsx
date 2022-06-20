@@ -1,5 +1,8 @@
 import { Disclosure, Transition } from '@headlessui/react'
+import Avatar from 'components/Avatar'
 import React from 'react'
+import { BASE_URL } from 'services/api'
+import { timeConvertFromNow } from 'utility'
 
 interface ListData {
     id:         number
@@ -37,11 +40,18 @@ const Feeds : React.FC<IProps> = ({lists}) => {
                                 lists.map((list) => (
                                     <li key={list.id} className="py-4">
                                         <div className="flex space-x-3">
-                                            <img className="h-6 w-6 rounded-full" src={"https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} alt="" />
+                                            <Avatar
+                                                name={list.full_name}
+                                                avatar={BASE_URL + list.image}
+                                                height={8}
+                                                width={8}
+                                                rounded
+                                            />
+                                            {/* <img className="h-6 w-6 rounded-full" src={"https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} alt="" /> */}
                                             <div className="flex-1 space-y-1">
                                                 <div className="flex items-center justify-between">
                                                     <h3 className="text-sm font-medium">{list.full_name}</h3>
-                                                    <p className="text-sm text-gray-500">{list.createdAt}</p>
+                                                    <p className="text-sm text-gray-500">{timeConvertFromNow(list.createdAt)}</p>
                                                 </div>
                                                 <p className="text-sm text-gray-500">
                                                     {list.message}

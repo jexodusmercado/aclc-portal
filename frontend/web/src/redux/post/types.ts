@@ -2,6 +2,8 @@ import { IPayload } from "interfaces";
 import { initialState as CommentInitialState } from "redux/comment/types";
 export type PostState = typeof PostInitialState;
 
+export type PostDataState = typeof PostInitialState.posts.data[0]
+
 const CommentState = CommentInitialState.comments.data
 
 export const PostInitialState = {
@@ -58,6 +60,9 @@ export const PostInitialState = {
     },
     created: {
         loading: false
+    },
+    deleted: {
+        loading: false
     }
 }
 
@@ -65,16 +70,27 @@ export const CREATE_POST_REQUEST  = "CREATE_POST_REQUEST"
 export const CREATE_POST_SUCCESS  = "CREATE_POST_SUCCESS"
 export const CREATE_POST_FAILED   = "CREATE_POST_FAILED"
 
+export const DELETE_POST_REQUEST  = "DELETE_POST_REQUEST"
+export const DELETE_POST_SUCCESS  = "DELETE_POST_SUCCESS"
+export const DELETE_POST_FAILED   = "DELETE_POST_FAILED"
+
 
 export type CreatePostAction = {
     type: typeof CREATE_POST_REQUEST
     payload: CreatePostPayload
 }
 
+export type DeletePostAction = {
+    type: typeof DELETE_POST_REQUEST
+    payload: DeletePostPayload
+}
+
 export interface CreatePostPayload extends IPayload {
     classroomId:    number
-    // title:          string
-    // body:           string
-    // file:           File | null
     formdata:       FormData
+}
+
+export interface DeletePostPayload extends IPayload {
+    classroomId:    string
+    postId:         string
 }

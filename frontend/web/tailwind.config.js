@@ -9,6 +9,12 @@ module.exports = {
         {
             pattern: /text-/
         },
+        {
+          pattern: /h-/
+        },
+        {
+          pattern: /w-/
+        },
     ],
     darkMode: 'media',
     theme: {

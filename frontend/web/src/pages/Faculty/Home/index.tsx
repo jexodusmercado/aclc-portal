@@ -1,33 +1,34 @@
-import { PlusCircleIcon } from '@heroicons/react/solid';
-import Avatar from 'components/Avatar';
-import CardContainer from 'components/CardContainer';
-import DotsVerticalDropdown from 'components/DotsVerticalDropdown';
-import ConfirmModal from 'components/Modals/ConfirmModal';
-import SelectInputText from 'components/SearchInputText';
-import { useEffectOnce, useGetAllClassroom, useUpdateEffect } from 'hooks';
+import { PlusCircleIcon } from '@heroicons/react/solid'
+import Avatar from 'components/Avatar'
+import CardContainer from 'components/CardContainer'
+import Card from 'components/CardContainer'
+import DotsVerticalDropdown from 'components/DotsVerticalDropdown'
+import Greeting from 'components/Greeting'
+import ConfirmModal from 'components/Modals/ConfirmModal'
+import SelectInputText from 'components/SearchInputText'
+import { useEffectOnce, useGetAllClassroom, useUpdateEffect, useUserData } from 'hooks'
 import React, { useState } from 'react'
-import toast from 'react-hot-toast';
-import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { deleteClassroom, getAllClassrooms } from 'redux/classroom/action';
-import { ClassroomData, ClassroomState } from 'redux/classroom/types';
-// import UpdateModal from './Components/UpdateModal';
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { deleteClassroom, getByTeacherId } from 'redux/classroom/action'
+import { ClassroomData } from 'redux/classroom/types'
 
-const ClassroomPage = () => {
+const FacultyHomePage = () => {
     const [search, setSearch]       = useState<string>('')
     const [open, setOpen]           = useState<boolean>(false)
     const [deleteID, setDeleteID]   = useState<string>('')
-    const classrooms                = useGetAllClassroom()
+
     const dispatch                  = useDispatch()
     const navigate                  = useNavigate()
-    
-
-    const testFunc = () => {
-        console.log('confirmed');
-    }
+    const user                      = useUserData() 
+    const classrooms                = useGetAllClassroom()  
 
     const fetchData = () => {
-        dispatch(getAllClassrooms({keyword: search}))
+        dispatch(getByTeacherId({
+            teacherId: user.id.toString(),
+            keyword: search
+        }))
     }
 
     const handleDeleteModal = (classroom : ClassroomData) => {
@@ -35,59 +36,72 @@ const ClassroomPage = () => {
         setOpen(true)
     }
 
-    const onSuccess = () => {
-        fetchData()
-        toast.success('Deleted!')
-    }
+    // const onSuccess = () => {
+    //     fetchData()
+    //     toast.success('Deleted!')
+    // }
 
-    const onDelete = () => {
-        dispatch(
-            deleteClassroom({
-                classroomId: deleteID,
-                onSuccess: onSuccess
-            })
-        )
-        setOpen(false)
-    }
+    // const onDelete = () => {
+    //     dispatch(
+    //         deleteClassroom({
+    //             classroomId: deleteID,
+    //             onSuccess: onSuccess
+    //         })
+    //     )
+    //     setOpen(false)
+    // }
 
     const menus = (classroom: ClassroomData) => ([
         {
             name: 'Update',
             onClick: () => navigate(`update/${classroom.id}`)
         },
-        {
-            name: 'Delete',
-            onClick: () => handleDeleteModal(classroom)
-        },
+        // {
+        //     name: 'Delete',
+        //     onClick: () => handleDeleteModal(classroom)
+        // },
     ])
 
-    useEffectOnce(() => {
-        fetchData()
-    })
 
     useUpdateEffect(() => {
         fetchData()
     },[search])
+    
+    useEffectOnce(() => {
+        dispatch(
+            getByTeacherId({
+                teacherId: user.id.toString(),
+                keyword: ""
+            })
+        )   
+    })
 
     return (
-        <>
-            <div className='containerized space-y-5'>
-                {/* TITLE AND BUTTONS */}
-                <div className='flex align-middle'>
-                    <h3 className='leading-6 text-2xl mr-auto'>
-                        Classroom
-                    </h3>
+        <div className='space-y-4'>
+            {/* Header */}
+            <div className='flex space-x-2'>
+                <div className='flex-1'>
+                    <Greeting />
 
-                    <div className='ml-auto space-x-3'>
-                        <Link to="/dashboard/classroom/create" className='button-primary'>
-                            <PlusCircleIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
-                            Add Classroom
-                        </Link>
-                    </div>
                 </div>
+                <div className='flex'>
+                    <Card>
+                        <dt className="text-sm font-medium text-gray-500 truncate">Classes</dt>
+                        <dd className="mt-1 text-3xl font-semibold text-gray-900">{classrooms.data.length}</dd>
+                    </Card>
+                </div>
+                <div className='flex'>
+                    <Card>
+                        <dt className="text-sm font-medium text-gray-500 truncate">Students</dt>
+                        <dd className="mt-1 text-3xl font-semibold text-gray-900">{classrooms.data.reduce((acc, curr) => acc + curr.totalStudents, 0)}</dd>
+                    </Card>
+                </div>
+            </div>
 
-                <CardContainer>
-                    <div className='flex space-x-3'>
+            {/* Main classroom */}
+            
+            <CardContainer>
+                    <div className='flex space-x-3 justify-between items-center'>
                         <SelectInputText state={search} setState={setSearch} className='max-w-sm'/>
                         {/* <SelectMenu selected={department} setSelected={setDepartment} name="Departments" lists={list} take={handleSelected} className='max-w-sm'/> */}
                         {/* <div className='self-center'>
@@ -95,6 +109,12 @@ const ClassroomPage = () => {
                                 Clear All
                             </button>
                         </div> */}
+                        <div className='space-x-3'>
+                            <Link to="/faculty/classroom/create" className='button-primary'>
+                                <PlusCircleIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
+                                Add Classroom
+                            </Link>
+                    </div>
                     </div>
                 </CardContainer>
 
@@ -145,18 +165,8 @@ const ClassroomPage = () => {
                             </div>
                     </CardContainer>
                 )}
-
-            </div>
-            <ConfirmModal 
-                open={open} 
-                setOpen={setOpen} 
-                title={'Delete Classroom'} 
-                phrase={'Are you sure to delete this classroom? This action is irreversible.'} 
-                confirmButtonName={'Delete'}
-                handleOnClick={onDelete}
-            />
-        </>
+        </div> 
     )
 }
 
-export default ClassroomPage;
+export default FacultyHomePage

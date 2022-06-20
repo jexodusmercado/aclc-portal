@@ -88,6 +88,13 @@ func InitializeServices(router infrastructure.GinRouter) {
 	quizRoute := routes.NewQuizRoute(quizController, router)
 	quizRoute.Setup()
 
+	//quiz-content
+	quizContentRepository := repository.NewQuizContentRepository(db)
+	quizContentService := service.NewQuizContentService(quizContentRepository)
+	quizContentController := controller.NewQuizContentController(quizContentService)
+	quizContentRoute := routes.NewQuizContentRoute(quizContentController, router)
+	quizContentRoute.Setup()
+
 	// migrating User model to datbase table
 	if err := db.DB.AutoMigrate(
 		&models.Course{},
@@ -103,16 +110,10 @@ func InitializeServices(router infrastructure.GinRouter) {
 		&models.Grade{},
 		&models.GradePeriod{},
 		&models.Quiz{},
+		&models.QuizContent{},
 	); err == nil && db.DB.Migrator().HasTable(&models.User{}) {
 
 		if err := db.DB.First(&models.User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-			// layout := time.RFC3339[:len("1994-12-17")]
-			// t, err := time.Parse(constants.DATE_LAYOUT, "1994-12-17")
-			// t, _ := time.Parse(constants.DATE_LAYOUT, "1994-12-17")
-			// year, month, day := time.Time.Date(t)
-			// if err != nil {
-			// 	log.Fatalf(err.Error())
-			// }
 
 			hashPassword, err := util.HashPassword("password")
 			if err != nil {
