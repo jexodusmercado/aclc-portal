@@ -96,12 +96,66 @@ function* GetUserType({payload}: types.GetUserAction) {
     }
 }
 
+function* DeleteUserTypes({payload}: types.DeleteUserAction) {
+    try {
+        yield call(usersRequest.deleteUserRequest, payload)
+
+        yield put({
+            type: types.DELETE_USER_SUCCESS,
+        })
+
+        if(payload.onSuccess) {
+            payload.onSuccess()
+        }
+
+    } catch (error) {
+        const err = handleAxiosError(error as AxiosError)
+
+        yield put({
+            type: types.SEARCH_USER_FAILED,
+            err
+        })
+
+        if(payload.onFailed) {
+            payload.onFailed()
+        }
+    }
+}
+
+function* UpdateUserTypes({payload}: types.UpdateUserAction) {
+    try {
+        yield call(usersRequest.updateUserRequest, payload)
+
+        yield put({
+            type: types.UPDATE_USER_SUCCESS,
+        })
+
+        if(payload.onSuccess) {
+            payload.onSuccess()
+        }
+
+    } catch (error) {
+        const err = handleAxiosError(error as AxiosError)
+
+        yield put({
+            type: types.SEARCH_USER_FAILED,
+            err
+        })
+
+        if(payload.onFailed) {
+            payload.onFailed()
+        }
+    }
+}
+
 
 const UsersSaga: ForkEffect[] = [
     takeLatest(types.CREATE_USER_REQUEST, CreateUserType),
     takeLatest(types.GET_USERS_REQUEST, GetAllUsersType),
     takeLatest(types.SEARCH_USER_REQUEST, SearchUserType),
-    takeLatest(types.GET_USER_REQUEST, GetUserType)
+    takeLatest(types.GET_USER_REQUEST, GetUserType),
+    takeLatest(types.DELETE_USER_REQUEST, DeleteUserTypes),
+    takeLatest(types.UPDATE_USER_REQUEST, UpdateUserTypes)
 ]
 
 export default UsersSaga;

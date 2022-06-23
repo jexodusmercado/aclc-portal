@@ -158,7 +158,7 @@ func (u UserRepository) Find(user models.User) (models.User, error) {
 	err := u.db.DB.
 		Debug().
 		// Preload("Classrooms.Subject").
-		// Preload(clause.Associations).
+		Preload(clause.Associations).
 		Model(&models.User{}).
 		Where(&user).
 		Take(&users).Error

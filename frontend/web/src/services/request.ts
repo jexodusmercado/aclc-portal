@@ -1,13 +1,14 @@
 import { END_POINTS } from "services/api";
 import { apiInstance } from "services/axios";
 import { LoginPayload } from "redux/auth/types";
-import { CreateUserPayload, GetUserPayload, GetUsersPayload } from "redux/users/types";
+import { CreateUserPayload, DeleteUsersPayload, GetUserPayload, GetUsersPayload, UpdateUserPayload } from "redux/users/types";
 import { CreateCoursePayload } from "redux/courses/types";
 import { ChangeActiveSchoolYearPayload, CreateSchoolYearPayload } from "redux/school-year/types";
-import { CreateClassroomPayload, DeleteClassroomAction, GetAllClassroomPayload, GetByTeacherIDAction, GetByTeacherIDPayload, GetClassroomPayload, UpdateClassroomPayload } from "redux/classroom/types";
+import { CreateClassroomPayload, GetAllClassroomPayload, GetByTeacherIDPayload, GetClassroomPayload, UpdateClassroomPayload } from "redux/classroom/types";
 import { CreateSubjectsPayload, DeleteSubjectPayload, GetAllSubjectPayload, GetSubjectPayload, UpdateSubjectPayload } from "redux/subject/types";
 import { CreatePostPayload, DeletePostPayload } from "redux/post/types";
 import { CreateUpdatePayload, GetDeletePayload } from "redux/comment/types";
+import axios from "axios";
 
 
 export const authRequest = {
@@ -22,10 +23,21 @@ export const usersRequest = {
         apiInstance.post(`${END_POINTS.AUTH}/${params.letter_type}/${END_POINTS.REGISTER}`, params.formData),
 
     getAllUsersRequest: (params?: GetUsersPayload) =>
-        apiInstance.get(END_POINTS.USERS, { params }),
+        apiInstance.get(END_POINTS.USER, { params }),
 
     getUserRequest: (params: GetUserPayload) =>
-        apiInstance.get(`${END_POINTS.USERS}/${params.id}`),
+        apiInstance.get(`${END_POINTS.USER}/${params.id}`),
+
+    updateUserRequest: (params: UpdateUserPayload) =>
+        apiInstance.patch(`${END_POINTS.USER}/${params.id}`, params),
+
+    deleteUserRequest: (params : DeleteUsersPayload) => {
+        const request = params.ids.map((id) => {
+            return apiInstance.delete(`${END_POINTS.USER}/${id}`)
+        })
+
+        return axios.all(request)
+    }
 }
 
 export const courseRequest = {

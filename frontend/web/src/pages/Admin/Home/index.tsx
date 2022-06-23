@@ -68,19 +68,19 @@ const HomePage = () => {
                                                     aria-hidden="true"
                                                 /> */}
                                                 <p className="text-gray-500 truncate group-hover:text-gray-900">
-                                                    {student.first_name + ' ' + student.last_name}
+                                                    {student?.first_name + ' ' + student?.last_name}
                                                 </p>
                                                 {/* </a> */}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-left whitespace-nowrap text-sm text-gray-500">
-                                            <span className="text-gray-900 font-medium">{student.phone} </span>
+                                            <span className="text-gray-900 font-medium">{student?.phone} </span>
                                         </td>
                                         <td className="px-6 py-4 text-left whitespace-nowrap text-sm text-gray-500">
-                                            {student.course.description}
+                                            {student?.course?.description}
                                         </td>
                                         <td className="px-6 py-4 text-left whitespace-nowrap text-sm text-gray-500">
-                                            {student.classroom && student.classroom.map((classroom, index) => 
+                                            {student?.classroom && student?.classroom.map((classroom, index) => 
                                                 <Link to={`/dashboard/classroom/${classroom.id}`} className='flex flex-col'>
                                                     <Badges key={index} text={classroom.title}/>
                                                 </Link>
@@ -95,11 +95,11 @@ const HomePage = () => {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             <span
                                                 className={classNames(
-                                                student.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800',
+                                                student?.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800',
                                                 'inline-flex items-center px-2.5 py-2 rounded-full text-xs font-medium capitalize'
                                                 )}
                                             >
-                                                {student.is_active ? 'Active' : 'Inactive'}
+                                                {student?.is_active ? 'Active' : 'Inactive'}
                                             </span>
                                         </td>
                                     </tr>

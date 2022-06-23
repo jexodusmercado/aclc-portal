@@ -33,7 +33,7 @@ const CourseForm = () => {
     const error                         = useCourseError()
     const schoolyears                   = useSchoolYears()
     const activeSchoolyear              = useActiveSchoolYear()
-    const [schoolYear, setSchoolYear]   = useState<List | null>(null)
+    const [schoolYear, setSchoolYear]   = useState<number | undefined>(undefined)
     const [yearList, setYearList]       = useState<List[]>([])
 
 
@@ -68,7 +68,7 @@ const CourseForm = () => {
 
     useUpdateEffect(() => {
         if(schoolYear){
-            setValue('schoolyear_id', schoolYear.id)
+            setValue('schoolyear_id', schoolYear)
         }
     },[schoolYear])
 

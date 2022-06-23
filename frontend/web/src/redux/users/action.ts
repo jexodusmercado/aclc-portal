@@ -27,3 +27,17 @@ export const getUserRequest = ( payload : types.GetUserPayload): types.GetUserAc
         payload
     }
 }
+
+export const deleteUserRequest = ( payload: types.DeleteUsersPayload) : types.DeleteUserAction => {
+    return {
+        type: types.DELETE_USER_REQUEST,
+        payload
+    }
+}
+
+export const updateUserRequest = ( payload: types.UpdateUserPayload) : types.UpdateUserAction => {
+    return {
+        type: types.UPDATE_USER_REQUEST,
+        payload
+    }
+}

@@ -1,21 +1,23 @@
 import React, { useState } from 'react'
-import CardContainer from 'components/CardContainer'
-import { useNavigate } from 'react-router-dom'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
-import * as yup from 'yup'
+import { useNavigate, useParams } from 'react-router-dom'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { classNames } from 'utility'
-import { useEffectOnce, useIsomorphicLayoutEffect, useUpdateEffect, useUserCreated } from 'hooks'
-import { useDispatch } from 'react-redux'
-import { createUserRequest } from 'redux/users/action'
-import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
-import { List } from 'interfaces'
-import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
-import SelectMenu from 'components/SelectMenu'
+import DatePicker from 'react-datepicker'
 import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
+import * as yup from 'yup'
+import CardContainer from 'components/CardContainer'
+import SelectMenu from 'components/SelectMenu'
+import 'react-datepicker/dist/react-datepicker.css'
+import { List } from 'interfaces'
+import { classNames } from 'utility'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useDispatch } from 'react-redux'
+import { createUserRequest, getUserRequest } from 'redux/users/action'
+import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
+import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
+import { useEffectOnce, useGetUser, useIsomorphicLayoutEffect, useUpdateEffect, useUserCreated } from 'hooks'
+import Title from 'components/Title'
+import ImageUploader from 'components/ImageUploader'
 
 interface IForm {
     username        : string
@@ -40,21 +42,34 @@ const facultySchema = yup.object({
 }).required()
 
 const FacultyForm = () => {
+    const params                        = useParams();
     const navigate                      = useNavigate()
     const dispatch                      = useDispatch()
     const createdState                  = useUserCreated();
     const schoolyears                   = useSchoolYears()
     const activeSchoolyear              = useActiveSchoolYear()
-    const [startDate, setStartDate]     = useState<Date | null>(null)
-    const [schoolYear, setSchoolYear]   = useState<List | null>(null)
-    const [yearList, setYearList]       = useState<List[]>([])
+    const user                          = useGetUser()
+
     const [picture, setPicture]         = useState<File>()
+    const [yearList, setYearList]       = useState<List[]>([])
+    const [schoolYear, setSchoolYear]   = useState<number | undefined>(undefined)
+    const [startDate, setStartDate]     = useState<Date | null>(null)
 
     const cancelForm = () => navigate('/dashboard/faculty');
 
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<IForm>({
+    const { register, handleSubmit, setValue, formState: { errors }, reset } = useForm<IForm>({
         mode: "onChange",
-        resolver: yupResolver(facultySchema)
+        resolver: yupResolver(facultySchema),
+        defaultValues: {
+            // username:       params.id ? user?.username : '',
+            // email:          params.id ? user?.email : '',
+            // birthday:       params.id ? dayjs(user?.birthday).toDate() : undefined,
+            // first_name:     params.id ? user?.first_name : '',
+            // last_name:      params.id ? user?.last_name : '',
+            // phone:          params.id ? user?.phone : '',
+            // schoolyear_id:  params.id ? user?.school_year : undefined 
+        }
+
     });
 
     const onSubmit: SubmitHandler<IForm> = (data) => {
@@ -88,9 +103,31 @@ const FacultyForm = () => {
     }
 
     useEffectOnce(() => {
+        reset()
         dispatch(GetAllSchoolYears())
         dispatch(GetActiveSchoolYear())
     })
+
+    useEffectOnce(() => {
+        if(params.id){
+            reset()
+            dispatch(getUserRequest({ id: params.id}))
+
+        } 
+    })
+
+
+    useIsomorphicLayoutEffect(() => {
+        if(params.id && user){
+            setValue('email', user.email)
+            setValue('phone', user.phone)
+            setValue('username', user.username)
+            setValue('last_name', user.last_name)
+            setValue('first_name', user.first_name)
+            setSchoolYear(user.school_year)
+            setStartDate(dayjs(user.birthday).toDate())
+        }
+    },[user])
 
     useUpdateEffect(() => {
         setValue('birthday', startDate)
@@ -99,7 +136,7 @@ const FacultyForm = () => {
 
     useUpdateEffect(() => {
         if(schoolYear){
-            setValue('schoolyear_id', schoolYear.id)
+            setValue('schoolyear_id', schoolYear)
         }
     },[schoolYear])
 
@@ -122,67 +159,23 @@ const FacultyForm = () => {
         }
     },[createdState])
 
-
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto my-10">
-                <div className='flex align-middle'>
-                    <h3 className='leading-6 text-2xl mr-auto text-gray-600'>
-                        Add Faculty Member
-                    </h3>
-                </div>
-            </div>
+            <Title name={'Add Faculty Member'} />
 
             <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                <CardContainer padding='' footer={true} cancelOnclick={cancelForm} loading={createdState.loading}>
-                
-                    <div className="p-4 sm:px-0">
-                        <h1 className="text-lg font-medium text-gray-500 leading-6"> Profile </h1>
-                        <p className="mt-1 text-sm text-gray-500 opacity-60">
-                            Fill out the form for the new faculty member.
-                        </p>
-                    </div>
-                    
+                <CardContainer 
+                    title={'Profile'}
+                    description={'Fill out the form for the new faculty member.'}
+                    footer={true}
+                    cancelOnclick={cancelForm} 
+                    loading={createdState.loading}
+                >
                     <div className="grid grid-cols-4 gap-6">
 
                         <div className="col-span-3">
                             <label className="block text-sm font-medium text-gray-700">Photo</label>
-                            <div className="mt-1 flex items-center">
-                                {
-                                    picture &&
-                                    <>
-                                        <img
-                                            className="inline-block h-14 w-14 rounded-full"
-                                            src={URL.createObjectURL(picture)}
-                                            alt=""
-                                        />
-                                        <button
-                                            className='ml-5 bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                                            onClick={() => setPicture(undefined)}
-                                        >
-                                            Cancel
-                                        </button>
-                                    </>
-                                }
-
-                                {
-                                    !picture &&
-                                    <>
-                                    <span className="inline-block bg-gray-100 rounded-full overflow-hidden h-12 w-12">
-                                        <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                                        </svg>
-                                    </span>
-                                    <label
-                                    htmlFor='attachment'
-                                    className="ml-5 bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    >
-                                        Upload
-                                    </label>
-                                    <input type='file' id='attachment' name='attachement' onChange={(e) => handleAttachement(e)} hidden />
-                                </>
-                                }
-                                </div>
+                            <ImageUploader setPicture={setPicture} picture={picture} fileOnChange={handleAttachement} />
                         </div>
 
                         <div className="col-span-4 sm:col-span-4">
@@ -241,6 +234,9 @@ const FacultyForm = () => {
                                     selected={startDate}
                                     onChange={e => setStartDate(e)}
                                     className="input-text"
+                                    dropdownMode="select"
+                                    showMonthDropdown
+                                    showYearDropdown
                                 />
                             </div>
                             {errors.birthday && <p className='text-sm text-red-400'> *Date is required </p>}

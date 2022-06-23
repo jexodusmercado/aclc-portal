@@ -30,8 +30,8 @@ interface IForm {
 }
 
 const FacultyUpdateClassroomForm = () => {
-    const [subject, setSubject]                 = useState<List | null>(null)
-    const [teacher, setTeacher]                 = useState<List | null>(null)
+    const [subject, setSubject]                 = useState<number | undefined>(undefined)
+    const [teacher, setTeacher]                 = useState<number | undefined>(undefined)
     const [students, setStudents]               = useState<ListWithAvatar[]>([])
     const [teacherOptions, setTeacherOptions]   = useState<List[]>([])
     const [studentOptions, setStudentOptions]   = useState<ListWithAvatar[]>([])
@@ -93,11 +93,11 @@ const FacultyUpdateClassroomForm = () => {
 
     useEffectOnce(() => {
         reset()
-        setSubject(null)
+        setSubject(undefined)
         setStudents([])
         fetchInitialData()
         setValue('teacher_id', user.id)
-        setTeacher({id: user.id, name: user.full_name})
+        setTeacher(user.id)
     })
 
     useIsomorphicLayoutEffect(() => {
@@ -105,21 +105,12 @@ const FacultyUpdateClassroomForm = () => {
         
         if(classroom?.data?.subject_id){
             setValue('subject_id', classroom?.data?.subject_id)
-            const filtered = {
-                id: classroom?.data?.subject.ID,
-                name: classroom?.data?.subject.name
-            }
-            setSubject(filtered)
+            setSubject(classroom?.data?.subject.ID)
         }
         
         if(classroom?.data?.teacher_id){
             setValue('teacher_id', classroom?.data?.teacher_id)
-            const filtered = {
-                id: classroom?.data?.teacher.id,
-                name: classroom?.data?.teacher?.first_name + ' ' + classroom?.data?.teacher?.last_name,
-                avatar: ""
-            }
-            setTeacher(filtered)
+            setTeacher(classroom?.data?.teacher.id)
         }
 
         if(classroom?.data?.student){
@@ -136,11 +127,15 @@ const FacultyUpdateClassroomForm = () => {
     }, [classroom.data])
 
     useUpdateEffect(() => {
-        setValue('subject_id', subject!.id)
+        if(subject){
+            setValue('subject_id', subject)
+        }
     },[subject])
 
     useUpdateEffect(() => {
-        setValue('teacher_id', teacher!.id)
+        if(teacher){
+            setValue('teacher_id', teacher)
+        }
     }, [teacher])
 
     useUpdateEffect(() => {

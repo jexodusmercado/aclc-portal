@@ -8,7 +8,7 @@ export const END_POINTS = {
     LOGIN           :   "login",
     REGISTER        :   "register",
     AUTH            :   "auth",
-    USERS           :   "user",
+    USER            :   "user",
     COURSE          :   "course",
     SCHOOL_YEAR     :   "school-year",
     ACTIVE          :   "active",

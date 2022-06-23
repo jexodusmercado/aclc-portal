@@ -50,14 +50,14 @@ const CustomRoute = () => {
                                     <Route index element={<ClassroomPage/>} />
                                     <Route path="create" element={<ClassroomForm />} />
                                     <Route path=":id" element={<ClassroomDetails />} />
-                                    <Route path="update/:id" element={<UpdateClassroomForm />} />
+                                    <Route path="update/:id" element={<ClassroomForm />} />
                                 </Route>
 
                                 {/* Faculty */}
                                 <Route path="faculty">
                                     <Route index element={<FacultyIndex />} />
                                     <Route path="create" element={<FacultyForm />} />
-                                    <Route path="update/:id" element={<FacultyProfile />} />
+                                    <Route path="update/:id" element={<FacultyForm />} />
                                 </Route>
 
                                 {/* Student */}

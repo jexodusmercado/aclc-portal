@@ -1,19 +1,11 @@
-import { Transition, Dialog, Menu } from '@headlessui/react'
-import { XIcon, MenuAlt2Icon, BellIcon, ServerIcon, HomeIcon, UsersIcon, AcademicCapIcon, CogIcon, PresentationChartBarIcon, BookOpenIcon } from '@heroicons/react/solid'
-import { Fragment, useState } from 'react'
-import { Link, Outlet, useLocation } from 'react-router-dom'
-import { classNames } from 'utility'
-import Logo from 'assets/images/aclc.jpeg'
-import { useDispatch } from 'react-redux'
-import { logoutRequest } from 'redux/auth/action'
-import { useActiveSchoolYear } from 'hooks/schoolyear'
-import SidebarNavigation from './SidebarNavigation'
+import { ServerIcon, HomeIcon, UsersIcon, AcademicCapIcon, CogIcon, PresentationChartBarIcon, BookOpenIcon } from '@heroicons/react/solid'
+import { useState } from 'react'
 import { useIsomorphicLayoutEffect, useUserData } from 'hooks'
 import { IMenu } from 'interfaces'
-import { ActiveSchoolYearState } from 'redux/school-year/types'
-import { GetActiveSchoolYear } from 'redux/school-year/action'
-import { BASE_URL } from 'services/api'
-import Avatar from 'components/Avatar'
+import MobileSidebar from './MobileSidebar'
+import Sidebar from './Sidebar'
+import Topbar from './Topbar'
+import Main from './Main'
 
 const adminNavigation = [
     { name: 'Dashboard', href: '/dashboard', icon: PresentationChartBarIcon, end: true},
@@ -40,24 +32,12 @@ const facultyNavigation = [
     { name: 'Settings', href: '/dashboard/settings', icon: CogIcon, end: false},
 ]
 
-const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: 'logout' },
-]
+
 
 const Navigation = () => {
-    const dispatch                      = useDispatch()
     const user                          = useUserData()
-    const location                      = useLocation()
-    const schoolyear                    = useActiveSchoolYear()
-    const [sidebarOpen, setSidebarOpen] = useState(false)
     const [menu, setMenu]               = useState<Array<IMenu>>([])
-    const [school, setSchool]           = useState<ActiveSchoolYearState>(schoolyear)
-    
-    const handleLogout = () => {
-      dispatch(logoutRequest())
-    }
+    const [sidebarOpen, setSidebarOpen] = useState<boolean>(false)
 
     useIsomorphicLayoutEffect(() => {
         switch(user.type){
@@ -76,226 +56,22 @@ const Navigation = () => {
         }
     }, [user.type])
 
-    useIsomorphicLayoutEffect(() => {
-        setSchool(schoolyear)
-    }, [schoolyear])
-
-    useIsomorphicLayoutEffect(() => {
-        if(schoolyear.ID === 0){
-            dispatch(
-                GetActiveSchoolYear()
-            )
-        }
-    }, [location.pathname])
-
     return (
-        <>
-            <div>
-                <Transition.Root show={sidebarOpen} as={Fragment}>
-                    <Dialog as="div" className="fixed inset-0 flex z-40 md:hidden" onClose={setSidebarOpen}>
-                        
-                        <Transition.Child
-                        as={Fragment}
-                        enter="transition-opacity ease-linear duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="transition-opacity ease-linear duration-300"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                        >
-                            <Dialog.Overlay className="fixed inset-0 bg-gray-600 bg-opacity-75" />
-                        </Transition.Child>
+        <div>
+            <MobileSidebar
+                menu={menu}
+                setSidebarOpen={setSidebarOpen}
+                sidebarOpen={sidebarOpen}
+            />
 
-                        <Transition.Child
-                        as={Fragment}
-                        enter="transition ease-in-out duration-300 transform"
-                        enterFrom="-translate-x-full"
-                        enterTo="translate-x-0"
-                        leave="transition ease-in-out duration-300 transform"
-                        leaveFrom="translate-x-0"
-                        leaveTo="-translate-x-full"
-                        >
-                            <div className="relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-white">
+            <Sidebar menu={menu} />
 
-                                <Transition.Child
-                                as={Fragment}
-                                enter="ease-in-out duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="ease-in-out duration-300"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                                >
-                                    <div className="absolute top-0 right-0 -mr-12 pt-2">
-                                        <button
-                                        type="button"
-                                        className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                                        onClick={() => setSidebarOpen(false)}
-                                        >
-                                        <span className="sr-only">Close sidebar</span>
-                                        <XIcon className="h-6 w-6 text-white" aria-hidden="true" />
-                                        </button>
-                                    </div>
-                                </Transition.Child>
-
-                                <div className="flex-shrink-0 flex items-center px-4">
-                                    <img
-                                        className="h-8 w-auto"
-                                        src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"
-                                        alt="Workflow"
-                                    />
-                                </div>
-
-                                <div className="mt-5 flex-1 h-0 overflow-y-auto">
-                                    <SidebarNavigation 
-                                        items={menu}
-                                    />
-                                </div>
-                            </div>
-
-                        </Transition.Child>
-
-                        <div className="flex-shrink-0 w-14" aria-hidden="true">
-                        {/* Dummy element to force sidebar to shrink to fit close icon */}
-                        </div>
-                    </Dialog>
-                </Transition.Root>
-        
-                {/* Static sidebar for desktop */}
-                <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
-                {/* Sidebar component, swap this element with another sidebar if you like */}
-                    <div className="flex flex-col flex-grow border-r border-gray-200 pt-5 bg-white overflow-y-auto">
-                        
-                        <div className="flex items-center flex-shrink-0 px-4">
-                            <img
-                                className="h-16 w-auto"
-                                src={Logo}
-                                alt="AMA Computer Learning Center - Mabalacat"
-                            />
-                        </div>
-                        
-                        <div className="mt-5 flex-grow flex flex-col">
-                            <SidebarNavigation 
-                                items={menu}
-                            />
-                        </div>
-                    
-                    </div>
-                </div>
-                <div className="md:pl-64 flex flex-col flex-1">
-                    <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow">
-                        <button
-                        type="button"
-                        className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
-                        onClick={() => setSidebarOpen(true)}
-                        >
-                        <span className="sr-only">Open sidebar</span>
-                        <MenuAlt2Icon className="h-6 w-6" aria-hidden="true" />
-                        </button>
-                        <div className="flex-1 px-4 flex justify-end">
-                        {/* <div className="flex-1 flex">
-                            <form className="w-full flex md:ml-0" action="#" method="GET">
-                            <label htmlFor="search-field" className="sr-only">
-                                Search
-                            </label>
-                            <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-                                <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none">
-                                <SearchIcon className="h-5 w-5" aria-hidden="true" />
-                                </div>
-                                <input
-                                id="search-field"
-                                className="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm"
-                                placeholder="Search"
-                                type="search"
-                                name="search"
-                                />
-                            </div>
-                            </form>
-                        </div> */}
-                            <div className="ml-4 flex items-center md:ml-6 space-x-2">
-
-                                <span className="text-gray-600 text-sm">
-                                    S. Y.
-                                    {
-                                        school.semester === "First" ? 
-                                        `${school.school_year} - ${Number(school.school_year) + 1}` :
-                                        `${Number(school.school_year) - 1} - ${school.school_year}` 
-                                    }
-                                </span>
-                            
-                                <button
-                                type="button"
-                                className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                >
-                                    <span className="sr-only">View notifications</span>
-                                    <BellIcon className="h-6 w-6" aria-hidden="true" />
-                                </button>
-                                
-                                {/* Profile dropdown */}
-                                <Menu as="div" className="ml-3 relative">
-                                    <div>
-                                        <Menu.Button className="items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                        <span className="sr-only">Open user menu</span>
-                                        <Avatar
-                                            name={user.first_name + ' ' + user.last_name}
-                                            avatar={BASE_URL + user.image}
-                                            width={8}
-                                            height={8}
-                                            rounded
-                                        />
-                                        </Menu.Button>
-                                    </div>
-                                    <Transition
-                                        as={Fragment}
-                                        enter="transition ease-out duration-100"
-                                        enterFrom="transform opacity-0 scale-95"
-                                        enterTo="transform opacity-100 scale-100"
-                                        leave="transition ease-in duration-75"
-                                        leaveFrom="transform opacity-100 scale-100"
-                                        leaveTo="transform opacity-0 scale-95"
-                                    >
-                                        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                            {userNavigation.map((item) => (
-                                                <Menu.Item key={item.name}>
-                                                {({ active }) => (
-                                                    item.href !== "logout" ?
-                                                    <Link
-                                                    to={item.href}
-                                                    className={classNames(
-                                                        active ? 'bg-gray-100' : '',
-                                                        'block px-4 py-2 text-sm text-gray-700'
-                                                    )}
-                                                    
-                                                    >
-                                                        {item.name}
-                                                    </Link>
-                                                    :
-                                                    <button 
-                                                    className='block px-4 py-2 text-sm text-gray-700'
-                                                    onClick={() => handleLogout()}
-                                                    >
-                                                        {item.name}
-                                                    </button>
-                                                )}
-                                            </Menu.Item>
-                                        ))}
-                                        </Menu.Items>
-                                    </Transition>
-                                </Menu>
-
-                            </div>
-                        </div>
-                    </div>
-        
-                    <main className="flex-1">
-                        <div className="py-3 px-6 w-full">
-                            <Outlet/>
-                        </div>
-                    </main>
-                </div>
+            <div className="md:pl-64 flex flex-col flex-1">
+                <Topbar setSidebarOpen={setSidebarOpen} />
+                <Main/>
             </div>
-        </>
-      )
+        </div>
+    )
 
 
 }

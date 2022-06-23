@@ -8,8 +8,10 @@ import FacultyTable from './Components/Tables'
 import CardContainer from 'components/CardContainer'
 import SelectInputText from 'components/SearchInputText'
 import SelectMenu from 'components/SelectMenu'
-import { getAllUsersRequest, searchUsersRequest } from 'redux/users/action'
+import { deleteUserRequest, getAllUsersRequest, searchUsersRequest } from 'redux/users/action'
 import { GetAllUsersState } from 'redux/users/types'
+import ConfirmModal from 'components/Modals/ConfirmModal'
+import toast from 'react-hot-toast'
 
 const list = [
     {id: 1, name:"Department of Business and Accounting"},
@@ -20,12 +22,17 @@ const list = [
 const FacultyIndex = () => {
     const [search, setSearch]                           = useState<string>('')
     const [checked, setChecked]                         = useState<boolean>(false)
-    const [selected, setSelected]                       = useState<List | null>(null)
+    const [selected, setSelected]                       = useState<number | undefined>(undefined)
     const [indeterminate, setIndeterminate]             = useState<boolean>(false)
     const [selectedFaculty, setSelectedFaculty]         = useState<GetAllUsersState["data"]>([])
+    const [isDelete, setDelete]                         = useState<boolean>(false)
     const checkbox                                      = useRef<HTMLInputElement | null>(null)
     const dispatch                                      = useDispatch()
     const users                                         = useGetAllUsers()
+
+    const fetchingData = () => {
+        dispatch(searchUsersRequest({keyword: search, type: "faculty"}))
+    }
 
     const toggleAll = () => {
         setSelectedFaculty(checked || indeterminate ? [] : users.data)
@@ -35,7 +42,30 @@ const FacultyIndex = () => {
 
     const handleClear = () => {
         setSelectedFaculty([]);
-        setSelected({id:0, name:'Select..'})
+        setSelected(undefined)
+    }
+
+    const handleDeleteModal = () => {
+        setDelete(true)
+    }
+
+    const onDeleteSuccess = () => {
+        setSelectedFaculty([])
+        fetchingData()
+        toast.success('Deleted!')
+        setDelete(false)
+    }
+    
+    const handleDelete = () => {
+
+        const select = selectedFaculty.map(faculty => faculty.id.toString())
+        
+        dispatch(
+            deleteUserRequest({
+                ids: select,
+                onSuccess: onDeleteSuccess
+            })
+        )
     }
     
     useIsomorphicLayoutEffect(() => {
@@ -48,7 +78,7 @@ const FacultyIndex = () => {
     }, [selectedFaculty])
 
     useUpdateEffect(() => {
-        dispatch(searchUsersRequest({keyword: search, type: "faculty"}))
+        fetchingData()
     },[search])
 
     useEffectOnce(() => {
@@ -109,11 +139,19 @@ const FacultyIndex = () => {
                     setState={setSelectedFaculty} 
                     checked={checked} 
                     toggleAll={toggleAll}
+                    onDelete={handleDeleteModal}
                     loading={users.loading}    
                 />
             }
             
-
+            <ConfirmModal 
+                setOpen={setDelete} 
+                open={isDelete} 
+                title={'Delete'}
+                phrase={'Are you sure to delete this?'}
+                confirmButtonName={'Delete'}
+                handleOnClick={handleDelete}
+            />
         </div>
     )
 }

@@ -94,6 +94,40 @@ const usersReducer = ( state: types.UserState = types.UserInitialState, action: 
             }
         }
 
+    case types.DELETE_USER_REQUEST:
+        return {
+            ...state,
+            deleted: {
+                loading: true
+            }
+        }
+
+    case types.DELETE_USER_FAILED:
+    case types.DELETE_USER_SUCCESS:
+        return {
+            ...state,
+            deleted: {
+                loading: false
+            }
+        }
+    
+    case types.UPDATE_USER_REQUEST:
+        return {
+            ...state,
+            updated: {
+                loading: true
+            }
+        }
+
+    case types.UPDATE_USER_SUCCESS:
+    case types.UPDATE_USER_FAILED:
+        return {
+            ...state,
+            deleted: {
+                loading: false
+            }
+        }
+
 
     default:
         return state

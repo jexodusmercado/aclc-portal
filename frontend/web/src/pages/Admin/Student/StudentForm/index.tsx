@@ -49,8 +49,8 @@ const StudentForm = () => {
     const courses                       = useCoursesState()
     const schoolyears                   = useSchoolYears()
     const activeSchoolyear              = useActiveSchoolYear()
-    const [selected, setSelected]       = useState<List | null>(null)
-    const [schoolYear, setSchoolYear]   = useState<List | null>(null)
+    const [selected, setSelected]       = useState<number | undefined>(undefined)
+    const [schoolYear, setSchoolYear]   = useState<number | undefined>(undefined)
     const [startDate, setStartDate]     = useState<Date | null>(null)
     const [coursesList, setCoursesList] = useState<List[]>([])
     const [yearList, setYearList]       = useState<List[]>([])
@@ -108,7 +108,7 @@ const StudentForm = () => {
 
     useUpdateEffect(() => {
         if(selected) {
-            setValue('course_id', selected.id)
+            setValue('course_id', selected)
         }
     },[selected])
 
@@ -151,15 +151,15 @@ const StudentForm = () => {
 
     useUpdateEffect(() => {
         if(selected){
-            setValue('course_id', selected.id)
+            setValue('course_id', selected)
         }
-    },[selected?.id])
+    },[selected])
 
     useUpdateEffect(() => {
         if(schoolYear){
-            setValue('schoolyear_id', schoolYear.id)
+            setValue('schoolyear_id', schoolYear)
         }
-    },[schoolYear?.id])
+    },[schoolYear])
 
 
     return (

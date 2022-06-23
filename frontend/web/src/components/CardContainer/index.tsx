@@ -1,21 +1,24 @@
 import React from 'react'
 import { classNames } from 'utility'
+import CardHeader from './CardHeader'
 
 type Size = 'xs' | 'sm' | 'md' | 'lg' |'xl'
 interface Props {
-    margin?: string
-    padding?: string
-    border?: boolean
-    borderColor?: string
-    rounded?: boolean,
-    roundedSize?: Size,
-    shadow?: boolean
-    shadowSize?: Size
-    footer?: boolean
-    submitText?: string
-    cancelText?: string
-    loading?: boolean
-    className? : string
+    margin?:        string
+    padding?:       string
+    border?:        boolean
+    borderColor?:   string
+    rounded?:       boolean,
+    roundedSize?:   Size,
+    shadow?:        boolean
+    shadowSize?:    Size
+    footer?:        boolean
+    submitText?:    string
+    cancelText?:    string
+    loading?:       boolean
+    className? :    string
+    title?:         string
+    description?:   string
     submitOnclick?: () => void
     cancelOnclick?: () => void
 }
@@ -30,7 +33,26 @@ interface Props {
  * @param shadow defaults true - boolean
  * 
  */
-const Card: React.FC<Props> = ({children, padding, margin, border=true, borderColor, className, rounded=true, roundedSize, shadow=true, shadowSize, footer, loading, submitText="Submit", submitOnclick, cancelText="Cancel", cancelOnclick}) => {
+const Card: React.FC<Props> = ({
+    children, 
+    padding, 
+    margin, 
+    border=true, 
+    borderColor, 
+    className, 
+    rounded=true, 
+    roundedSize, 
+    shadow=true, 
+    shadowSize, 
+    footer, 
+    loading, 
+    submitText="Submit", 
+    submitOnclick, 
+    cancelText="Cancel", 
+    cancelOnclick,
+    title,
+    description
+}) => {
 
     return(
         <div
@@ -51,6 +73,12 @@ const Card: React.FC<Props> = ({children, padding, margin, border=true, borderCo
                     className ? className : ""
                 )
             }>
+                {
+                    (title || description) ?
+                    <CardHeader title={title!} description={description!} />
+                    : null
+                }
+                
                 {children}
 
             </div>

@@ -18,7 +18,7 @@ import { getAllCoursesRequest } from 'redux/courses/action'
 const StudentIndex = () => {
     const [search, setSearch]                           = useState<string>('')
     const [checked, setChecked]                         = useState<boolean>(false)
-    const [selected, setSelected]                       = useState<List | null>(null)
+    const [selected, setSelected]                       = useState<number | undefined>(undefined)
     const [indeterminate, setIndeterminate]             = useState<boolean>(false)
     const [selectedFaculty, setSelectedFaculty]         = useState<GetAllUsersState["data"]>([])
     const [coursesList, setCoursesList]                 = useState<List[]>([])
@@ -35,7 +35,7 @@ const StudentIndex = () => {
 
     const handleClear = () => {
         setSelectedFaculty([]);
-        setSelected({id:0, name:'Select..'})
+        setSelected(undefined)
     }
     
     useIsomorphicLayoutEffect(() => {
@@ -48,11 +48,11 @@ const StudentIndex = () => {
     }, [selectedFaculty])
 
     useUpdateEffect(() => {
-        dispatch(searchUsersRequest({keyword: search, type: "student", course_id: selected ? selected.id.toString() : ''}))
+        dispatch(searchUsersRequest({keyword: search, type: "student", course_id: selected ? selected.toString() : ''}))
     },[search])
 
     useUpdateEffect(() => {
-        dispatch(searchUsersRequest({keyword: search, type: "student", course_id: selected ? selected.id.toString() : ''}))
+        dispatch(searchUsersRequest({keyword: search, type: "student", course_id: selected ? selected.toString() : ''}))
     },[selected])
 
     useEffectOnce(() => {

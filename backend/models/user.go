@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"portal/constants"
 
 	"gorm.io/gorm"
@@ -74,6 +75,16 @@ type StudentRegister struct {
 func (user *User) ResponseMap() map[string]interface{} {
 	resp := make(map[string]interface{})
 	var image string
+	var activeSchoolYear uint
+
+	for _, v := range user.SchoolYear {
+		fmt.Println("-----")
+		fmt.Println("-----")
+		fmt.Println(v)
+		if(v.IsActive) {
+			activeSchoolYear = v.ID
+		}
+	}
 
 	if len(user.Image) == 0 {
 		image = ""
@@ -81,19 +92,20 @@ func (user *User) ResponseMap() map[string]interface{} {
 		image = constants.PUBLIC_DIR + user.Image
 	}
 
-	resp["id"] 			= user.ID
-	resp["email"] 		= user.Email
-	resp["username"] 	= user.Username
-	resp["birthday"] 	= user.Birthday
-	resp["first_name"] 	= user.FirstName
-	resp["last_name"] 	= user.LastName
-	resp["full_name"] 	= user.FirstName + " " + user.LastName
-	resp["phone"]		= user.Phone
-	resp["type"] 		= user.Type
-	resp["is_active"] 	= user.IsActive
-	resp["created_at"] 	= user.CreatedAt
-	resp["updated_at"] 	= user.UpdatedAt
-	resp["image"]		= image
+	resp["id"] 					= user.ID
+	resp["email"] 				= user.Email
+	resp["username"] 			= user.Username
+	resp["birthday"] 			= user.Birthday
+	resp["first_name"] 			= user.FirstName
+	resp["last_name"] 			= user.LastName
+	resp["full_name"] 			= user.FirstName + " " + user.LastName
+	resp["phone"]				= user.Phone
+	resp["type"] 				= user.Type
+	resp["is_active"] 			= user.IsActive
+	resp["created_at"] 			= user.CreatedAt
+	resp["updated_at"] 			= user.UpdatedAt
+	resp["school_year"]			= activeSchoolYear
+	resp["image"]				= image
 
 	return resp
 }
