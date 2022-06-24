@@ -20,7 +20,7 @@ func (quiz_content *QuizContent) TableName() string {
 
 type QuizContentCreation struct {
 	QuizID			uint	`json:"quiz_id" binding:"required"`
-	QuestionType	string	`json:"question_type" binding:"required"`
+	QuestionType	string	`json:"question_type"`
 	Question		string	`json:"question" binding:"required"`
 	Answer			string	`json:"answer" binding:"required"`
 }

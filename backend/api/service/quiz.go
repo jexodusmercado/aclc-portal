@@ -26,3 +26,7 @@ func (u QuizService) Find(quiz models.Quiz) (models.Quiz, error) {
 func (u QuizService) FindByClassroomID(quiz models.Quiz) ([]models.Quiz, error) {
     return u.repo.FindByClassroomID(quiz)
 } 
+
+func (u QuizService) FindByCreatorID(quiz models.Quiz) ([]models.Quiz, error) {
+    return u.repo.FindByCreatorID(quiz)
+}

@@ -97,7 +97,7 @@ const StudentIndex = () => {
             <CardContainer margin='mt-7'>
                 <div className='flex space-x-3'>
                     <SelectInputText state={search} setState={setSearch} className='max-w-sm'/>
-                    <SelectMenu selected={selected} setSelected={setSelected} name="Courses" lists={coursesList} className='max-w-sm'/>
+                    <SelectMenu selected={selected} setSelected={setSelected} selectName="Courses" lists={coursesList} className='max-w-sm'/>
                     <div className='self-center'>
                         <button className='ml-3 text-blue-900 text-opacity-50' onClick={handleClear}>
                             Clear

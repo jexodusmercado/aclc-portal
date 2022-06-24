@@ -46,6 +46,13 @@ func (u *UserController) CreateUser(c *gin.Context) {
 
 		user.Image = newFileName
 
+		newPath := filepath.Join(".", "public", "users")
+		err = os.MkdirAll(newPath, os.ModePerm)
+	
+		if err != nil {
+			util.CustomErrorJson(c, http.StatusBadRequest, "Folder already exist")
+		}
+
 		if err := c.SaveUploadedFile(file, "./public/users/"+newFileName); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"message": "Unable to save the file",
@@ -68,10 +75,7 @@ func (u *UserController) CreateUser(c *gin.Context) {
 
 	year, month, day := time.Time.Date(t)
 
-
-
 	generatedPassword := strings.ToLower(user.LastName) + strconv.Itoa(year) + strconv.Itoa(int(month)) + strconv.Itoa(day)
-
 	hashPassword, _ := util.HashPassword(generatedPassword)
 	user.Password = hashPassword
 	user.Type = constants.USER_TYPE[user.Type]
@@ -79,14 +83,6 @@ func (u *UserController) CreateUser(c *gin.Context) {
 
 	if user.Type == "" {
 		util.CustomErrorJson(c, http.StatusBadRequest, "No existing role")
-	}
-
-
-	newPath := filepath.Join(".", "public", "users")
-	err = os.MkdirAll(newPath, os.ModePerm)
-
-	if err != nil {
-		util.CustomErrorJson(c, http.StatusBadRequest, "Folder already exist")
 	}
 
 	err = u.service.CreateUser(user, schoolyear)
@@ -270,6 +266,9 @@ func (u *UserController) GetUser(c *gin.Context) {
 
 //UpdatePost : get update by id
 func (u UserController) UpdateUser(c *gin.Context) {
+	var newFileName string
+	var extension	string
+	
 	idParam := c.Param("id")
 
 	id, err := strconv.ParseUint(idParam, 10, 64)
@@ -278,8 +277,32 @@ func (u UserController) UpdateUser(c *gin.Context) {
 		util.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
+	
 	var user models.User
 	user.ID = uint(id)
+
+	file, err := c.FormFile("file")
+	if err == nil && file != nil {
+
+		extension = filepath.Ext(file.Filename)
+		newFileName = uuid.NewV4().String() + extension
+
+		user.Image = newFileName
+
+		newPath := filepath.Join(".", "public", "users")
+		err = os.MkdirAll(newPath, os.ModePerm)
+
+		if err != nil {
+			util.CustomErrorJson(c, http.StatusBadRequest, "Folder already exist")
+		}
+
+		if err := c.SaveUploadedFile(file, "./public/users/"+newFileName); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+				"message": "Unable to save the file",
+			})
+			return
+		}
+	}
 
 	userRecord, err := u.service.Find(user)
 	if err != nil {
@@ -287,7 +310,7 @@ func (u UserController) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	if err := c.ShouldBindJSON(&userRecord); err != nil {
+	if err := c.ShouldBind(&userRecord); err != nil {
 		util.ErrorJSON(c, http.StatusBadRequest, err)
 		return
 	}
@@ -305,7 +328,6 @@ func (u UserController) UpdateUser(c *gin.Context) {
 	})
 }
 
-//AddUsertoClassroom : add from user to classroom
 func (u *UserController) AddUsertoClassroom(c *gin.Context) {
 	var post models.AddUserClass
 	var user models.User

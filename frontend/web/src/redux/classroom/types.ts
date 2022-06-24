@@ -61,6 +61,16 @@ export const ClassroomInitialState  = {
                     is_active: false,
                     Classrooms: null
                 },
+                quizzes: [
+                    {
+                        id: 0,
+                        contentCount: 0,
+                        is_published: false,
+                        end_date: "",
+                        created_at: "",
+                        updated_at: ""
+                    }
+                ],
                 subject_id: 0,
                 teacher: UserState,
                 teacher_id: 0,

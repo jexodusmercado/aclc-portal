@@ -11,15 +11,14 @@ interface Props {
     lists: ListWithAvatar[]
     selected: number | undefined
     setSelected: React.Dispatch<React.SetStateAction<number | undefined>>
-    name?: string
+    selectName?: string
     className?: string
     placeholderText? : string
     isDisabled?: boolean
 }
 
-const SelectMenu: React.FC<Props> = ({selected, setSelected, lists, name, className, placeholderText = "Select..", isDisabled = false}) => {
+const SelectMenu: React.FC<Props> = ({selected, setSelected, lists, selectName, className, placeholderText = "Select..", isDisabled = false}) => {
     const [select, setSelect] = useState<ListWithAvatar | undefined>(undefined)
-
 
     useIsomorphicLayoutEffect(() => {
         if(selected){
@@ -40,8 +39,8 @@ const SelectMenu: React.FC<Props> = ({selected, setSelected, lists, name, classN
         <Listbox value={select} onChange={setSelect} disabled={isDisabled}>
             {({ open }) => (
                 <div className={`w-full ${className}`}>
-                    { name && <Listbox.Label className="block text-sm font-light text-gray-600">{name}</Listbox.Label>}
-                    <div className={`${name ? 'mt-1' : ''} relative`}>
+                    { selectName && <Listbox.Label className="block text-sm font-light text-gray-600">{selectName}</Listbox.Label>}
+                    <div className={`${selectName ? 'mt-1' : ''} relative`}>
                         <Listbox.Button className="bg-white relative w-full border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default disabled:cursor-not-allowed disabled:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             <span className="flex items-center space-x-2">
                                 {

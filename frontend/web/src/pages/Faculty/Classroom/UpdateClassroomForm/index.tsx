@@ -79,14 +79,14 @@ const FacultyUpdateClassroomForm = () => {
         }
     }
 
-    const success = () => {
+    const onSuccess = () => {
         navigate(`/dashboard/classroom/${id}`)
     }
 
     const onSubmit : SubmitHandler<IForm> = (data) => {
         const params = {
             ...data,
-            onSuccess: success
+            onSuccess: onSuccess
         }
         dispatch(updateClassroom(params))
     }

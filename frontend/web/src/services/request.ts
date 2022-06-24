@@ -29,7 +29,7 @@ export const usersRequest = {
         apiInstance.get(`${END_POINTS.USER}/${params.id}`),
 
     updateUserRequest: (params: UpdateUserPayload) =>
-        apiInstance.patch(`${END_POINTS.USER}/${params.id}`, params),
+        apiInstance.patch(`${END_POINTS.USER}/${params.id}`, params.formData),
 
     deleteUserRequest: (params : DeleteUsersPayload) => {
         const request = params.ids.map((id) => {
@@ -123,4 +123,25 @@ export const publicRequest = {
     getDownloadRequest: (filename: string) =>
         apiInstance.get(`${END_POINTS.DOWNLOAD}/${filename}`)
 
+}
+
+export const quizRequest = {
+    getAllByCreatorID: (id: string) =>
+        apiInstance.get(`${END_POINTS.QUIZ}/${END_POINTS.CREATOR}/${id}`),
+    getAllByClassroomID: (id: string) =>
+        apiInstance.get(`${END_POINTS.QUIZ}/${END_POINTS.CLASSROOM}/${id}`),
+    getByID: (id:string) =>
+        apiInstance.get(`${END_POINTS.QUIZ}/${id}`),
+    createQuiz: (form: any) => 
+        apiInstance.post(END_POINTS.QUIZ, form)
+}
+
+export const quizContentRequest = {
+    createContent: (form: any[], quizId: string) => {
+        const request = form.map(value => {
+            return apiInstance.post(`${END_POINTS.QUIZ}/${quizId}`, value)
+        })
+
+        return axios.all(request)
+    }
 }

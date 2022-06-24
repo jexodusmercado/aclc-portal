@@ -182,7 +182,7 @@ export interface UpdateUserPayload extends IPayload, Partial<CreateUserPayload> 
     id: string
 }
 
-export interface CreateUserPayload {
+export interface CreateUserPayload extends IPayload {
     // username        : string
     // first_name      : string
     // last_name       : string

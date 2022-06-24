@@ -15,17 +15,21 @@ function* CreateUserType ({ payload } : types.CreateUserAction) {
             type: types.CREATE_USER_SUCCESS
         })   
 
-        toast.success('Faculty member created')
+        if(payload.onSuccess) {
+            payload.onSuccess()
+        }
 
     } catch (error) {
-        const payload = handleAxiosError(error as AxiosError)
+        const err = handleAxiosError(error as AxiosError)
 
         yield put({
             type: types.CREATE_USER_FAILED,
-            payload
+            err
         })
 
-        toast.error('Unable to create faculty member.')
+        if(payload.onFailed) {
+            payload.onFailed()
+        }
     }
 }
 

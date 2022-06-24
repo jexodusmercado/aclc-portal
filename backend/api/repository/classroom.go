@@ -94,6 +94,8 @@ func (u ClassroomRepository) Find(classroom models.Classroom) (models.Classroom,
 		Preload("Teacher").
 		Preload("Posts.User").
 		Preload("Posts.Comments.User").
+		Preload("Quizzes").
+		Preload("Quizzes.QuizContent").
 		Model(&models.Classroom{}).
 		Where(&classroom).
 		Take(&classrooms).Error

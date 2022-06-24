@@ -88,3 +88,32 @@ func (g QuizController) FindByClassroomID(c *gin.Context) {
 	util.SuccessJSON(c, http.StatusOK, respArr)
 
 }
+
+func (g QuizController) FindByCreatorID(c *gin.Context) {
+    var quiz models.Quiz
+
+    idParam := c.Param("id")
+    id, err := strconv.ParseUint(idParam, 10, 64) //type conversion string to int64
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+    quiz.CreatorID = uint(id)
+
+    data, err := g.service.FindByCreatorID(quiz)
+    if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+    respArr := make([]map[string]interface{}, 0, 0)
+
+	for _, n := range data {
+		resp := n.ResponseMap()
+		respArr = append(respArr, resp)
+	}
+
+	util.SuccessJSON(c, http.StatusOK, respArr)
+
+}

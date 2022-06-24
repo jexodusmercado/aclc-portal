@@ -12,7 +12,7 @@ import { List } from 'interfaces'
 import { classNames } from 'utility'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useDispatch } from 'react-redux'
-import { createUserRequest, getUserRequest } from 'redux/users/action'
+import { createUserRequest, getUserRequest, searchUsersRequest, updateUserRequest } from 'redux/users/action'
 import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
 import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
 import { useEffectOnce, useGetUser, useIsomorphicLayoutEffect, useUpdateEffect, useUserCreated } from 'hooks'
@@ -72,6 +72,20 @@ const FacultyForm = () => {
 
     });
 
+    const fetchingData = () => {
+        dispatch(searchUsersRequest({keyword: '', type: "faculty"}))
+    }
+
+    const onSuccess = () => {
+        fetchingData()
+        navigate('/dashboard/faculty')
+        toast.success(params.id ? 'Updated!' : 'Created!')
+    }
+
+    const onFailed = () => {
+        toast.error(`Failed to ${params.id ? 'update' : 'create'}!`)
+    }
+
     const onSubmit: SubmitHandler<IForm> = (data) => {
         const fd = new FormData()
 
@@ -87,7 +101,30 @@ const FacultyForm = () => {
             fd.append('file', picture)
         }
 
-        dispatch(createUserRequest({type:'faculty', letter_type:'f', formData: fd}))
+        if(params.id){
+            console.log('updating')
+            dispatch(
+                updateUserRequest({
+                    id: params.id, 
+                    type:'factuly', 
+                    letter_type:'f', 
+                    formData: fd,
+                    onSuccess:onSuccess,
+                    onFailed: onFailed
+                })
+            )
+        } else {
+            console.log('creating')
+            dispatch(
+                createUserRequest({
+                    type:'faculty', 
+                    letter_type:'f', 
+                    formData: fd,
+                    onSuccess:onSuccess,
+                    onFailed: onFailed
+                })
+            )
+        }
     }
 
     const handleAttachement = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,7 +152,6 @@ const FacultyForm = () => {
 
         } 
     })
-
 
     useIsomorphicLayoutEffect(() => {
         if(params.id && user){
@@ -233,10 +269,11 @@ const FacultyForm = () => {
                                     name='birthday'
                                     selected={startDate}
                                     onChange={e => setStartDate(e)}
-                                    className="input-text"
+                                    className="input-text disabled:cursor-not-allowed disabled:bg-gray-200"
                                     dropdownMode="select"
                                     showMonthDropdown
                                     showYearDropdown
+                                    disabled={params.id ? true : false}
                                 />
                             </div>
                             {errors.birthday && <p className='text-sm text-red-400'> *Date is required </p>}
@@ -247,7 +284,13 @@ const FacultyForm = () => {
                                 School Year
                             </label>
                             <div className="mt-1 flex rounded-md shadow">
-                                <SelectMenu selected={schoolYear} setSelected={setSchoolYear} lists={yearList} className='mt-0 pt-0'/>
+                                <SelectMenu 
+                                    selected={schoolYear} 
+                                    setSelected={setSchoolYear} 
+                                    lists={yearList} 
+                                    className='mt-0 pt-0'
+                                    isDisabled={params.id ? true : false}
+                                />
                             </div>
                             {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>}
                         </div>

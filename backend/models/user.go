@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"portal/constants"
 
 	"gorm.io/gorm"
@@ -10,22 +9,22 @@ import (
 //User -> User struct to save user on database
 type User struct {
 	gorm.Model
-	FirstName  		string     		`json:"first_name"`
-	LastName   		string     		`json:"last_name"`
-	Email      		string     		`gorm:"unique;default:null;" json:"email"`
-	Username   		string     		`gorm:"unique" json:"username"`
-	Image      		string    		`gorm:"default:null;" json:"image"`
-	Phone			string			`json:"phone"`
-	Password   		string     		`json:"password"`
-	Birthday   		string	  		`json:"birthday"`
-	Type       		string     		`json:"type"`
-	IsActive   		bool       		`json:"is_active"`
+	FirstName  		string     		`form:"first_name" json:"first_name"`
+	LastName   		string     		`form:"last_name" json:"last_name"`
+	Email      		string     		`gorm:"unique;default:null;" form:"email" json:"email"`
+	Username   		string     		`gorm:"unique" form:"username" json:"username"`
+	Image      		string    		`gorm:"default:null;" form:"image" json:"image"`
+	Phone			string			`form:"phone" json:"phone"`
+	Password   		string     		`form:"password" json:"password"`
+	Birthday   		string	  		`form:"birthday" json:"birthday"`
+	Type       		string     		`form:"type" json:"type"`
+	IsActive   		bool       		`form:"is_active" json:"is_active"`
 	Subjects   		[]*Subject 		`gorm:"many2many:user_subjects;"`
-	CourseID   		uint          	`gorm:"default:null;" json:"course_id"`
+	CourseID   		uint          	`gorm:"default:null;" form:"course_id" json:"course_id"`
 	SchoolYear 		[]*SchoolYear 	`gorm:"many2many:user_schoolyear" json:"school_year"`
 	Classroom  		[]*Classroom  	`gorm:"many2many:students_classroom"`
 	TeacherRoom		[]*Classroom	`gorm:"foreignKey:TeacherID"`
-	Course     		Course
+	Course     		Course			
 }
 
 
@@ -78,9 +77,6 @@ func (user *User) ResponseMap() map[string]interface{} {
 	var activeSchoolYear uint
 
 	for _, v := range user.SchoolYear {
-		fmt.Println("-----")
-		fmt.Println("-----")
-		fmt.Println(v)
 		if(v.IsActive) {
 			activeSchoolYear = v.ID
 		}

@@ -23,12 +23,13 @@ func NewQuizRoute(
 
 //Setup -> setups user routes
 func (c QuizRoute) Setup() {
-    grade := c.Handler.Gin.Group("/quiz")
+    quiz := c.Handler.Gin.Group("/quiz")
     {
-		grade.Use(middleware.Authenticate())
-		grade.POST("", c.Controller.Create)
-        grade.GET(":id", c.Controller.Find)
-        grade.GET("classroom/:id", c.Controller.FindByClassroomID)
+		quiz.Use(middleware.Authenticate())
+		quiz.POST("", c.Controller.Create)
+        quiz.GET(":id", c.Controller.Find)
+        quiz.GET("classroom/:id", c.Controller.FindByClassroomID)
+        quiz.GET("creator/:id", c.Controller.FindByCreatorID)
     }
 
 }

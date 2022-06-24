@@ -2,6 +2,9 @@ package models
 
 import (
 	"errors"
+	"fmt"
+	"portal/constants"
+	"time"
 
 	"gorm.io/gorm"
 	// "time"
@@ -21,6 +24,7 @@ type Classroom struct {
 	Students  		[]*User		`gorm:"many2many:students_classroom"`
 	Records			[]Grade		
 	Posts     		[]Post
+	Quizzes			[]Quiz
 }
 
 //TableName -> returns the table name of Classroom Model
@@ -50,9 +54,10 @@ type ClassroomUpdate struct {
 //ResponseMap -> response map method of User
 func (classroom *Classroom) ResponseMap() map[string]interface{} {
 	resp := make(map[string]interface{})
-	var students []map[string]interface{}
-	var posts []map[string]interface{}
-	var grades []map[string]interface{}
+	var students 	[]map[string]interface{}
+	var posts 		[]map[string]interface{}
+	var grades 		[]map[string]interface{}
+	var quizzes 	[]map[string]interface{}
 
 	for _, s := range classroom.Students {
 		students = append(students, s.ResponseStudent())
@@ -66,6 +71,20 @@ func (classroom *Classroom) ResponseMap() map[string]interface{} {
 		grades = append(grades, g.ResponseMap())
 	}
 
+	for _, q := range classroom.Quizzes {
+		t := time.Now().Format(constants.DATE_LAYOUT)
+		ed, _ := time.Parse(constants.DATE_LAYOUT, q.EndDate)
+		now, _ := time.Parse(constants.DATE_LAYOUT, t)
+		fmt.Println("----")
+		fmt.Println("----")
+		fmt.Println(now)
+		fmt.Println(ed)
+		fmt.Println(now.Before(ed))
+		if q.IsPublished && (now.Equal(ed) || now.Before(ed) ) {
+			quizzes = append(grades, q.BasicReponseMap())
+		}
+	}
+
 	resp["id"] 				= classroom.ID
 	resp["title"] 			= classroom.Title
 	resp["subject_id"] 		= classroom.SubjectID
@@ -77,6 +96,7 @@ func (classroom *Classroom) ResponseMap() map[string]interface{} {
 	resp["student"] 		= students
 	resp["posts"] 			= posts
 	resp["grades"]			= grades
+	resp["quizzes"]			= quizzes
 	resp["totalStudents"]	= len(students)
 
 

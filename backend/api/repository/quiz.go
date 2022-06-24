@@ -21,7 +21,6 @@ func (p QuizRepository) Create(quiz models.QuizCreation) (models.Quiz, error) {
 	
 	var quizModel models.Quiz
 	var creator models.User
-	var subject models.Subject
 	var classroom models.Classroom
 
 	err := p.db.DB.
@@ -31,15 +30,6 @@ func (p QuizRepository) Create(quiz models.QuizCreation) (models.Quiz, error) {
 	Take(&creator).Error
 	if err != nil {
 		return quizModel, errors.New("USER NOT EXISTING")
-	}
-
-	err = p.db.DB.
-	Debug().
-	Model(&models.Subject{}).
-	Where(quiz.SubjectID).
-	Take(&subject).Error
-	if err != nil {
-		return quizModel, errors.New("SUBJECT NOT EXISTING")
 	}
 
 	err = p.db.DB.
@@ -54,9 +44,7 @@ func (p QuizRepository) Create(quiz models.QuizCreation) (models.Quiz, error) {
 	quizModel.IsPublished 	= true
 	quizModel.EndDate		= quiz.EndDate
 	quizModel.CreatorID		= quiz.CreatorID
-	quizModel.SubjectID		= quiz.SubjectID
 	quizModel.ClassroomID	= quiz.ClassroomID
-	quizModel.GradePeriodID = quiz.GradePeriodID
 
 	err = p.db.DB.Create(&quizModel).Error
 	if err != nil {
@@ -73,7 +61,6 @@ func (p QuizRepository) Find(quiz models.Quiz) (models.Quiz, error) {
 
 	err := p.db.DB.
 		Debug().
-		Preload("Subject").
 		Preload("Students").
 		Preload("CreatedBy").
 		Preload("Classroom").
@@ -94,6 +81,26 @@ func (p QuizRepository) FindByClassroomID(quiz models.Quiz) ([]models.Quiz, erro
 	err := p.db.DB.
 		Debug().
 		Preload("Subject").
+		Preload("Students").
+		Preload("CreatedBy").
+		Preload("Classroom").
+		Preload("QuizContent").
+		Order("created_at desc").
+		Model(&models.Quiz{}).
+		Where(quiz).
+		Find(&quizzes).
+		Count(&totalRows).Error
+
+	return quizzes, err
+}
+
+func (p QuizRepository) FindByCreatorID(quiz models.Quiz) ([]models.Quiz, error) {
+	
+	var quizzes []models.Quiz
+	var totalRows int64 = 0
+
+	err := p.db.DB.
+		Debug().
 		Preload("Students").
 		Preload("CreatedBy").
 		Preload("Classroom").

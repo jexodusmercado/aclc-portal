@@ -19,5 +19,7 @@ export const END_POINTS = {
     POST            :   "post",
     DOWNLOAD        :   "download",
     COMMENT         :   "comment",
-    TEACHER         :   "teacher"
+    TEACHER         :   "teacher",
+    QUIZ            :   "quiz",
+    CREATOR         :   "creator",
 }
