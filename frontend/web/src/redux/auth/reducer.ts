@@ -7,51 +7,51 @@ const authReducer = ( state: types.AuthState = types.initialState, action: AnyAc
     case types.LOGIN_REQUEST:
         return {
             ...state,
-            user: {
-                ...state.user,
-                loading: true,
-                error: types.initialState.user.error
-            }
+            user: {} as types.AuthUser,
+            loading: true
         }
 
     case types.LOGIN_SUCCESS:
         return {
             ...state,
-            user: {
-                ...state.user,
-                data: action.payload,
-                authenticated: true,          
-                loading: false,
-            }
+            user: action.payload,
+            authenticated: true,          
+            loading: false
         }
 
     case types.LOGIN_FAILED:
         return {
             ...state,
-            user: {
-                ...state.user,
-                authenticated: false,
-                loading: false,
-                error: {
-                    status: action.payload.status,
-                    message: action.payload.message
-                }
+            user: {} as types.AuthUser,
+            authenticated: false,
+            loading: false,
+            error: {
+                status: action.payload.status,
+                message: action.payload.message
             }
         }
 
-
     case types.LOGOUT_REQUEST:
         return {
-            user: types.initialState.user,
+            ...state,
+            user: {} as types.AuthUser,
+            loading: true,
+            error: {} as types.Error
         }
 
     case types.LOGOUT_FAILED:
         return {
-            user: types.initialState.user,
+            ...state,
+            user: {} as types.AuthUser,
+            loading: false,
+            error:  {
+                status: action.payload.status,
+                message: action.payload.message
+            }
         }
     case types.LOGOUT_SUCCESS:
         return {
-            user: types.initialState.user,
+           ...types.initialState
         }
     
     default:

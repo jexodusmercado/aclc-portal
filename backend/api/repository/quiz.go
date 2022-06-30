@@ -45,6 +45,7 @@ func (p QuizRepository) Create(quiz models.QuizCreation) (models.Quiz, error) {
 	quizModel.EndDate		= quiz.EndDate
 	quizModel.CreatorID		= quiz.CreatorID
 	quizModel.ClassroomID	= quiz.ClassroomID
+	quizModel.GradePeriod	= quiz.GradePeriod
 
 	err = p.db.DB.Create(&quizModel).Error
 	if err != nil {
@@ -73,6 +74,24 @@ func (p QuizRepository) Find(quiz models.Quiz) (models.Quiz, error) {
 
 }
 
+func (c QuizRepository) FindAll() ([]models.Quiz, int64, error) {
+
+	var quizzes []models.Quiz
+	var totalRows int64 = 0
+
+	err := c.db.DB.
+		Preload("Students").
+		Preload("CreatedBy").
+		Preload("Classroom").
+		Preload("QuizContent").
+		Model(&models.Quiz{}).
+		Find(&quizzes).
+		Count(&totalRows).Error
+
+
+	return quizzes, totalRows, err
+}
+
 func (p QuizRepository) FindByClassroomID(quiz models.Quiz) ([]models.Quiz, error) {
 	
 	var quizzes []models.Quiz
@@ -80,7 +99,6 @@ func (p QuizRepository) FindByClassroomID(quiz models.Quiz) ([]models.Quiz, erro
 
 	err := p.db.DB.
 		Debug().
-		Preload("Subject").
 		Preload("Students").
 		Preload("CreatedBy").
 		Preload("Classroom").

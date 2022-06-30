@@ -5,11 +5,12 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { classNames } from 'utility'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { loginRequest } from 'redux/auth/action'
 import { ExclamationCircleIcon } from '@heroicons/react/solid'
-import { useIsomorphicLayoutEffect, useUpdateEffect, useUserAuthenticated, useUserError } from 'hooks'
+import { useIsomorphicLayoutEffect, useUpdateEffect} from 'hooks'
 import { useNavigate } from 'react-router-dom'
+import { getAuthenticated, getAuthError, getAuthUser } from 'redux/auth/selector'
 
 type FormData = {
     username: string
@@ -23,10 +24,10 @@ const loginSchema = yup.object({
 
 const SignIn = () => {
     const [showError, setShowError] = useState<boolean>(false)
+    const error     = useSelector(getAuthError)
+    const auth      = useSelector(getAuthenticated)
     const dispatch  = useDispatch()
-    const error     = useUserError()
     const navigate  = useNavigate()
-    const auth      = useUserAuthenticated()
 
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
         mode: "onChange",
@@ -53,7 +54,7 @@ const SignIn = () => {
         <>
             <div className="h-screen flex">
                 <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-                    <div className="mx-auto w-full maxcleawr-w-sm lg:w-96">
+                    <div className="mx-auto w-full max-w-sm lg:w-96">
                         <div>
 
                         <img

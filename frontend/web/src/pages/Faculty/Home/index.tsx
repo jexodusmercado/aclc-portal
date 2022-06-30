@@ -6,11 +6,12 @@ import DotsVerticalDropdown from 'components/DotsVerticalDropdown'
 import Greeting from 'components/Greeting'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import SelectInputText from 'components/SearchInputText'
-import { useEffectOnce, useGetAllClassroom, useUpdateEffect, useUserData } from 'hooks'
+import { useEffectOnce, useGetAllClassroom, useUpdateEffect } from 'hooks'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
+import { getAuthUser } from 'redux/auth/selector'
 import { deleteClassroom, getByTeacherId } from 'redux/classroom/action'
 import { ClassroomData } from 'redux/classroom/types'
 
@@ -21,7 +22,7 @@ const FacultyHomePage = () => {
 
     const dispatch                  = useDispatch()
     const navigate                  = useNavigate()
-    const user                      = useUserData() 
+    const user                      = useSelector(getAuthUser) 
     const classrooms                = useGetAllClassroom()  
 
     const fetchData = () => {

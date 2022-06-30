@@ -2,12 +2,12 @@
 import React from 'react'
 import { classNames } from 'utility'
 import { Link, useNavigate } from 'react-router-dom'
-import { quizDataState } from 'redux/quiz/types'
+import { Content } from 'redux/quiz/interfaces'
 
 interface Props {
     checked:            boolean
     state:              any
-    quizContent:        quizDataState['contents']
+    quizContent:        Content[]
     setState:           React.Dispatch<React.SetStateAction<any[]>>
     checkbox:           React.MutableRefObject<HTMLInputElement | null>
     toggleAll:          () => void

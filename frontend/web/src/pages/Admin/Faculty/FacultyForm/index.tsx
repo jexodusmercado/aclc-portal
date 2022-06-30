@@ -140,12 +140,6 @@ const FacultyForm = () => {
     }
 
     useEffectOnce(() => {
-        reset()
-        dispatch(GetAllSchoolYears())
-        dispatch(GetActiveSchoolYear())
-    })
-
-    useEffectOnce(() => {
         if(params.id){
             reset()
             dispatch(getUserRequest({ id: params.id}))

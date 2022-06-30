@@ -1,20 +1,18 @@
 import React from 'react'
-import { useUserAuthenticated, useUserData } from 'hooks'
+import { useSelector } from 'react-redux'
 import { Navigate, Outlet } from 'react-router-dom'
+import { getAuthenticated, getAuthUser } from 'redux/auth/selector'
 
 interface Props {
     type: string
 }
 
 const CheckRole : React.FC<Props> = ({type}) => {
-    const auth      = useUserAuthenticated()
-    const user      = useUserData()
+    const auth      = useSelector(getAuthenticated)
+    const user      = useSelector(getAuthUser)
 
-    if(auth) {
-        if(user?.type !== type){
-            return <Navigate to="/"/>
-        }
-        
+    console.log('check roles');
+    if(auth && user.type === type) {
         return <Outlet/>;
     }
 

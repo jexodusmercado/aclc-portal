@@ -28,8 +28,8 @@ func (c QuizRoute) Setup() {
 		quiz.Use(middleware.Authenticate())
 		quiz.POST("", c.Controller.Create)
         quiz.GET(":id", c.Controller.Find)
+        quiz.GET("", c.Controller.FindAll)
         quiz.GET("classroom/:id", c.Controller.FindByClassroomID)
         quiz.GET("creator/:id", c.Controller.FindByCreatorID)
     }
-
 }

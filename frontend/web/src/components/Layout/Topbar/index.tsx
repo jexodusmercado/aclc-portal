@@ -5,12 +5,13 @@ import { Link, useLocation } from 'react-router-dom'
 import Avatar from 'components/Avatar'
 import { BASE_URL } from 'services/api'
 import { classNames } from 'utility'
-import { useUserData, useIsomorphicLayoutEffect } from 'hooks'
+import { useIsomorphicLayoutEffect } from 'hooks'
 import { useActiveSchoolYear } from 'hooks/schoolyear'
 import { ActiveSchoolYearState } from 'redux/school-year/types'
 import { logoutRequest } from 'redux/auth/action'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { GetActiveSchoolYear } from 'redux/school-year/action'
+import { getAuthUser } from 'redux/auth/selector'
 
 const userNavigation = [
     { name: 'Your Profile', href: '#' },
@@ -24,7 +25,7 @@ interface IProps {
 
 const Topbar: React.FC<IProps> = ({setSidebarOpen}) => {
     const dispatch              = useDispatch()
-    const user                  = useUserData()
+    const user                  = useSelector(getAuthUser)
     const location              = useLocation()
     const schoolyear            = useActiveSchoolYear()
 

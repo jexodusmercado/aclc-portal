@@ -7,6 +7,8 @@ import Classroom    from './classroom/reducer'
 import Subject      from './subject/reducer'
 import Post         from './post/reducer'
 import Comment      from './comment/reducer'
+import Loading      from './loading/reducer'
+import Quiz         from './quiz/reducer'
 
 export const appReducer = combineReducers({
     Auth,
@@ -16,7 +18,9 @@ export const appReducer = combineReducers({
     Classroom,
     Subject,
     Post,
-    Comment
+    Comment,
+    Loading,
+    Quiz
 
     //add reducer here
 })

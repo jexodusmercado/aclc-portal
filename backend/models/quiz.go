@@ -7,7 +7,7 @@ import (
 type Quiz struct {
 	gorm.Model
 	GradePeriodID	uint			`json:"grade_period_id"`
-	// GradePeriod		string			`json:"grade_period"`
+	GradePeriod		string			`json:"grade_period"`
 	IsPublished		bool			`json:"is_published"`
 	EndDate			string			`json:"end_date"`
 	ClassroomID		uint			`json:"classroom_id"`
@@ -25,12 +25,12 @@ func (quiz *Quiz) TableName() string {
 type QuizCreation struct {
 	CreatorID		uint			`json:"creator_id" binding:"required"`
 	ClassroomID		uint			`json:"classroom_id" binding:"required"`
-	// GradePeriod		string			`json:"grade_period" binding:"required"`
+	GradePeriod		string			`json:"grade_period" binding:"required"`
 	EndDate			string			`json:"end_date" binding:"required"`
 }
 
 type UpdateQuiz struct {
-	// GradePeriod		string			`json:"grade_period" binding:"required"`
+	GradePeriod		string			`json:"grade_period"`
 	StudentID		uint			`json:"student_id"`
 	CreatorID		uint			`json:"creator_id"`
 	ClassroomID		uint			`json:"classroom_id"`

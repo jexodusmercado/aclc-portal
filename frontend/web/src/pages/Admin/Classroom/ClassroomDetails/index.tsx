@@ -14,11 +14,10 @@ import {
 import { 
     useEffectOnce, 
     useGetClassroom,
-    useUserData
 } from 'hooks'
 
 import { order } from 'utility'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getClassroom } from 'redux/classroom/action'
 import { FileIcon } from 'react-file-icon';
@@ -35,6 +34,7 @@ import { deletePostRequest } from 'redux/post/action'
 import toast from 'react-hot-toast'
 import { BASE_URL } from 'services/api'
 import Avatar from 'components/Avatar'
+import { getAuthUser } from 'redux/auth/selector'
 
 
 
@@ -48,7 +48,6 @@ const ClassroomDetails = () => {
     const dispatch                          = useDispatch()
     const classData                         = useGetClassroom()
     const navigate                          = useNavigate()
-    const user                              = useUserData()
 
     const fetchData = () => {
         if(params?.id){

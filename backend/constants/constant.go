@@ -8,10 +8,10 @@ var USER_TYPE = map[string]string {
 }
 
 var PERIOD_TYPE = map[string]string {
-	"prelim"	: "PRELIM",
-	"midterm"	: "MIDTERM",
-	"prefinal"	: "PREFINAL",
-	"final"		: "FINAL",
+	"PRELIM"	: "PRELIM",
+	"MIDTERM"	: "MIDTERM",
+	"PREFINAL"	: "PREFINAL",
+	"FINAL"		: "FINAL",
 }
 
 const USER_TYPE_ADMIN	= "ADMIN"

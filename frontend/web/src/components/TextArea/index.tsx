@@ -1,6 +1,7 @@
 import Avatar from 'components/Avatar'
-import { useUserData } from 'hooks'
 import React, { Dispatch, SetStateAction, useRef } from 'react'
+import { useSelector } from 'react-redux'
+import { getAuthUser } from 'redux/auth/selector'
 
 interface IProps {
     setState:  Dispatch<SetStateAction<string>>
@@ -9,7 +10,7 @@ interface IProps {
 }
 
 const TextArea: React.FC<IProps> = ({onSubmit, setState}) => {
-  const user = useUserData()
+  const user = useSelector(getAuthUser)
 
   const textArea = useRef(null);
 

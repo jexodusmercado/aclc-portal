@@ -1,11 +1,13 @@
 import { ServerIcon, HomeIcon, UsersIcon, AcademicCapIcon, CogIcon, PresentationChartBarIcon, BookOpenIcon } from '@heroicons/react/solid'
 import { useState } from 'react'
-import { useIsomorphicLayoutEffect, useUserData } from 'hooks'
+import { useIsomorphicLayoutEffect } from 'hooks'
 import { IMenu } from 'interfaces'
+import { useSelector } from 'react-redux'
 import MobileSidebar from './MobileSidebar'
 import Sidebar from './Sidebar'
 import Topbar from './Topbar'
 import Main from './Main'
+import { getAuthUser } from 'redux/auth/selector'
 
 const adminNavigation = [
     { name: 'Dashboard', href: '/dashboard', icon: PresentationChartBarIcon, end: true},
@@ -35,7 +37,7 @@ const facultyNavigation = [
 
 
 const Navigation = () => {
-    const user                          = useUserData()
+    const user                          = useSelector(getAuthUser)
     const [menu, setMenu]               = useState<Array<IMenu>>([])
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false)
 

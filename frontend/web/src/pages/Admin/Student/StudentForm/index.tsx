@@ -280,7 +280,10 @@ const StudentForm = () => {
                                     name='birthday'
                                     selected={startDate}
                                     onChange={e => setStartDate(e)}
-                                    className="input-text"
+                                    className="input-text disabled:cursor-not-allowed disabled:bg-gray-200"
+                                    dropdownMode="select"
+                                    showMonthDropdown
+                                    showYearDropdown
                                 />
                             </div>
                             {errors.birthday && <p className='text-sm text-red-400'> *Date is required </p>}

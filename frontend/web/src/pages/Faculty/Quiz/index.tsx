@@ -3,15 +3,17 @@ import CardContainer from 'components/CardContainer'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import SelectInputText from 'components/SearchInputText'
 import SelectMenu from 'components/SelectMenu'
-import { useEffectOnce, useIsomorphicLayoutEffect, useUserData } from 'hooks'
+import { useEffectOnce, useIsomorphicLayoutEffect } from 'hooks'
 import React, { useRef, useState } from 'react'
 import toast from 'react-hot-toast'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { getAuthUser } from 'redux/auth/selector'
 import { quizRequest } from 'services/request'
 import QuizTable from './Components/Tables'
 
 const Quiz = () => {
-    const user                                          = useUserData();
+    const user                                          = useSelector(getAuthUser);
     const checkbox                                      = useRef<HTMLInputElement | null>(null)
     
     const [search, setSearch]                           = useState<string>('')
@@ -29,7 +31,7 @@ const Quiz = () => {
 
     const fetchData = async () => {
         setLoading(true);
-        quizRequest.getAllByCreatorID(user.id.toString())
+        quizRequest.getAllByCreatorID({id: user.id})
         .then(response => {
             setQuizzes(response.data)
             setLoading(false)

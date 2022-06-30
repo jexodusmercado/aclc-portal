@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import { classNames } from 'utility'
 import { Switch } from '@headlessui/react'
-import { useUserData } from 'hooks';
+import { useSelector } from 'react-redux';
+import { getAuthUser } from 'redux/auth/selector';
 
 const GeneralComponent = () => {
 
-    const user = useUserData();
-
-    const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled]               = useState<boolean>(true)
-    // const [autoUpdateApplicantDataEnabled, setAutoUpdateApplicantDataEnabled]   = useState<boolean>(false)
+    const user                                                      = useSelector(getAuthUser);
+    const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled]   = useState<boolean>(true)
 
     return (
         <>

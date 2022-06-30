@@ -23,6 +23,10 @@ func (u QuizService) Find(quiz models.Quiz) (models.Quiz, error) {
     return u.repo.Find(quiz)
 }
 
+func (u QuizService) FindAll() ([]models.Quiz, int64, error) {
+    return u.repo.FindAll()
+}
+
 func (u QuizService) FindByClassroomID(quiz models.Quiz) ([]models.Quiz, error) {
     return u.repo.FindByClassroomID(quiz)
 } 

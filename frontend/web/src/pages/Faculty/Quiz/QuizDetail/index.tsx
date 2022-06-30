@@ -1,9 +1,9 @@
 import Card from 'components/CardContainer'
 import Title from 'components/Title'
-import { useEffectOnce, useIsomorphicLayoutEffect } from 'hooks'
+import { useEffectOnce } from 'hooks'
 import React, { useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { quizDataState } from 'redux/quiz/types'
+import { QuizData } from 'redux/quiz/interfaces'
 import { quizRequest } from 'services/request'
 import QuizTable from './Table'
 
@@ -14,7 +14,7 @@ const QuizDetail = () => {
     
     const checkbox                                      = useRef<HTMLInputElement | null>(null)
     
-    const [quiz, setQuiz]                               = useState<quizDataState>()
+    const [quiz, setQuiz]                               = useState<QuizData>()
     const [loading, setLoading]                         = useState<boolean>(false)
     const [search, setSearch]                           = useState<string>('')
     const [quizzes, setQuizzes]                         = useState<any[]>([])
@@ -37,7 +37,7 @@ const QuizDetail = () => {
     useEffectOnce(() => {
         setLoading(true)
         if(params.id) {
-            quizRequest.getByID(params.id)
+            quizRequest.getByID({id: Number(params.id)})
             .then((response) => setQuiz(response.data))
             .catch(() => navigate('/faculty/quiz'))
             setLoading(false)

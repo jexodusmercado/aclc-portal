@@ -9,18 +9,19 @@ import CardContainer from 'components/CardContainer'
 import SelectMenu from 'components/SelectMenu'
 import 'react-datepicker/dist/react-datepicker.css'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getUserRequest } from 'redux/users/action'
 import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
 import { quizRequest } from 'services/request'
-import { useEffectOnce, useFilteredClassroom, useIsomorphicLayoutEffect, useUserCreated, useUserData } from 'hooks'
+import { useEffectOnce, useFilteredClassroom, useIsomorphicLayoutEffect, useUserCreated } from 'hooks'
 import Title from 'components/Title'
 import { getByTeacherId } from 'redux/classroom/action'
+import { getAuthUser } from 'redux/auth/selector'
 
 
 interface IForm {
     creator_id          : number
-    // grade_period        : string
+    grade_period        : string
     classroom_id        : number
     end_date            : Date | null
 }
@@ -32,12 +33,12 @@ const classroomSchema = yup.object({
 }).required()
 
 const FacultyForm = () => {
-    const params                        = useParams();
+    const params                        = useParams()
     const navigate                      = useNavigate()
     const dispatch                      = useDispatch()
-    const createdState                  = useUserCreated();
+    const createdState                  = useUserCreated()
     const schoolyears                   = useFilteredClassroom()
-    const user                          = useUserData()
+    const user                          = useSelector(getAuthUser)
 
     const [classroomID, setClassroomID]   = useState<number | undefined>(undefined)
 
@@ -70,7 +71,8 @@ const FacultyForm = () => {
         const body = {
             creator_id: data.creator_id,
             classroom_id: data.classroom_id,
-            end_date: dayjs(data.end_date).format('YYYY-MM-DD').toString()
+            end_date: dayjs(data.end_date).format('YYYY-MM-DD').toString(),
+            grade_period: data.grade_period
         }
         
         console.log(body)
@@ -89,7 +91,7 @@ const FacultyForm = () => {
             // )
         } else {
             console.log('creating')
-            quizRequest.createQuiz(body).then(() => onSuccess()).catch(() => onFailed())
+            quizRequest.createQuiz(body)
         }
     }
 
@@ -139,6 +141,13 @@ const FacultyForm = () => {
                     loading={createdState.loading}
                 >
                     <div className="grid grid-cols-4 gap-6">
+                        <div className="col-span-2 sm:col-span-2">
+                            
+                            <div className="mt-1 flex rounded-md shadow">
+                                <SelectMenu lists={} selected={} setSelected={} selectName={''} />
+                            </div>
+                            {errors.end_date && <p className='text-sm text-red-400'> *Date is required </p>}
+                        </div>
                         <div className="col-span-2 sm:col-span-2">
                             <label htmlFor="end_date" className="block text-sm font-medium text-gray-700">
                                 Due Date:

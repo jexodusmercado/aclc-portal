@@ -1,4 +1,4 @@
-const PUBLIC_PATH = "public"
+export const PUBLIC_PATH = "public"
 
 export let BASE_URL: string | undefined = process.env.REACT_APP_API_URL
 

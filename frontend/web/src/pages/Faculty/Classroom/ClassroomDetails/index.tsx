@@ -14,7 +14,6 @@ import {
 import { 
     useEffectOnce, 
     useGetClassroom,
-    useUserData
 } from 'hooks'
 
 import { order } from 'utility'
@@ -35,6 +34,7 @@ import { deletePostRequest } from 'redux/post/action'
 import toast from 'react-hot-toast'
 import { BASE_URL } from 'services/api'
 import Avatar from 'components/Avatar'
+import { getAuthUser } from 'redux/auth/selector'
 
 
 
@@ -48,7 +48,6 @@ const FacultyClassroomDetails = () => {
     const dispatch                          = useDispatch()
     const classData                         = useGetClassroom()
     const navigate                          = useNavigate()
-    const user                              = useUserData()
 
     const fetchData = () => {
         if(params?.id){

@@ -1,10 +1,12 @@
-import { useIsomorphicLayoutEffect, useUserData } from 'hooks'
+import { useIsomorphicLayoutEffect } from 'hooks'
 import HomePage from 'pages/Admin/Home'
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
+import { getAuthUser } from 'redux/auth/selector'
 
 const DashboardComponent = () => {
-    const user = useUserData()
+    const user = useSelector(getAuthUser)
     const [type, setType] = useState<string>('')
 
     useIsomorphicLayoutEffect(() => {

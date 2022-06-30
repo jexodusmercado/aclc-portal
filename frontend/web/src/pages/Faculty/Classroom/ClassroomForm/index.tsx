@@ -1,10 +1,10 @@
 import Card from 'components/CardContainer';
 import SelectMenu from 'components/SelectMenu';
 import MultipleSelectMenu from 'components/MultipleSelectMenu';
-import { useEffectOnce, useUpdateEffect, useUserData } from 'hooks';
+import { useEffectOnce, useUpdateEffect } from 'hooks';
 import { List, ListWithAvatar } from 'interfaces';
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAllSubjects } from 'redux/subject/action';
 import { usersRequest } from 'services/request';
 import { useFilteredSubjects } from 'hooks';
@@ -14,8 +14,9 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { createClassroom } from 'redux/classroom/action';
 import toast from 'react-hot-toast';
-import { useFilteredSchoolYears, useSchoolYears } from 'hooks/schoolyear';
+import { useFilteredSchoolYears } from 'hooks/schoolyear';
 import { GetAllSchoolYears } from 'redux/school-year/action';
+import { getAuthUser } from 'redux/auth/selector';
 
 const formSchema = yup.object({
     title           : yup.string().trim().required('*Title is required'),
@@ -43,7 +44,7 @@ const FacultyClassroomForm = () => {
     const subjects                              = useFilteredSubjects()
     const listSchoolYear                        = useFilteredSchoolYears()
     const dispatch                              = useDispatch();
-    const user                                  = useUserData();
+    const user                                  = useSelector(getAuthUser);
     const navigate                              = useNavigate();
     
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<IForm>({

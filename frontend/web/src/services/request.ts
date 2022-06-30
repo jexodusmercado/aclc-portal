@@ -1,3 +1,4 @@
+import axios from "axios";
 import { END_POINTS } from "services/api";
 import { apiInstance } from "services/axios";
 import { LoginPayload } from "redux/auth/types";
@@ -8,7 +9,7 @@ import { CreateClassroomPayload, GetAllClassroomPayload, GetByTeacherIDPayload, 
 import { CreateSubjectsPayload, DeleteSubjectPayload, GetAllSubjectPayload, GetSubjectPayload, UpdateSubjectPayload } from "redux/subject/types";
 import { CreatePostPayload, DeletePostPayload } from "redux/post/types";
 import { CreateUpdatePayload, GetDeletePayload } from "redux/comment/types";
-import axios from "axios";
+import { createQuizPayload, IDPayload, updateQuizPayload } from "redux/quiz/types";
 
 
 export const authRequest = {
@@ -126,14 +127,19 @@ export const publicRequest = {
 }
 
 export const quizRequest = {
-    getAllByCreatorID: (id: string) =>
-        apiInstance.get(`${END_POINTS.QUIZ}/${END_POINTS.CREATOR}/${id}`),
-    getAllByClassroomID: (id: string) =>
-        apiInstance.get(`${END_POINTS.QUIZ}/${END_POINTS.CLASSROOM}/${id}`),
-    getByID: (id:string) =>
-        apiInstance.get(`${END_POINTS.QUIZ}/${id}`),
-    createQuiz: (form: any) => 
-        apiInstance.post(END_POINTS.QUIZ, form)
+    getAllByCreatorID: (payload: IDPayload) =>
+        apiInstance.get(`${END_POINTS.QUIZ}/${END_POINTS.CREATOR}/${payload.id}`),
+    getAllByClassroomID: (payload: IDPayload) =>
+        apiInstance.get(`${END_POINTS.QUIZ}/${END_POINTS.CLASSROOM}/${payload.id}`),
+    getByID: (payload: IDPayload) =>
+        apiInstance.get(`${END_POINTS.QUIZ}/${payload.id}`),
+    createQuiz: (payload: createQuizPayload) => 
+        apiInstance.post(END_POINTS.QUIZ, payload),
+        
+    updateQuiz: (payload: updateQuizPayload) => {
+        const {id, ...data} = payload
+        return apiInstance.patch(`${END_POINTS.QUIZ}/${id}`, data)
+    }
 }
 
 export const quizContentRequest = {

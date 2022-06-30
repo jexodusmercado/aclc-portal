@@ -1,12 +1,13 @@
 import { OfficeBuildingIcon } from '@heroicons/react/solid'
 import Avatar from 'components/Avatar'
 import Card from 'components/CardContainer'
-import { useUserData } from 'hooks'
 import React from 'react'
+import { useSelector } from 'react-redux'
+import { getAuthUser } from 'redux/auth/selector'
 import { greetingTime, timeConvertFormat } from 'utility'
 
 const Greeting = () => {
-    const user = useUserData()
+    const user = useSelector(getAuthUser)
     
     return (
         <Card>
