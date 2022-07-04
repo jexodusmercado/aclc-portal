@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { DownloadIcon, PlusCircleIcon } from '@heroicons/react/solid'
 import { useEffectOnce, useGetAllUsers, useIsomorphicLayoutEffect, useUpdateEffect } from 'hooks'
 import { Link } from 'react-router-dom'
@@ -22,7 +22,7 @@ const list = [
 const FacultyIndex = () => {
     const [search, setSearch]                           = useState<string>('')
     const [checked, setChecked]                         = useState<boolean>(false)
-    const [selected, setSelected]                       = useState<number | undefined>(undefined)
+    const [selected, setSelected]                       = useState<number | string | undefined>(undefined)
     const [indeterminate, setIndeterminate]             = useState<boolean>(false)
     const [selectedFaculty, setSelectedFaculty]         = useState<GetAllUsersState["data"]>([])
     const [isDelete, setDelete]                         = useState<boolean>(false)
@@ -33,7 +33,7 @@ const FacultyIndex = () => {
     const fetchingData = () => {
         dispatch(searchUsersRequest({keyword: search, type: "faculty"}))
     }
-
+        
     const toggleAll = () => {
         setSelectedFaculty(checked || indeterminate ? [] : users.data)
         setChecked(!checked && !indeterminate)

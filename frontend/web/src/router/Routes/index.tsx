@@ -9,7 +9,6 @@ import FacultyIndex from 'pages/Admin/Faculty'
 import Subject from 'pages/Admin/Subject'
 import SubjectForm from 'pages/Admin/Subject/SubjectForm'
 import FacultyForm from 'pages/Admin/Faculty/FacultyForm'
-import FacultyProfile from 'pages/Admin/Faculty/FacultyProfile'
 import StudentIndex from 'pages/Admin/Student'
 import StudentForm from 'pages/Admin/Student/StudentForm'
 import CourseIndex from 'pages/Admin/Course'
@@ -29,6 +28,11 @@ import Quiz from 'pages/Faculty/Quiz'
 import QuizForm from 'pages/Faculty/Quiz/QuizForm'
 import QuizDetail from 'pages/Faculty/Quiz/QuizDetail'
 import QuizContentForm from 'pages/Faculty/Quiz/QuizDetail/QuizContentForm'
+import QuizContentUpdateForm from 'pages/Faculty/Quiz/QuizDetail/QuizContentUpdateForm'
+import FacultyStudent from 'pages/Faculty/Student'
+import FacultySettings from 'pages/Faculty/Settings'
+import FacultyGeneral from 'pages/Faculty/Settings/Components/General'
+import FacultyGrades from 'pages/Faculty/Student/Grades'
 
 const CustomRoute = () => {
     return (
@@ -111,6 +115,20 @@ const CustomRoute = () => {
                                     <Route path="create" element={<QuizForm />} />
                                     <Route path=":id" element={<QuizDetail/>} />
                                     <Route path=":id/questions" element={<QuizContentForm/>} />
+                                    <Route path=":id/questions/:content/update" element={<QuizContentUpdateForm/>} />
+                                </Route>
+
+                                {/* settings */}
+                                <Route path="settings">
+                                    <Route element={<FacultySettings />}>
+                                        <Route index element={<FacultyGeneral />} />
+                                    </ Route>
+                                </Route>
+
+                                <Route path="student">
+                                    <Route index element={<FacultyStudent />} />
+                                    <Route path=":id/profile" element={<FacultyStudent />} />
+                                    <Route path=":id/grades" element={<FacultyGrades />} />
                                 </Route>
                             </Route>
                         </Route>

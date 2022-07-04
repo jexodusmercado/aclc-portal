@@ -50,7 +50,7 @@ func (c ClassroomRepository) Create(classroom models.ClassroomCreation, students
 	dbClassroom.TeacherID		= 	classroom.TeacherID
 	dbClassroom.SchoolYearID	=	*classroom.SchoolYearID
 	dbClassroom.Students 		= 	users
-	dbClassroom.IsActive 		= 	true
+	dbClassroom.IsActive 		= 	false
 
 	return c.db.DB.Preload("Records").Create(&dbClassroom).Association("Students").Error
 
@@ -129,6 +129,88 @@ func (u ClassroomRepository) FindByTeacherID(classroom models.Classroom, keyword
 		Count(&totalRows).Error
 
 	return classrooms, totalRows, err
+}
+
+func (u ClassroomRepository) FindByStudentID(studentId, keyword string) ([]models.Classroom, int64, error) {
+	var classrooms []models.Classroom
+	var totalRows int64 = 0
+
+	queryBuilder := u.db.DB.
+		Debug().
+		Preload("Subject").
+		Preload("Students.Course").
+		Preload("Teacher").
+		// Preload("Posts.User").
+		// Preload("Posts.Comments.User").
+		Order("created_at desc").
+		Model(&models.Classroom{})
+
+	
+	if keyword != "" {
+		queryKeyword := "%" + keyword + "%"
+		queryBuilder = queryBuilder.Where(
+			u.db.DB.Where("classroom.Title LIKE ? ", queryKeyword))
+	}
+
+	err := queryBuilder.
+		Where("ID IN (SELECT classroom_id FROM students_classroom WHERE user_id = ?)", "4").
+		Find(&classrooms).
+		Count(&totalRows).Error
+
+	return classrooms, totalRows, err
+}
+
+func (u ClassroomRepository) GetStudentsByTeacherID(classroom models.Classroom, keyword, findCourseID, findClassroomID string, ) ([]models.User, error) {
+	var students []models.User
+	var classroomIDs []uint
+	var studentCollection []models.User
+
+	err := u.db.DB.
+		Debug().
+		Preload("Subject").
+		Preload("Students.Course").
+		Preload("Teacher").
+		// Preload("Posts.User").
+		// Preload("Posts.Comments.User").
+		Order("created_at desc").
+		Model(&models.Classroom{}).
+		Where(classroom).
+		Pluck("ID", &classroomIDs).
+		Error
+
+
+		for _, v := range classroomIDs {
+			classroom.ID = v
+			queryBuilder := u.db.DB.
+				Debug().
+				Preload("Course").
+				Preload("Classroom", "teacher_id = ?", classroom.TeacherID).
+				Preload("Classroom.Subject").
+				Model(&classroom)
+
+			if findCourseID != "" {
+				queryBuilder = queryBuilder.Where("user.course_id = ? ", findCourseID)
+			}
+
+			if findClassroomID != "" {
+				queryBuilder = queryBuilder.Where("students_classroom.classroom_id = ? ", findClassroomID)
+			}
+
+			if keyword != "" {
+				queryKeyword := "%" + keyword + "%"
+				queryBuilder = queryBuilder.Where("user.first_name LIKE ? ", queryKeyword).Or("user.last_name LIKE ? ", queryKeyword)
+			}
+
+			err = queryBuilder.
+				Group("ID").
+				Association("Students").
+				Find(&students)
+
+			studentCollection = append(studentCollection, students...)
+		}
+	
+
+	return studentCollection, err
 }
 
 func (u ClassroomRepository) Update(response models.ClassroomUpdate) (models.Classroom, error) {

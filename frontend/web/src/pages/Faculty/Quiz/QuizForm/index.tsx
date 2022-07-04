@@ -7,16 +7,17 @@ import dayjs from 'dayjs'
 import * as yup from 'yup'
 import CardContainer from 'components/CardContainer'
 import SelectMenu from 'components/SelectMenu'
-import 'react-datepicker/dist/react-datepicker.css'
+import 'react-datepicker/dist/react-datepicker.min.css'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserRequest } from 'redux/users/action'
 import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
-import { quizRequest } from 'services/request'
-import { useEffectOnce, useFilteredClassroom, useIsomorphicLayoutEffect, useUserCreated } from 'hooks'
+import { useEffectOnce, useFilteredClassroom, useIsomorphicLayoutEffect, useUpdateEffect, useUserCreated } from 'hooks'
 import Title from 'components/Title'
 import { getByTeacherId } from 'redux/classroom/action'
 import { getAuthUser } from 'redux/auth/selector'
+import { GRADE_PREIOD } from 'contants'
+import { createQuiz, updateQuiz } from 'redux/quiz/action'
 
 
 interface IForm {
@@ -40,11 +41,12 @@ const FacultyForm = () => {
     const schoolyears                   = useFilteredClassroom()
     const user                          = useSelector(getAuthUser)
 
-    const [classroomID, setClassroomID]   = useState<number | undefined>(undefined)
+    const [selected, setSelected]       = useState<number | string | undefined>()
+    const [classroomID, setClassroomID]   = useState<number | string | undefined>(undefined)
 
     const cancelForm = () => navigate('/dashboard/faculty');
 
-    const { register, handleSubmit, setValue, formState: { errors }, reset, watch } = useForm<IForm>({
+    const { handleSubmit, setValue, formState: { errors }, reset, watch } = useForm<IForm>({
         mode: "onChange",
         resolver: yupResolver(classroomSchema),
     });
@@ -72,26 +74,26 @@ const FacultyForm = () => {
             creator_id: data.creator_id,
             classroom_id: data.classroom_id,
             end_date: dayjs(data.end_date).format('YYYY-MM-DD').toString(),
-            grade_period: data.grade_period
+            grade_period: data.grade_period,
+            onSuccess: onSuccess,
+            onFailed: onFailed
         }
         
         console.log(body)
 
         if(params.id){
+
+            const param = {
+                ...body,
+                id: params.id
+            }
             console.log('updating')
-            // dispatch(
-            //     updateUserRequest({
-            //         id: params.id, 
-            //         type:'factuly', 
-            //         letter_type:'f', 
-            //         formData: fd,
-            //         onSuccess:onSuccess,
-            //         onFailed: onFailed
-            //     })
-            // )
+
+            dispatch(updateQuiz(param))
         } else {
             console.log('creating')
-            quizRequest.createQuiz(body)
+            // quizRequest.createQuiz(body)
+            dispatch(createQuiz(body))
         }
     }
 
@@ -112,7 +114,7 @@ const FacultyForm = () => {
 
     useIsomorphicLayoutEffect(() => {
         if(classroomID){
-            setValue('classroom_id', classroomID)
+            setValue('classroom_id', Number(classroomID))
         }
     },[classroomID])
 
@@ -128,6 +130,12 @@ const FacultyForm = () => {
         }
     },[user])
 
+    useUpdateEffect(() => {
+        if(selected){
+            setValue('grade_period', selected.toString());
+        }
+    },[selected])
+
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Title name={'Create Quiz'} />
@@ -142,9 +150,11 @@ const FacultyForm = () => {
                 >
                     <div className="grid grid-cols-4 gap-6">
                         <div className="col-span-2 sm:col-span-2">
-                            
+                            <label htmlFor="end_date" className="block text-sm font-medium text-gray-700">
+                                Grade Period
+                            </label>
                             <div className="mt-1 flex rounded-md shadow">
-                                <SelectMenu lists={} selected={} setSelected={} selectName={''} />
+                                <SelectMenu lists={GRADE_PREIOD} selected={selected} setSelected={setSelected} />
                             </div>
                             {errors.end_date && <p className='text-sm text-red-400'> *Date is required </p>}
                         </div>
@@ -158,7 +168,7 @@ const FacultyForm = () => {
                                     selected={end_date}
                                     onChange={(e) => setValue('end_date',e)}
                                     className="input-text disabled:cursor-not-allowed disabled:bg-gray-200"
-                                    dropdownMode="select"
+                                    dropdownMode="scroll"
                                     showMonthDropdown
                                     showYearDropdown
                                     disabled={params.id ? true : false}

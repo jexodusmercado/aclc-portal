@@ -1,6 +1,7 @@
 import { IPayload } from 'interfaces';
 import { PostInitialState } from 'redux/post/types';
 import { UserInitialState } from '../users/types'
+import { Students } from './interface';
 
 export type ClassroomState = typeof ClassroomInitialState;
 
@@ -79,6 +80,7 @@ export const ClassroomInitialState  = {
         },
         loading: false
     },
+    students: [] as Students[],
     created: {
         loading: false,
         success: false
@@ -112,6 +114,10 @@ export const GET_ALL_CLASSROOM_TEACHER_ID_REQUEST   =   "GET_ALL_CLASSROOM_TEACH
 export const GET_ALL_CLASSROOM_TEACHER_ID_SUCCESS   =   "GET_ALL_CLASSROOM_TEACHER_ID_SUCCESS"
 export const GET_ALL_CLASSROOM_TEACHER_ID_FAILED    =   "GET_ALL_CLASSROOM_TEACHER_ID_FAILED"
 
+export const GET_ALL_STUDENTS_BY_TEACHER_ID             =   "GET_ALL_STUDENTS_BY_TEACHER_ID"
+export const GET_ALL_STUDENTS_BY_TEACHER_ID_REQUEST     =   "GET_ALL_STUDENTS_BY_TEACHER_ID_REQUEST"
+export const GET_ALL_STUDENTS_BY_TEACHER_ID_SUCCESS     =   "GET_ALL_STUDENTS_BY_TEACHER_ID_SUCCESS"
+export const GET_ALL_STUDENTS_BY_TEACHER_ID_FAILED      =   "GET_ALL_STUDENTS_BY_TEACHER_ID_FAILED"
 
 
 export type CreateClassroomAction = {
@@ -142,6 +148,18 @@ export type DeleteClassroomAction = {
 export type GetByTeacherIDAction = {
     type: typeof GET_ALL_CLASSROOM_TEACHER_ID_REQUEST
     payload: GetByTeacherIDPayload
+}
+
+export type GetAllStudentsByTeacherIDAction = {
+    type: typeof GET_ALL_STUDENTS_BY_TEACHER_ID_REQUEST
+    payload: GetAllStudentsByTeacherIDPayload
+}
+
+export interface GetAllStudentsByTeacherIDPayload {
+    teacherId: number,
+    keyword?: string,
+    courseId?: string,
+    classroomId?: string
 }
 
 

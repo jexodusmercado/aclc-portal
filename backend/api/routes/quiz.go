@@ -31,5 +31,7 @@ func (c QuizRoute) Setup() {
         quiz.GET("", c.Controller.FindAll)
         quiz.GET("classroom/:id", c.Controller.FindByClassroomID)
         quiz.GET("creator/:id", c.Controller.FindByCreatorID)
+        quiz.DELETE(":id", c.Controller.DeleteByID)
+        quiz.PATCH(":id", c.Controller.UpdateByID)
     }
 }

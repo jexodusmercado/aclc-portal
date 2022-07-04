@@ -18,7 +18,7 @@ import { getAllCoursesRequest } from 'redux/courses/action'
 const StudentIndex = () => {
     const [search, setSearch]                           = useState<string>('')
     const [checked, setChecked]                         = useState<boolean>(false)
-    const [selected, setSelected]                       = useState<number | undefined>(undefined)
+    const [selected, setSelected]                       = useState<number | string | undefined>(undefined)
     const [indeterminate, setIndeterminate]             = useState<boolean>(false)
     const [selectedFaculty, setSelectedFaculty]         = useState<GetAllUsersState["data"]>([])
     const [coursesList, setCoursesList]                 = useState<List[]>([])

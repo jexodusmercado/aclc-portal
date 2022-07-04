@@ -32,6 +32,13 @@ type UserInputQuizContent struct {
 	UserID		uint	`form:"user_id" json:"user_id" binding:"required"`
 }
 
+type QuizContentUpdates struct {
+	ID					uint	`json:"content_id" binding:"required"`	
+	AnswerQuestionType	string	`json:"question_type"`
+	Question			string	`json:"question" binding:"required"`
+	Answer				string	`json:"answer" binding:"required"`
+}
+
 func (u *QuizContent) ResponseMap() map[string]interface{} {
     resp := make(map[string]interface{})
 

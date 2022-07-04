@@ -7,27 +7,30 @@ import (
 )
 
 type QuizContentRoute struct {
-    Handler    infrastructure.GinRouter
-    Controller controller.QuizContentController
+	Handler    infrastructure.GinRouter
+	Controller controller.QuizContentController
 }
 
 func NewQuizContentRoute(
-    controller controller.QuizContentController,
-    handler infrastructure.GinRouter,
+	controller controller.QuizContentController,
+	handler infrastructure.GinRouter,
 ) QuizContentRoute {
-    return QuizContentRoute{
-        Handler:    handler,
-        Controller: controller,
-    }
+	return QuizContentRoute{
+		Handler:    handler,
+		Controller: controller,
+	}
 }
 
 //Setup -> setups user routes
 func (c QuizContentRoute) Setup() {
-    grade := c.Handler.Gin.Group("/quiz/:id")
-    {
-		grade.Use(middleware.Authenticate())
-		grade.POST("", c.Controller.Create)
-        grade.POST("/answer/:contentID", c.Controller.Answer)
-    }
+	quizContent := c.Handler.Gin.Group("/quiz/:id")
+	{
+		quizContent.Use(middleware.Authenticate())
+		quizContent.GET("content/:contentID", c.Controller.Find)
+		quizContent.POST("", c.Controller.Create)
+		quizContent.PATCH("content/:contentID", c.Controller.UpdateByID)
+		quizContent.POST("answer/:contentID", c.Controller.Answer)
+		quizContent.DELETE("delete/:contentID", c.Controller.DeleteByID)
+	}
 
 }

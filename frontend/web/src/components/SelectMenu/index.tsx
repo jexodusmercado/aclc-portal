@@ -9,8 +9,8 @@ import { useIsomorphicLayoutEffect } from 'hooks'
 
 interface Props {
     lists: ListWithAvatar[]
-    selected: number | undefined
-    setSelected: React.Dispatch<React.SetStateAction<number | undefined>>
+    selected: number | string | undefined
+    setSelected: React.Dispatch<React.SetStateAction<number | string | undefined>>
     selectName?: string
     className?: string
     placeholderText? : string

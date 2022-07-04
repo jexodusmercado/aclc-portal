@@ -2,14 +2,45 @@ import axios from "axios";
 import { END_POINTS } from "services/api";
 import { apiInstance } from "services/axios";
 import { LoginPayload } from "redux/auth/types";
-import { CreateUserPayload, DeleteUsersPayload, GetUserPayload, GetUsersPayload, UpdateUserPayload } from "redux/users/types";
 import { CreateCoursePayload } from "redux/courses/types";
-import { ChangeActiveSchoolYearPayload, CreateSchoolYearPayload } from "redux/school-year/types";
-import { CreateClassroomPayload, GetAllClassroomPayload, GetByTeacherIDPayload, GetClassroomPayload, UpdateClassroomPayload } from "redux/classroom/types";
-import { CreateSubjectsPayload, DeleteSubjectPayload, GetAllSubjectPayload, GetSubjectPayload, UpdateSubjectPayload } from "redux/subject/types";
 import { CreatePostPayload, DeletePostPayload } from "redux/post/types";
 import { CreateUpdatePayload, GetDeletePayload } from "redux/comment/types";
-import { createQuizPayload, IDPayload, updateQuizPayload } from "redux/quiz/types";
+import { ChangeActiveSchoolYearPayload, CreateSchoolYearPayload } from "redux/school-year/types";
+
+import { 
+    CreateSubjectsPayload, 
+    DeleteSubjectPayload, 
+    GetAllSubjectPayload, 
+    GetSubjectPayload, 
+    UpdateSubjectPayload 
+} from "redux/subject/types";
+
+import { 
+    CreateClassroomPayload, 
+    GetAllClassroomPayload, 
+    GetAllStudentsByTeacherIDPayload, 
+    GetByTeacherIDPayload, 
+    GetClassroomPayload, 
+    UpdateClassroomPayload 
+} from "redux/classroom/types";
+
+import { 
+    CreateUserPayload, 
+    DeleteUsersPayload, 
+    GetUserPayload, 
+    GetUsersPayload, 
+    UpdateUserPayload 
+} from "redux/users/types";
+
+import { 
+    CreateContentPayload, 
+    createQuizPayload, 
+    IDPayload, 
+    IDSPayload, 
+    QuizIDAndContentIDPayload,
+    QuizIDWithContentIDPayload, 
+    updateQuizPayload 
+} from "redux/quiz/types";
 
 
 export const authRequest = {
@@ -71,8 +102,15 @@ export const classroomRequest = {
     updateClassroom: (params: UpdateClassroomPayload) =>
         apiInstance.patch(`${END_POINTS.CLASSROOM}/${params.classroomId}`, params),
     deleteClassroom : (params: GetClassroomPayload) =>
-        apiInstance.delete(`${END_POINTS.CLASSROOM}/${params.classroomId}`)
-    
+        apiInstance.delete(`${END_POINTS.CLASSROOM}/${params.classroomId}`),
+
+    getAllStudentsByTeacherID: (params: GetAllStudentsByTeacherIDPayload) =>{
+        const {teacherId, ...data} = params
+        return apiInstance.get(`${END_POINTS.CLASSROOM}/${END_POINTS.STUDENTS}/${teacherId}`, { params: {...data}})
+    },
+
+    getAllClassroomsByStudentID: (param: any) =>
+        apiInstance.get(`${END_POINTS.CLASSROOM}/${END_POINTS.STUDENT}/${param.id}`)
 }
 
 export const subjectRequest = {
@@ -139,15 +177,38 @@ export const quizRequest = {
     updateQuiz: (payload: updateQuizPayload) => {
         const {id, ...data} = payload
         return apiInstance.patch(`${END_POINTS.QUIZ}/${id}`, data)
+    },
+
+    deleteQuiz: (params : IDSPayload) => {
+        if(params.id.length){
+            const request = params.id.map((id) => {
+                return apiInstance.delete(`${END_POINTS.QUIZ}/${id}`)
+            })
+    
+            return axios.all(request)
+        }
     }
 }
 
 export const quizContentRequest = {
-    createContent: (form: any[], quizId: string) => {
-        const request = form.map(value => {
-            return apiInstance.post(`${END_POINTS.QUIZ}/${quizId}`, value)
+    createContent: (payload: CreateContentPayload) => {
+        const request = payload.form.map(value => {
+            return apiInstance.post(`${END_POINTS.QUIZ}/${payload.quizId}`, value)
         })
 
         return axios.all(request)
-    }
+    },
+
+    deleteQuizContent: (params : QuizIDWithContentIDPayload) => {
+        const request = params.contentID.map((contentID) => {
+            return apiInstance.delete(`${END_POINTS.QUIZ}/${params.id}/${END_POINTS.DELETE}/${contentID}`)
+        })
+
+        return axios.all(request)
+    },
+    getQuizContent: (params: QuizIDAndContentIDPayload) => 
+        apiInstance.get(`${END_POINTS.QUIZ}/${params.id}/${END_POINTS.CONTENT}/${params.contentID}`),
+
+    updateQuizContent: (params: any) =>
+        apiInstance.patch(`${END_POINTS.QUIZ}/${params.id}/${END_POINTS.CONTENT}/${params.content}`, params)
 }

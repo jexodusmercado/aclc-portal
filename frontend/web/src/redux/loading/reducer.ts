@@ -5,7 +5,7 @@ import * as types from './types';
 
 const loadingReducer = (state: types.LoadingState = types.initialState, action: AnyAction) => {
     const { type } = action;
-    const matches = /(.*)_(REQUEST|SUCCESS|FAILURE)/.exec(type);
+    const matches = /(.*)_(REQUEST|SUCCESS|FAILED)/.exec(type);
 
     // not a *_REQUEST / *_SUCCESS /  *_FAILURE actions, so we ignore them
     if (!matches) {

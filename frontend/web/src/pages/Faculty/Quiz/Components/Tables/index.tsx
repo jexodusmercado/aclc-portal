@@ -1,12 +1,13 @@
 // import Badges from 'components/Badge'
 import React from 'react'
-import { classNames } from 'utility'
+import { classNames, timeConvertFormat } from 'utility'
 import { Link, useNavigate } from 'react-router-dom'
+import { QuizData } from 'redux/quiz/interfaces'
 
 interface Props {
     checked:            boolean
     state:              any
-    quizzes:              any
+    quizzes:            QuizData[]
     setState:           React.Dispatch<React.SetStateAction<any[]>>
     checkbox:           React.MutableRefObject<HTMLInputElement | null>
     toggleAll:          () => void
@@ -16,6 +17,14 @@ interface Props {
 
 const QuizTable: React.FC<Props> = ({state, setState, quizzes, checkbox, checked, toggleAll, loading, onDelete}) => {
     const navigate = useNavigate();
+
+    if(!quizzes) {
+        <div className="w-full mt-7">
+            <div className='flex justify-center align-middle'>
+                <span> No quizzes found</span>
+            </div>
+        </div>
+    }
     
     return (
     <div className="mt-5 w-full sm:px-6 ">
@@ -33,7 +42,7 @@ const QuizTable: React.FC<Props> = ({state, setState, quizzes, checkbox, checked
                         </button> */}
                         <button
                             type="button"
-                            className="button-primary px-5 bg-red-500 hover:bg-red-700"
+                            className="button-primary px-2 bg-red-500 hover:bg-red-700"
                             onClick={onDelete}
                         >
                             Delete
@@ -59,10 +68,13 @@ const QuizTable: React.FC<Props> = ({state, setState, quizzes, checkbox, checked
                                         Clasroom
                                     </th>
                                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        Grade Period
+                                    </th>
+                                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                         Due Date
                                     </th>
                                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                        publish
+                                        Publish
                                     </th>
                                     <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                         <span className="sr-only">Edit</span>
@@ -91,31 +103,39 @@ const QuizTable: React.FC<Props> = ({state, setState, quizzes, checkbox, checked
                                         </tr>
                                     )
                                 }
-                                { !loading && quizzes.map((quiz: any) => (
-                                    <tr onClick={() => navigate(`/faculty/quiz/${quiz.id}`)} key={quiz.id} className={classNames(state.includes(quiz) ? 'bg-gray-50' : '', 'cursor-pointer')}>
+                                { !loading && quizzes.map((quiz) => (
+                                    <tr 
+                                        // onClick={(e) => {
+                                        //     e.stopPropagation()
+                                        //     e.nativeEvent.stopPropagation()
+                                        //     navigate(`/faculty/quiz/${quiz.id}`)
+                                        // }}
+                                        key={quiz.id}
+                                        className={classNames(state.includes(quiz.id) ? 'bg-gray-50' : '')}
+                                    >
                                         <td className="relative w-12 px-6 sm:w-16 sm:px-8">
-                                            {state.includes(quiz) && (
+                                            {state.includes(quiz.id) && (
                                                 <div className="absolute inset-y-0 left-0 w-0.5 bg-blue-600" />
                                             )}
                                             <input
                                             type="checkbox"
-                                            className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 sm:left-6"
+                                            className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-blue-600 z-20 focus:ring-blue-500 sm:left-6"
                                             value={quiz.id}
-                                            checked={state.includes(quiz)}
-                                            onChange={(e) =>
+                                            checked={state.includes(quiz.id)}
+                                            onChange={(e) => {
                                                 setState(
-                                                e.target.checked
-                                                    ? [...state, quiz]
-                                                    : state.filter((p: any) => p !== quiz)
+                                                e.currentTarget.checked
+                                                    ? [...state, quiz.id]
+                                                    : state.filter((p: any) => p !== quiz.id)
                                                 )
-                                            }
+                                            }}
                                             />
                                         </td>
                                         <td
                                             className={
                                                 classNames(
                                                     'whitespace-pre-wrap py-4 pr-3 text-sm font-medium',
-                                                    state.includes(quiz) ? 'text-blue-600' : 'text-gray-900'
+                                                    state.includes(quiz.id) ? 'text-blue-600' : 'text-gray-900'
                                                 )
                                             }
                                         >
@@ -126,14 +146,20 @@ const QuizTable: React.FC<Props> = ({state, setState, quizzes, checkbox, checked
                                                 <Badges text={sub} key={subIdx} />)
                                             }
                                         </td> */}
-                                        <td className="whitespace-pre-wrap px-3 py-4 text-sm space-x-1 space-y-1 text-gray-500">
-                                           {quiz?.classroom?.title}
+                                       
+                                        <td className="whitespace-pre-wrap px-3 py-4 text-sm space-x-1 space-y-1 text-blue-500">
+                                            <Link to={`/faculty/quiz/${quiz.id}`}>
+                                                {quiz?.classroom?.title}
+                                            </Link>
                                         </td>
                                         <td className="whitespace-pre-wrap px-3 py-4 text-sm space-x-1 space-y-1 text-gray-500">
-                                           {quiz?.end_date}
+                                            {quiz?.grade_period}
                                         </td>
                                         <td className="whitespace-pre-wrap px-3 py-4 text-sm space-x-1 space-y-1 text-gray-500">
-                                           {quiz?.isPublish}
+                                           {timeConvertFormat(quiz?.end_date)}
+                                        </td>
+                                        <td className="whitespace-pre-wrap px-3 py-4 text-sm space-x-1 space-y-1 text-gray-500">
+                                           {quiz?.is_published ? 'Published' : 'Draft'}
                                         </td>
                                         
                                         <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">

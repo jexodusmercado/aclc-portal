@@ -4,7 +4,10 @@ import Title from 'components/Title'
 import { useEffectOnce } from 'hooks'
 import React, { useEffect, useState } from 'react'
 import { Control, FieldArrayWithId, FormProvider, SubmitHandler, useFieldArray, UseFieldArrayRemove, UseFieldArrayUpdate, useForm, useFormContext, UseFormRegister } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
+import { createQuiz, createQuizContent } from 'redux/quiz/action'
 import { quizContentRequest } from 'services/request'
 import { classNames } from 'utility'
 interface IFields {
@@ -17,7 +20,9 @@ interface IForm {
 }
 
 const QuizContentForm = () => {
-    const params = useParams()
+    const params    = useParams()
+    const dispatch  = useDispatch()
+    const navigate  = useNavigate()
     
     const {control, handleSubmit, register} = useForm<IForm>()
     const {fields, append, update, remove} = useFieldArray<IForm>({
@@ -25,11 +30,27 @@ const QuizContentForm = () => {
         name:"form",
     })
 
+    const onSuccess = () => {
+        navigate(`/faculty/quiz/${params.id}`)
+        toast.success('Created!')
+    }
+
+    const onFailed = () => {
+        toast.error('Failed to update')
+    }
+
     const onSubmit:SubmitHandler<IForm> = (data) => {
         console.log('asdfasdf')
         console.log(data)
+        const payload = {
+            form: data.form,
+            quizId: Number(params.id),
+            onSuccess,
+            onFailed
+        }
+
         if(params.id){
-            quizContentRequest.createContent(data.form, params.id)
+            dispatch(createQuizContent(payload))
         }
     }
 
@@ -48,7 +69,7 @@ const QuizContentForm = () => {
                 <Card 
                     footer={true} 
                     cancelText='Back' 
-                    cancelOnclick={() => console.log('cancel')}
+                    cancelOnclick={() => navigate(-1)}
                     submitText='Submit'
                     submitOnclick={handleSubmit(onSubmit)}
                 >

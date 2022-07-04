@@ -35,9 +35,9 @@ interface IForm {
 }
 
 const FacultyClassroomForm = () => {
-    const [subject, setSubject]                 = useState<number | undefined>(undefined)
-    const [teacher, setTeacher]                 = useState<number | undefined>(undefined)
-    const [schoolYear, setSchoolYear]           = useState<number | undefined>(undefined)
+    const [subject, setSubject]                 = useState<number | string | undefined>(undefined)
+    const [teacher, setTeacher]                 = useState<number | string | undefined>(undefined)
+    const [schoolYear, setSchoolYear]           = useState<number | string | undefined>(undefined)
     const [students, setStudents]               = useState<ListWithAvatar[]>([])
     const [teacherOptions, setTeacherOptions]   = useState<List[]>([])
     const [studentOptions, setStudentOptions]   = useState<ListWithAvatar[]>([])
@@ -105,19 +105,19 @@ const FacultyClassroomForm = () => {
 
     useUpdateEffect(() => {
         if(subject) {
-            setValue('subject_id', subject)
+            setValue('subject_id', Number(subject))
         }
     },[subject])
 
     useUpdateEffect(() => {
         if(teacher) {
-            setValue('teacher_id', teacher)
+            setValue('teacher_id', Number(teacher))
         }
     }, [teacher])
 
     useUpdateEffect(() => {
         if(students.length){
-            setValue('student_id', students.map(student => student.id))
+            setValue('student_id', students.map(student => Number(student.id)))
         }else {
             setValue('student_id', [])
         }
@@ -125,7 +125,7 @@ const FacultyClassroomForm = () => {
 
     useUpdateEffect(() => {
         if(schoolYear) {
-            setValue('school_year_id', schoolYear)
+            setValue('school_year_id', Number(schoolYear))
         }
     }, [schoolYear])
 

@@ -52,7 +52,7 @@ const FacultyForm = () => {
 
     const [picture, setPicture]         = useState<File>()
     const [yearList, setYearList]       = useState<List[]>([])
-    const [schoolYear, setSchoolYear]   = useState<number | undefined>(undefined)
+    const [schoolYear, setSchoolYear]   = useState<number | string | undefined>(undefined)
     const [startDate, setStartDate]     = useState<Date | null>(null)
 
     const cancelForm = () => navigate('/dashboard/faculty');
@@ -166,7 +166,7 @@ const FacultyForm = () => {
 
     useUpdateEffect(() => {
         if(schoolYear){
-            setValue('schoolyear_id', schoolYear)
+            setValue('schoolyear_id', Number(schoolYear))
         }
     },[schoolYear])
 

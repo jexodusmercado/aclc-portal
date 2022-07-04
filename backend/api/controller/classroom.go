@@ -98,6 +98,48 @@ func (cr ClassroomController) FindByTeacherID(c *gin.Context) {
 		}})
 }
 
+func (cr ClassroomController) GetStudentsByTeacherID(c *gin.Context) {
+	var classroom models.Classroom
+	teacherParam := c.Param("teacherID")
+	keyword := c.Query("keyword")
+	courseId := c.Query("courseId")
+	classroomId := c.Query("classroomId")
+	teacherID, err := strconv.ParseUint(teacherParam, 10, 64) //type conversion string to int64
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	classroom.TeacherID = uint(teacherID)
+
+	students, err := cr.service.GetStudentsByTeacherID(classroom, keyword, courseId, classroomId)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+	respArr := make([]map[string]interface{}, 0, 0)
+
+	var temp uint
+
+	for _, n := range students {
+		
+		if temp != n.ID {
+			resp := n.ResponseStudent()
+			respArr = append(respArr, resp)
+		}
+
+		temp = n.ID
+		
+	}
+
+	c.JSON(http.StatusOK, &util.Response{
+		Success: true,
+		Message: "Post result set",
+		Data: map[string]interface{}{
+			"rows":       respArr,
+	}})
+}
+
 func (cr *ClassroomController) GetClassroom(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.ParseUint(idParam, 10, 64) //type conversion string to int64
@@ -167,5 +209,32 @@ func (cr ClassroomController) DeleteByID(c *gin.Context) {
 	util.SuccessJSON(c, http.StatusOK, gin.H{
 		"message": "deleted",
 	})
+
+}
+
+func (cr ClassroomController) FindByStudentID(c *gin.Context) {
+	studentID := c.Param("id")
+	keyword := c.Query("keyword")
+
+	data, total, err := cr.service.FindByStudentID(studentID, keyword)
+
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+	respArr := make([]map[string]interface{}, 0, 0)
+
+	for _, n := range data {
+		resp := n.ResponseMap()
+		respArr = append(respArr, resp)
+	}
+
+	c.JSON(http.StatusOK, &util.Response{
+		Success: true,
+		Message: "Post result set",
+		Data: map[string]interface{}{
+			"rows":       respArr,
+			"total_rows": total,
+		}})
 
 }

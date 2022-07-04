@@ -1,0 +1,45 @@
+export interface Students {
+    birthday:   Date;
+    classroom:  Classroom[];
+    course:     Course;
+    created_at: Date;
+    email:      string;
+    first_name: string;
+    full_name:  string;
+    id:         number;
+    image:      string;
+    is_active:  boolean;
+    last_name:  string;
+    phone:      string;
+    type:       string;
+    updated_at: Date;
+    username:   string;
+}
+
+export interface Classroom {
+    body:       string;
+    created_at: Date;
+    id:         number;
+    subject:    Subject;
+    title:      string;
+    updated_at: Date;
+}
+
+export interface Subject {
+    ID:         number;
+    code:       string;
+    created_at: Date;
+    is_active:  boolean;
+    name:       string;
+    unit:       number;
+    updated_at: Date;
+}
+
+export interface Course {
+    ID:          number;
+    created_at:  Date;
+    description: string;
+    is_active:   boolean;
+    name:        string;
+    updated_at:  Date;
+}

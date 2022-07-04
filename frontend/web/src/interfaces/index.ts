@@ -5,7 +5,7 @@ export interface Location {
 }
 
 export interface List {
-    id: number
+    id: number | string
     name?: string
 }
 

@@ -34,3 +34,10 @@ func (u QuizService) FindByClassroomID(quiz models.Quiz) ([]models.Quiz, error) 
 func (u QuizService) FindByCreatorID(quiz models.Quiz) ([]models.Quiz, error) {
     return u.repo.FindByCreatorID(quiz)
 }
+func (u QuizService) DeleteByID(quizID string) error {
+    return u.repo.DeleteByID((quizID))
+}
+
+func (u QuizService) UpdateByID(quiz models.Quiz) error {
+    return u.repo.Update(quiz)
+}

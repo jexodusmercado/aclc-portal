@@ -30,6 +30,7 @@ type QuizCreation struct {
 }
 
 type UpdateQuiz struct {
+	ID				uint			`json:"id" binding:"required"`
 	GradePeriod		string			`json:"grade_period"`
 	StudentID		uint			`json:"student_id"`
 	CreatorID		uint			`json:"creator_id"`
@@ -65,6 +66,7 @@ func (u *Quiz) ResponseMap() map[string]interface{} {
 	resp["updated_at"]		= u.UpdatedAt
 	resp["students"]		= students
 	resp["contents"]		= quizContent
+	resp["grade_period"]	= u.GradePeriod
 	resp["classroom"]		= u.Classroom.BasicResponse()
 	resp["created_by"]		= u.CreatedBy.BasicUserAndIDResponse()
 
@@ -84,9 +86,20 @@ func (u *Quiz) BasicReponseMap() map[string]interface{} {
     resp["id"]				= u.ID
 	resp["is_published"]	= u.IsPublished
 	resp["end_date"]		= u.EndDate
+	resp["grade_period"]	= u.GradePeriod
 	resp["created_at"]		= u.CreatedAt
 	resp["updated_at"]		= u.UpdatedAt
 	resp["contentCount"]	= len(quizContent)
+
+	return resp
+}
+
+func (u *Quiz) UpdateMap() map[string]interface{} {
+    resp := make(map[string]interface{})
+
+	resp["is_published"]	= u.IsPublished
+	resp["end_date"]		= u.EndDate
+	resp["grade_period"]	= u.GradePeriod
 
 	return resp
 }

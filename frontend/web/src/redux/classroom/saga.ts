@@ -149,13 +149,35 @@ function* getByTeacherId ({payload}: types.GetByTeacherIDAction) {
     }
 }
 
+function* getAllStudentsByTeacherID({payload}: types.GetAllStudentsByTeacherIDAction) {
+    try {
+        const response: AxiosResponse = yield call(classroomRequest.getAllStudentsByTeacherID, payload)
+
+        console.log(response)
+        yield put({
+            type: types.GET_ALL_STUDENTS_BY_TEACHER_ID_SUCCESS,
+            payload: response.data.data.rows
+        })
+
+
+    } catch (error) {
+        const err = handleAxiosError(error as AxiosError)
+
+        yield put({
+            type: types.GET_ALL_STUDENTS_BY_TEACHER_ID_FAILED,
+            payload: err
+        })
+    }
+}
+
 const ClassroomSaga: ForkEffect[] = [
     takeLatest(types.GET_CLASSROOMS_REQUEST, getClassrooms),
     takeLatest(types.GET_CLASSROOM_REQUEST, getClassroom),
     takeLatest(types.UPDATE_CLASSROOM_REQUEST, updateClassroom),
     takeLatest(types.CREATE_CLASSROOM_REQUEST, createClassroom),
     takeLatest(types.DELETE_CLASSROOM_REQUEST, deleteClassroom),
-    takeLatest(types.GET_ALL_CLASSROOM_TEACHER_ID_REQUEST, getByTeacherId)
+    takeLatest(types.GET_ALL_CLASSROOM_TEACHER_ID_REQUEST, getByTeacherId),
+    takeLatest(types.GET_ALL_STUDENTS_BY_TEACHER_ID_REQUEST, getAllStudentsByTeacherID)
 ]
 
 export default ClassroomSaga;

@@ -1,7 +1,7 @@
 // import Badges from 'components/Badge'
 import React from 'react'
 import { classNames } from 'utility'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Content } from 'redux/quiz/interfaces'
 
 interface Props {
@@ -16,7 +16,14 @@ interface Props {
 }
 
 const QuizContentTable: React.FC<Props> = ({state, setState, quizContent, checkbox, checked, toggleAll, loading, onDelete}) => {
-    const navigate = useNavigate();
+
+    if(!quizContent.length) {
+        return(
+            <>
+                No Questions yet
+            </>
+        )
+    }
     
     return (
     <div className="mt-5 w-full sm:px-6 ">
@@ -78,31 +85,34 @@ const QuizContentTable: React.FC<Props> = ({state, setState, quizContent, checkb
                                     )
                                 }
 
-                                { (!loading && quizContent !== null) && quizContent.map((quiz: any) => (
-                                    <tr onClick={() => navigate(`/faculty/quiz/${quiz.id}`)} key={quiz.id} className={classNames(state.includes(quiz) ? 'bg-gray-50' : '', 'cursor-pointer')}>
+                                { (!loading && quizContent !== null) && quizContent.map((quiz) => (
+                                    <tr 
+                                        key={quiz.id}
+                                        className={classNames(state.includes(quiz) ? 'bg-gray-50' : '', '')}
+                                    >
                                         <td className="relative w-12 px-6 sm:w-16 sm:px-8">
-                                            {state.includes(quiz) && (
+                                            {state.includes(quiz.id) && (
                                                 <div className="absolute inset-y-0 left-0 w-0.5 bg-blue-600" />
                                             )}
                                             <input
                                             type="checkbox"
                                             className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 sm:left-6"
                                             value={quiz.id}
-                                            checked={state.includes(quiz)}
-                                            onChange={(e) =>
+                                            checked={state.includes(quiz.id)}
+                                            onChange={(e) =>{
                                                 setState(
                                                 e.target.checked
-                                                    ? [...state, quiz]
-                                                    : state.filter((p: any) => p !== quiz)
+                                                    ? [...state, quiz.id]
+                                                    : state.filter((p: any) => p !== quiz.id)
                                                 )
-                                            }
+                                            }}
                                             />
                                         </td>
                                         <td
                                             className={
                                                 classNames(
                                                     'whitespace-pre-wrap py-4 pr-3 text-sm font-medium',
-                                                    state.includes(quiz) ? 'text-blue-600' : 'text-gray-900'
+                                                    state.includes(quiz.id) ? 'text-blue-600' : 'text-gray-900'
                                                 )
                                             }
                                         >
@@ -117,8 +127,8 @@ const QuizContentTable: React.FC<Props> = ({state, setState, quizContent, checkb
                                            {quiz?.answer}
                                         </td>
                                         <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                            <Link to={`/faculty/quiz/${quiz?.id}`} className="text-blue-600 hover:text-blue-900">
-                                                Edit<span className="sr-only">, {quiz?.classroom?.title}</span>
+                                            <Link to={`/faculty/quiz/${quiz.quiz_id}/questions/${quiz.id}/update`} className="text-blue-600 hover:text-blue-900">
+                                                Edit <span className="sr-only">, {quiz?.question}</span>
                                             </Link>
                                         </td>
                                     </tr>

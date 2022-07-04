@@ -41,7 +41,7 @@ func (p QuizRepository) Create(quiz models.QuizCreation) (models.Quiz, error) {
 		return quizModel, errors.New("CLASSROOM NOT EXISTING")
 	}
 
-	quizModel.IsPublished 	= true
+	quizModel.IsPublished 	= false
 	quizModel.EndDate		= quiz.EndDate
 	quizModel.CreatorID		= quiz.CreatorID
 	quizModel.ClassroomID	= quiz.ClassroomID
@@ -132,3 +132,12 @@ func (p QuizRepository) FindByCreatorID(quiz models.Quiz) ([]models.Quiz, error)
 	return quizzes, err
 }
 
+func (c QuizRepository) DeleteByID(quizID string) error {
+	return c.db.DB.Delete(&models.Quiz{}, quizID).Error
+}
+
+func (c QuizRepository) Update(quiz models.Quiz) error {
+
+	return c.db.DB.Model(&quiz).Updates(quiz.UpdateMap()).Error
+
+}

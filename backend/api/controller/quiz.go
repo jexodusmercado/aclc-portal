@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"portal/api/service"
 	"portal/constants"
@@ -34,10 +33,6 @@ func (g QuizController) Create(c *gin.Context) {
     }
 
 	quiz.GradePeriod = strings.ToUpper(quiz.GradePeriod)
-
-	fmt.Println("---")
-	fmt.Println("---")
-	fmt.Println(constants.PERIOD_TYPE[quiz.GradePeriod])
 
 	if constants.PERIOD_TYPE[quiz.GradePeriod] == "" {
 		util.CustomErrorJson(c, http.StatusBadRequest, "INCORRECT GRADE PERIOD")
@@ -155,4 +150,52 @@ func (g QuizController) FindByCreatorID(c *gin.Context) {
 
 	util.SuccessJSON(c, http.StatusOK, respArr)
 
+}
+
+func (g QuizController) DeleteByID(c *gin.Context) {
+	quizID := c.Param("id")
+
+	err := g.service.DeleteByID(quizID)
+    if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	util.SuccessJSON(c, http.StatusOK, gin.H{
+		"message": "updated",
+	})
+}
+
+func (g QuizController) UpdateByID(c *gin.Context) {
+	var quiz models.Quiz
+
+	idParam := c.Param("id")
+    id, err := strconv.ParseUint(idParam, 10, 64) //type conversion string to int64
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	quiz.ID = uint(id)
+
+	quiz, err = g.service.Find(quiz)
+	if err != nil {
+        util.ErrorJSON(c, http.StatusBadRequest, err)
+        return
+    }
+
+	if err = c.ShouldBind(&quiz); err != nil {
+        util.ErrorJSON(c, http.StatusBadRequest, err)
+        return
+    }
+
+	err = g.service.UpdateByID(quiz)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+
+	util.SuccessJSON(c, http.StatusOK, gin.H{
+		"message": "updated",
+	})
 }

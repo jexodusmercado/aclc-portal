@@ -16,6 +16,18 @@ const quizReducer = ( state: types.quizInitialType = types.quizInitialState, act
             quizzes: action.payload
         }
 
+    case types.GET_QUIZ_SUCCESS:
+        return {
+            ...state,
+            quiz: action.payload
+        }
+    
+    case types.GET_QUIZ_CONTENT_SUCCESS:
+        return {
+            ...state,
+            content: action.payload
+        }
+
     default:
         return state
   }

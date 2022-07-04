@@ -96,6 +96,12 @@ const classroomReducer = ( state: types.ClassroomState = types.ClassroomInitialS
                     loading: false
                 }
             }
+
+        case types.GET_ALL_STUDENTS_BY_TEACHER_ID_SUCCESS:
+            return {
+                ...state,
+                students: action.payload
+            }
         
         default: 
             return state

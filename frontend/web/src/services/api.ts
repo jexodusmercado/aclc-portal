@@ -22,4 +22,8 @@ export const END_POINTS = {
     TEACHER         :   "teacher",
     QUIZ            :   "quiz",
     CREATOR         :   "creator",
+    DELETE          :   "delete",
+    CONTENT         :   "content",
+    STUDENTS        :   "students",
+    STUDENT         :   "student"
 }
