@@ -1,4 +1,3 @@
-import { PlusCircleIcon } from '@heroicons/react/solid'
 import Avatar from 'components/Avatar'
 import CardContainer from 'components/CardContainer'
 import Card from 'components/CardContainer'
@@ -6,23 +5,26 @@ import DotsVerticalDropdown from 'components/DotsVerticalDropdown'
 import Greeting from 'components/Greeting'
 import SelectInputText from 'components/SearchInputText'
 import { useEffectOnce, useGetAllClassroom, useUpdateEffect } from 'hooks'
-import React, { useState } from 'react'
-import toast from 'react-hot-toast'
+import { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { getAuthUser } from 'redux/auth/selector'
-import { deleteClassroom, getByTeacherId } from 'redux/classroom/action'
-import { ClassroomData } from 'redux/classroom/types'
+import { getByTeacherId } from 'redux/classroom/action'
+import { Classroom } from 'redux/classroom/interface'
+import { getClassrooms } from 'redux/classroom/selector'
+import { GET_ALL_CLASSROOM_TEACHER_ID } from 'redux/classroom/types'
+import { isLoading } from 'redux/loading/selector'
 
 const FacultyHomePage = () => {
     const [search, setSearch]       = useState<string>('')
     const [open, setOpen]           = useState<boolean>(false)
     const [deleteID, setDeleteID]   = useState<string>('')
-
+    
     const dispatch                  = useDispatch()
     const navigate                  = useNavigate()
     const user                      = useSelector(getAuthUser) 
-    const classrooms                = useGetAllClassroom()  
+    const classrooms                = useSelector(getClassrooms)
+    const loading                   = useSelector(isLoading([GET_ALL_CLASSROOM_TEACHER_ID]))
 
     const fetchData = () => {
         dispatch(getByTeacherId({
@@ -31,7 +33,7 @@ const FacultyHomePage = () => {
         }))
     }
 
-    const handleDeleteModal = (classroom : ClassroomData) => {
+    const handleDeleteModal = (classroom : Classroom) => {
         setDeleteID(classroom.id.toString())
         setOpen(true)
     }
@@ -51,7 +53,7 @@ const FacultyHomePage = () => {
     //     setOpen(false)
     // }
 
-    const menus = (classroom: ClassroomData) => ([
+    const menus = (classroom: Classroom) => ([
         {
             name: 'Update',
             onClick: () => navigate(`update/${classroom.id}`)
@@ -68,12 +70,8 @@ const FacultyHomePage = () => {
     },[search])
     
     useEffectOnce(() => {
-        dispatch(
-            getByTeacherId({
-                teacherId: user.id.toString(),
-                keyword: ""
-            })
-        )   
+        console.log('test');
+        fetchData();
     })
 
     return (
@@ -87,13 +85,13 @@ const FacultyHomePage = () => {
                 <div className='flex'>
                     <Card>
                         <dt className="text-sm font-medium text-gray-500 truncate">Classes</dt>
-                        <dd className="mt-1 text-3xl font-semibold text-gray-900">{classrooms.data.length}</dd>
+                        <dd className="mt-1 text-3xl font-semibold text-gray-900">{classrooms.length}</dd>
                     </Card>
                 </div>
                 <div className='flex'>
                     <Card>
                         <dt className="text-sm font-medium text-gray-500 truncate">Students</dt>
-                        <dd className="mt-1 text-3xl font-semibold text-gray-900">{classrooms.data.reduce((acc, curr) => acc + curr.totalStudents, 0)}</dd>
+                        {/* <dd className="mt-1 text-3xl font-semibold text-gray-900">{numberOfClasroom}</dd> */}
                     </Card>
                 </div>
             </div>
@@ -118,7 +116,7 @@ const FacultyHomePage = () => {
                     </div>
                 </CardContainer>
 
-                { classrooms.loading &&
+                { loading &&
                         Array.from(Array(3).keys()).map( (k, i) => 
                             <div key={i} className={`h-32 w-full animate-pulse relative bg-slate-${(400 - (i * 100)).toString()} rounded`}>
                             </div>
@@ -126,7 +124,7 @@ const FacultyHomePage = () => {
                         )
                 }
 
-                {(!classrooms.loading && !classrooms.data.length) &&
+                {(!loading && !classrooms.length) &&
                     <div className='text-center mt-10'>
                         <svg
                             className="mx-auto h-12 w-12 text-gray-300"
@@ -146,7 +144,7 @@ const FacultyHomePage = () => {
                     </div>
                 }
 
-                {!classrooms.loading && classrooms.data.map((classroom, index ) => 
+                {!loading && classrooms.map((classroom, index ) => 
                     <CardContainer key={index} className='space-y-2 divide-y divide-gray-200' >
                             <div className='flex justify-between'>
                                 <div>

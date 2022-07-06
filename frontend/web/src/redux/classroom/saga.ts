@@ -16,7 +16,7 @@ function* getClassrooms ({payload}: types.GetClassroomsAction) {
 
         yield put({
             type: types.GET_CLASSROOMS_SUCCESS,
-            payload: response.data
+            payload: 'test'
         })
 
     } catch (error) {
@@ -133,7 +133,7 @@ function* getByTeacherId ({payload}: types.GetByTeacherIDAction) {
         const response : AxiosResponse = yield call(classroomRequest.getByTeacherID, payload)
 
         yield put({
-            type: types.GET_CLASSROOMS_SUCCESS,
+            type: types.GET_ALL_STUDENTS_BY_TEACHER_ID_SUCCESS,
             payload: response.data
         })
 
@@ -142,7 +142,29 @@ function* getByTeacherId ({payload}: types.GetByTeacherIDAction) {
         const payload = handleAxiosError(error as AxiosError)
 
         yield put({
-            type: types.GET_CLASSROOMS_FAILED,
+            type: types.GET_ALL_STUDENTS_BY_TEACHER_ID_FAILED,
+            payload
+        })
+        
+    }
+}
+
+function* getByStudentID ({payload}: types.GetByStudentIDAction) {
+    try {
+
+        const response : AxiosResponse = yield call(classroomRequest.getAllClassroomsByStudentID, payload)
+
+        yield put({
+            type: types.GET_ALL_CLASSROOM_STUDENT_ID_SUCCESS,
+            payload: response.data
+        })
+
+    } catch (error) {
+
+        const payload = handleAxiosError(error as AxiosError)
+
+        yield put({
+            type: types.GET_ALL_CLASSROOM_STUDENT_ID_SUCCESS,
             payload
         })
         
@@ -177,7 +199,8 @@ const ClassroomSaga: ForkEffect[] = [
     takeLatest(types.CREATE_CLASSROOM_REQUEST, createClassroom),
     takeLatest(types.DELETE_CLASSROOM_REQUEST, deleteClassroom),
     takeLatest(types.GET_ALL_CLASSROOM_TEACHER_ID_REQUEST, getByTeacherId),
-    takeLatest(types.GET_ALL_STUDENTS_BY_TEACHER_ID_REQUEST, getAllStudentsByTeacherID)
+    takeLatest(types.GET_ALL_STUDENTS_BY_TEACHER_ID_REQUEST, getAllStudentsByTeacherID),
+    takeLatest(types.GET_ALL_CLASSROOM_STUDENT_ID_REQUEST, getByStudentID)
 ]
 
 export default ClassroomSaga;

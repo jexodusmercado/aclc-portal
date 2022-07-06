@@ -1,86 +1,12 @@
 import { IPayload } from 'interfaces';
-import { PostInitialState } from 'redux/post/types';
-import { UserInitialState } from '../users/types'
-import { Students } from './interface';
+import { Classroom, Student } from './interface';
 
 export type ClassroomState = typeof ClassroomInitialState;
 
-export type ClassroomData  = typeof ClassroomInitialState.classrooms.data[0]
-
-const UsersState = UserInitialState.users.data
-
-const UserState = UserInitialState.user
-
-const PostState = PostInitialState.posts.data
-
 export const ClassroomInitialState  = {
-    classrooms: {
-        data: [
-            {
-                body: "",
-                created_at: "",
-                id: 0,
-                posts: PostState,
-                student : UsersState,
-                subject: {
-                  ID: 0,
-                  CreatedAt: "",
-                  UpdatedAt: "",
-                  DeletedAt: null,
-                  UserID: 0,
-                  name: "",
-                  code: "",
-                  unit: 0,
-                  is_active: false,
-                },
-                subject_id: 0,
-                teacher: UserState,
-                teacher_id: 0,
-                title: "",
-                updated_at: "",
-                totalStudents: 0
-              }
-        ],
-        loading: false
-    },
-    classroom: {
-        data:{
-                body: "",
-                created_at: "",
-                id: 0,
-                posts: PostState,
-                student : UsersState,
-                subject: {
-                    ID: 0,
-                    CreatedAt: "",
-                    UpdatedAt: "",
-                    DeletedAt: null,
-                    UserID: 0,
-                    name: "",
-                    code: "",
-                    unit: 0,
-                    is_active: false,
-                    Classrooms: null
-                },
-                quizzes: [
-                    {
-                        id: 0,
-                        contentCount: 0,
-                        is_published: false,
-                        end_date: "",
-                        created_at: "",
-                        updated_at: ""
-                    }
-                ],
-                subject_id: 0,
-                teacher: UserState,
-                teacher_id: 0,
-                title: "",
-                updated_at: ""
-        },
-        loading: false
-    },
-    students: [] as Students[],
+    classrooms: [] as Classroom[],
+    classroom: {} as Classroom,
+    students: [] as Student[],
     created: {
         loading: false,
         success: false
@@ -90,34 +16,45 @@ export const ClassroomInitialState  = {
     }
 }
 
-export const CREATE_CLASSROOM_REQUEST   =   "CREATE_CLASSROOM_REQUEST"
-export const CREATE_CLASSROOM_SUCCESS   =   "CREATE_CLASSROOM_SUCCESS"
-export const CREATE_CLASSROOM_FAILED    =   "CREATE_CLASSROOM_FAILED"
+export const CREATE_CLASSROOM                       =   "CREATE_CLASSROOM"
+export const CREATE_CLASSROOM_REQUEST               =   "CREATE_CLASSROOM_REQUEST"
+export const CREATE_CLASSROOM_SUCCESS               =   "CREATE_CLASSROOM_SUCCESS"
+export const CREATE_CLASSROOM_FAILED                =   "CREATE_CLASSROOM_FAILED"
 
-export const UPDATE_CLASSROOM_REQUEST   =   "UPDATE_CLASSROOM_REQUEST"
-export const UPDATE_CLASSROOM_SUCCESS   =   "UPDATE_CLASSROOM_SUCCESS"
-export const UPDATE_CLASSROOM_FAILED    =   "UPDATE_CLASSROOM_FAILED"
+export const UPDATE_CLASSROOM                       =   "UPDATE_CLASSROOM"
+export const UPDATE_CLASSROOM_REQUEST               =   "UPDATE_CLASSROOM_REQUEST"
+export const UPDATE_CLASSROOM_SUCCESS               =   "UPDATE_CLASSROOM_SUCCESS"
+export const UPDATE_CLASSROOM_FAILED                =   "UPDATE_CLASSROOM_FAILED"
 
-export const GET_CLASSROOMS_REQUEST     =   "GET_CLASSROOMS_REQUEST"
-export const GET_CLASSROOMS_SUCCESS     =   "GET_CLASSROOMS_SUCCESS"
-export const GET_CLASSROOMS_FAILED      =   "GET_CLASSROOMS_FAILED"
+export const GET_CLASSROOMS                         =   "GET_CLASSROOMS"
+export const GET_CLASSROOMS_REQUEST                 =   "GET_CLASSROOMS_REQUEST"
+export const GET_CLASSROOMS_SUCCESS                 =   "GET_CLASSROOMS_SUCCESS"
+export const GET_CLASSROOMS_FAILED                  =   "GET_CLASSROOMS_FAILED"
 
-export const GET_CLASSROOM_REQUEST      =   "GET_CLASSROOM_REQUEST"
-export const GET_CLASSROOM_SUCCESS      =   "GET_CLASSROOM_SUCCESS"
-export const GET_CLASSROOM_FAILED       =   "GET_CLASSROOM_FAILED"
+export const GET_CLASSROOM                          =   "GET_CLASSROOM"
+export const GET_CLASSROOM_REQUEST                  =   "GET_CLASSROOM_REQUEST"
+export const GET_CLASSROOM_SUCCESS                  =   "GET_CLASSROOM_SUCCESS"
+export const GET_CLASSROOM_FAILED                   =   "GET_CLASSROOM_FAILED"
 
-export const DELETE_CLASSROOM_REQUEST   =   "DELETE_CLASSROOM_REQUEST"
-export const DELETE_CLASSROOM_SUCCESS   =   "DELETE_CLASSROOM_SUCCESS"
-export const DELETE_CLASSROOM_FAILED    =   "DELETE_CLASSROOM_FAILED"
+export const DELETE_CLASSROOM                       =   "DELETE_CLASSROOM"
+export const DELETE_CLASSROOM_REQUEST               =   "DELETE_CLASSROOM_REQUEST"
+export const DELETE_CLASSROOM_SUCCESS               =   "DELETE_CLASSROOM_SUCCESS"
+export const DELETE_CLASSROOM_FAILED                =   "DELETE_CLASSROOM_FAILED"
 
+export const GET_ALL_CLASSROOM_TEACHER_ID           =   "GET_ALL_CLASSROOM_TEACHER_ID"
 export const GET_ALL_CLASSROOM_TEACHER_ID_REQUEST   =   "GET_ALL_CLASSROOM_TEACHER_ID_REQUEST"
 export const GET_ALL_CLASSROOM_TEACHER_ID_SUCCESS   =   "GET_ALL_CLASSROOM_TEACHER_ID_SUCCESS"
 export const GET_ALL_CLASSROOM_TEACHER_ID_FAILED    =   "GET_ALL_CLASSROOM_TEACHER_ID_FAILED"
 
-export const GET_ALL_STUDENTS_BY_TEACHER_ID             =   "GET_ALL_STUDENTS_BY_TEACHER_ID"
-export const GET_ALL_STUDENTS_BY_TEACHER_ID_REQUEST     =   "GET_ALL_STUDENTS_BY_TEACHER_ID_REQUEST"
-export const GET_ALL_STUDENTS_BY_TEACHER_ID_SUCCESS     =   "GET_ALL_STUDENTS_BY_TEACHER_ID_SUCCESS"
-export const GET_ALL_STUDENTS_BY_TEACHER_ID_FAILED      =   "GET_ALL_STUDENTS_BY_TEACHER_ID_FAILED"
+export const GET_ALL_CLASSROOM_STUDENT_ID           =   "GET_ALL_CLASSROOM_STUDENT_ID"
+export const GET_ALL_CLASSROOM_STUDENT_ID_REQUEST   =   "GET_ALL_CLASSROOM_STUDENT_ID_REQUEST"
+export const GET_ALL_CLASSROOM_STUDENT_ID_SUCCESS   =   "GET_ALL_CLASSROOM_STUDENT_ID_SUCCESS"
+export const GET_ALL_CLASSROOM_STUDENT_ID_FAILED    =   "GET_ALL_CLASSROOM_STUDENT_ID_FAILED"
+
+export const GET_ALL_STUDENTS_BY_TEACHER_ID         =   "GET_ALL_STUDENTS_BY_TEACHER_ID"
+export const GET_ALL_STUDENTS_BY_TEACHER_ID_REQUEST =   "GET_ALL_STUDENTS_BY_TEACHER_ID_REQUEST"
+export const GET_ALL_STUDENTS_BY_TEACHER_ID_SUCCESS =   "GET_ALL_STUDENTS_BY_TEACHER_ID_SUCCESS"
+export const GET_ALL_STUDENTS_BY_TEACHER_ID_FAILED  =   "GET_ALL_STUDENTS_BY_TEACHER_ID_FAILED"
 
 
 export type CreateClassroomAction = {
@@ -148,6 +85,11 @@ export type DeleteClassroomAction = {
 export type GetByTeacherIDAction = {
     type: typeof GET_ALL_CLASSROOM_TEACHER_ID_REQUEST
     payload: GetByTeacherIDPayload
+}
+
+export type GetByStudentIDAction = {
+    type: typeof GET_ALL_CLASSROOM_STUDENT_ID_REQUEST
+    payload: GetByStudentIDPayload
 }
 
 export type GetAllStudentsByTeacherIDAction = {
@@ -187,4 +129,8 @@ export interface GetAllClassroomPayload {
 export interface GetByTeacherIDPayload {
     teacherId: string
     keyword: string
+}
+export interface GetByStudentIDPayload {
+    studentId: string
+    keyword?: string
 }

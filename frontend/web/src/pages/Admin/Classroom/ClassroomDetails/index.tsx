@@ -35,6 +35,7 @@ import toast from 'react-hot-toast'
 import { BASE_URL } from 'services/api'
 import Avatar from 'components/Avatar'
 import { getAuthUser } from 'redux/auth/selector'
+import { Post } from 'redux/post/interface'
 
 
 
@@ -93,12 +94,12 @@ const ClassroomDetails = () => {
         )
     }
 
-    const openDeleteModal = (post: PostDataState) => {
+    const openDeleteModal = (post: Post) => {
         setDeleteModal(true)
         setDeleteID(post.id.toString())
     }
 
-    const menus = (post: PostDataState) => ([
+    const menus = (post: Post) => ([
         // {
         //     name: 'Update',
         //     onClick: () => console.log('update')
@@ -120,10 +121,10 @@ const ClassroomDetails = () => {
                 <div className='flex align-middle'>
                     <span className='space-y-1'>
                         <h3 className='leading-6 text-2xl mr-auto'>
-                            { classData.data?.title }
+                            { classData.title }
                         </h3>
                         <h3 className='text-gray-400 text-base mr-auto'>
-                            { classData.data?.subject?.name } - { classData.data?.subject?.code }
+                            { classData.subject?.name } - { classData.subject?.code }
                         </h3>
                     </span>
 
@@ -156,7 +157,7 @@ const ClassroomDetails = () => {
                         </div>
 
                         {
-                            !classData.data?.posts &&
+                            !classData.posts &&
                             <div className='relative mt-8 border-2 rounded-lg border-gray-300 border-dashed p-10 hover:border-gray-400 cursor-pointer' onClick={() => setCreateModal(true)}>
                                 <div className='relative flex justify-center'>
                                     <div className='basis-1/4 flex flex-col items-center space-y-2'>
@@ -167,10 +168,10 @@ const ClassroomDetails = () => {
                             </div>
                         }
                         {
-                            classData.data?.posts &&
+                            classData.posts &&
                             <div className='mt-5 space-y-10'>
                                 {
-                                    classData.data?.posts.map((post, index) => 
+                                    classData.posts.map((post, index) => 
                                         <Fragment key={index}>
                                             <Card className='space-y-3'>
                                                 {/* texts */}
@@ -254,10 +255,10 @@ const ClassroomDetails = () => {
                             <div className='w-full'>
                                 <ul className="divide-y divide-gray-200">
                                     {
-                                        !classData.data?.student && <div> no students</div> 
+                                        !classData.student && <div> no students</div> 
                                     }
 
-                                    {classData.data?.student && classData.data?.student.map((student) => (
+                                    {classData.student && classData.student.map((student) => (
                                         <li key={student.id} className="py-4 flex items-center">
                                             <Avatar
                                                 rounded

@@ -48,3 +48,10 @@ export const getAllStudentsByTeacherID = (payload: types.GetAllStudentsByTeacher
         payload
     }
 }
+
+export const getByStudentId = (payload: types.GetByStudentIDPayload): types.GetByStudentIDAction => {
+    return {
+        type: types.GET_ALL_CLASSROOM_STUDENT_ID_REQUEST,
+        payload
+    }
+}

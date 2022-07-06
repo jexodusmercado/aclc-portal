@@ -7,10 +7,12 @@ import SelectInputText from 'components/SearchInputText';
 import { useEffectOnce, useGetAllClassroom, useUpdateEffect } from 'hooks';
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { deleteClassroom, getAllClassrooms } from 'redux/classroom/action';
-import { ClassroomData, ClassroomState } from 'redux/classroom/types';
+import { Classroom } from 'redux/classroom/interface';
+import { GET_CLASSROOMS } from 'redux/classroom/types';
+import { isLoading } from 'redux/loading/selector';
 // import UpdateModal from './Components/UpdateModal';
 
 const ClassroomPage = () => {
@@ -20,6 +22,7 @@ const ClassroomPage = () => {
     const classrooms                = useGetAllClassroom()
     const dispatch                  = useDispatch()
     const navigate                  = useNavigate()
+    const loading                   = useSelector(isLoading([GET_CLASSROOMS]))
     
 
     const testFunc = () => {
@@ -30,7 +33,7 @@ const ClassroomPage = () => {
         dispatch(getAllClassrooms({keyword: search}))
     }
 
-    const handleDeleteModal = (classroom : ClassroomData) => {
+    const handleDeleteModal = (classroom : Classroom) => {
         setDeleteID(classroom.id.toString())
         setOpen(true)
     }
@@ -50,7 +53,7 @@ const ClassroomPage = () => {
         setOpen(false)
     }
 
-    const menus = (classroom: ClassroomData) => ([
+    const menus = (classroom: Classroom) => ([
         {
             name: 'Update',
             onClick: () => navigate(`update/${classroom.id}`)
@@ -98,7 +101,7 @@ const ClassroomPage = () => {
                     </div>
                 </CardContainer>
 
-                { classrooms.loading &&
+                { loading &&
                         Array.from(Array(3).keys()).map( (k, i) => 
                             <div key={i} className={`h-32 w-full animate-pulse relative bg-slate-${(400 - (i * 100)).toString()} rounded`}>
                             </div>
@@ -106,13 +109,13 @@ const ClassroomPage = () => {
                         )
                 }
 
-                {(!classrooms.loading && !classrooms.data.length) &&
+                {(!loading && !classrooms.length) &&
                     <div className='text-center'>
                         <span> No classroom found. </span>
                     </div>
                 }
 
-                {!classrooms.loading && classrooms.data.map((classroom, index ) => 
+                {!loading && classrooms.map((classroom, index ) => 
                     <CardContainer key={index} className='space-y-2 divide-y divide-gray-200' >
                             <div className='flex justify-between'>
                                 <div>

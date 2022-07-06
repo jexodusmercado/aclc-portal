@@ -2,10 +2,10 @@ import Badges from 'components/Badge';
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { classNames } from 'utility';
-import { Students } from 'redux/classroom/interface';
+import { Student } from 'redux/classroom/interface';
 
 interface IProps {
-    students: Students[]
+    students: Student[]
 }
 
 const Table: React.FC<IProps> = ({students}) => {

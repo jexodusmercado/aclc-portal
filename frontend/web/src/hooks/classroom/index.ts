@@ -12,7 +12,7 @@ export const useGetClassroom = () : ClassroomState['classroom'] =>
 export const useFilteredClassroom = () : List[] => {
     const classrooms = useSelector((state: AppState) => state.Classroom.classrooms)
 
-    const filtered = classrooms.data.map((classroom) => {
+    const filtered = classrooms.map((classroom) => {
         return {
             id:     classroom.id,
             name:   classroom.title

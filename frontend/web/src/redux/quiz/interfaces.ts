@@ -1,3 +1,4 @@
+import { Classroom } from "redux/classroom/interface";
 
 export interface QuizData {
     end_date:        string;
@@ -13,15 +14,6 @@ export interface QuizData {
     subject:         Subject;
     grade_period:    string;
 }
-
-export interface Classroom {
-    body:       string;
-    created_at: string;
-    id:         number;
-    title:      string;
-    updated_at: string;
-}
-
 export interface Content {
     answer:        string;
     created_at:    string;

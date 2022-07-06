@@ -2,7 +2,7 @@ import Badges from 'components/Badge'
 import Card from 'components/CardContainer'
 import SelectInputText from 'components/SearchInputText'
 import Title from 'components/Title'
-import { useEffectOnce } from 'hooks'
+import { useEffectOnce, useIsomorphicLayoutEffect } from 'hooks'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -34,6 +34,10 @@ const FacultyStudent = () => {
     useEffectOnce(() => {
         fetchTableData()
     })
+
+    useIsomorphicLayoutEffect(() => {
+        fetchTableData()
+    },[keyword])
 
     return(
         <div className='containerized'>

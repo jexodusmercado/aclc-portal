@@ -74,7 +74,7 @@ const FacultyUpdateClassroomForm = () => {
                 setStudentOptions(filtered)
             })
 
-            setValue('title', classroom.data.title)
+            setValue('title', classroom.title)
         } else {
             navigate('/dashboard/classroom')
         }
@@ -102,21 +102,21 @@ const FacultyUpdateClassroomForm = () => {
     })
 
     useIsomorphicLayoutEffect(() => {
-        setValue('title', classroom?.data?.title)
+        setValue('title', classroom?.title)
         
-        if(classroom?.data?.subject_id){
-            setValue('subject_id', classroom?.data?.subject_id)
-            setSubject(classroom?.data?.subject.ID)
+        if(classroom?.subject_id){
+            setValue('subject_id', classroom?.subject_id)
+            setSubject(classroom?.subject.ID)
         }
         
-        if(classroom?.data?.teacher_id){
-            setValue('teacher_id', classroom?.data?.teacher_id)
-            setTeacher(classroom?.data?.teacher.id)
+        if(classroom?.teacher_id){
+            setValue('teacher_id', classroom?.teacher_id)
+            setTeacher(classroom?.teacher.id)
         }
 
-        if(classroom?.data?.student){
-            setValue('student_id', classroom?.data?.student?.map(user => user.id))
-            const filtered = classroom?.data?.student?.map(user => {
+        if(classroom?.student){
+            setValue('student_id', classroom?.student?.map(user => user.id))
+            const filtered = classroom?.student?.map(user => {
                 return {
                     id: user.id,
                     name: user.first_name + ' ' + user.last_name,
@@ -125,7 +125,7 @@ const FacultyUpdateClassroomForm = () => {
             })
             setStudents(filtered)
         }
-    }, [classroom.data])
+    }, [classroom])
 
     useUpdateEffect(() => {
         if(subject){

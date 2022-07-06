@@ -1,10 +1,19 @@
-import Badges from 'components/Badge';
 import React from 'react'
-import { Link } from 'react-router-dom';
-import { classNames } from 'utility';
-import { Students } from 'redux/classroom/interface';
+import { Link, useParams } from 'react-router-dom';
+import { Classroom } from 'redux/classroom/interface';
 
-const Table = () => {
+interface IProps {
+    classrooms: Classroom[]
+}
+
+const Table: React.FC<IProps> = ({classrooms}) => {
+    const params = useParams()
+
+    if(!classrooms.length){
+        return (
+            <> No enrolled classrooms</>
+        )
+    }
 
     return (
         <div className="hidden sm:block mt-2">
@@ -30,7 +39,7 @@ const Table = () => {
                                         className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                         scope="col"
                                     >
-                                        Teacher ID
+                                        Teacher Name
                                     </th>
                                     <th
                                         className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -41,55 +50,29 @@ const Table = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {/* {students.map((student) => (
-                                <tr key={student.id} className="bg-white">
+                                {classrooms.map((classroom) => (
+                                <tr key={classroom.id} className="bg-white">
                                     <td className="px-6 py-4 text-left whitespace-nowrap text-sm text-gray-500">
-                                        <span className="text-gray-900 font-medium">{student?.username} </span>
+                                        <span className="text-gray-900 font-medium">{classroom.subject.code} </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         <div className="flex">
                                             <p className="text-gray-500 truncate group-hover:text-gray-900">
-                                                {student?.first_name + ' ' + student?.last_name}
+                                                {classroom.title}
                                             </p>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-left whitespace-nowrap text-sm text-gray-500">
-                                        <span className="text-gray-900 font-medium">{student?.phone} </span>
+                                        <span className="text-gray-900 font-medium">{classroom.teacher.full_name} </span>
                                     </td>
-                                    <td className="px-6 py-4 text-left whitespace-nowrap text-sm text-gray-500">
-                                        {student?.course?.description}
-                                    </td>
-                                    <td className="px-6 py-4 text-left whitespace-nowrap text-sm text-gray-500">
-                                        {student?.classroom && student?.classroom.map((classroom, index) => 
-                                            <Link to={`/faculty/classroom/${classroom.id}`} className='flex flex-col'>
-                                                <Badges key={index} text={classroom.title}/>
-                                            </Link>
-                                        )}
-                                        {
-                                            !student.classroom &&
-                                            <>
-                                                N/A
-                                            </>
-                                        }
-                                    </td>
+                                   
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <span
-                                            className={classNames(
-                                            student?.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800',
-                                            'inline-flex items-center px-2.5 py-2 rounded-full text-xs font-medium capitalize'
-                                            )}
-                                        >
-                                            {student?.is_active ? 'Active' : 'Inactive'}
-                                        </span>
-                                    </td>
-
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                       <Link to={`/faculty/student/${student.id}/grades`}>
+                                       <Link to={`/faculty/student/${params.id}/grades`}>
                                             View Grades
                                        </Link>
                                     </td>
                                 </tr>
-                                ))} */}
+                                ))}
                             </tbody>
                         </table>
                     </div>
