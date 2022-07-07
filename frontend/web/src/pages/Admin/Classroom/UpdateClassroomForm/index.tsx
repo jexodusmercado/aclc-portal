@@ -199,7 +199,7 @@ const UpdateClassroomForm = () => {
                                 <div className="mt-1 flex rounded-md shadow">
                                     <MultipleSelectMenu selectedAvatars={students} setSelectedAvatars={setStudents} list={studentOptions}/>
                                 </div>
-                                {errors.student_id && <p className='text-sm text-red-400'> {errors.student_id[0].message} </p>}
+                                {errors.student_id && <p className='text-sm text-red-400'> {errors.student_id?.[0]?.message} </p>}
                             </div>
 
                             <div className='flex border-t justify-end pt-5 space-x-3'>

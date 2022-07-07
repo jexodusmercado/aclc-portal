@@ -11,13 +11,17 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { List } from 'interfaces'
 import { classNames } from 'utility'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { createUserRequest, getUserRequest, searchUsersRequest, updateUserRequest } from 'redux/users/action'
 import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
 import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
-import { useEffectOnce, useGetUser, useIsomorphicLayoutEffect, useUpdateEffect, useUserCreated } from 'hooks'
+import { useEffectOnce, useIsomorphicLayoutEffect, useUpdateEffect } from 'hooks'
 import Title from 'components/Title'
 import ImageUploader from 'components/ImageUploader'
+import { isLoading } from 'redux/loading/selector'
+import { getUser } from 'redux/users/selector'
+import { CREATE_USER, GET_USER } from 'redux/users/types'
+import { isError } from 'redux/error/selector'
 
 interface IForm {
     username        : string
@@ -45,10 +49,13 @@ const FacultyForm = () => {
     const params                        = useParams();
     const navigate                      = useNavigate()
     const dispatch                      = useDispatch()
-    const createdState                  = useUserCreated();
+    const loading                       = useSelector(isLoading([GET_USER]))
+    const error                         = useSelector(isError(GET_USER))
+    const createLoading                 = useSelector(isLoading([CREATE_USER]))
+    const createError                   = useSelector(isError(CREATE_USER))
     const schoolyears                   = useSchoolYears()
     const activeSchoolyear              = useActiveSchoolYear()
-    const user                          = useGetUser()
+    const user                          = useSelector(getUser)
 
     const [picture, setPicture]         = useState<File>()
     const [yearList, setYearList]       = useState<List[]>([])
@@ -59,17 +66,7 @@ const FacultyForm = () => {
 
     const { register, handleSubmit, setValue, formState: { errors }, reset } = useForm<IForm>({
         mode: "onChange",
-        resolver: yupResolver(facultySchema),
-        defaultValues: {
-            // username:       params.id ? user?.username : '',
-            // email:          params.id ? user?.email : '',
-            // birthday:       params.id ? dayjs(user?.birthday).toDate() : undefined,
-            // first_name:     params.id ? user?.first_name : '',
-            // last_name:      params.id ? user?.last_name : '',
-            // phone:          params.id ? user?.phone : '',
-            // schoolyear_id:  params.id ? user?.school_year : undefined 
-        }
-
+        resolver: yupResolver(facultySchema)
     });
 
     const fetchingData = () => {
@@ -184,10 +181,10 @@ const FacultyForm = () => {
     },[schoolyears.data])
 
     useUpdateEffect(() => {
-        if(createdState.success){
+        if(!createLoading && !createError){
             navigate('/dashboard/faculty')
         }
-    },[createdState])
+    },[createLoading, createError])
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -199,7 +196,7 @@ const FacultyForm = () => {
                     description={'Fill out the form for the new faculty member.'}
                     footer={true}
                     cancelOnclick={cancelForm} 
-                    loading={createdState.loading}
+                    loading={createLoading}
                 >
                     <div className="grid grid-cols-4 gap-6">
 

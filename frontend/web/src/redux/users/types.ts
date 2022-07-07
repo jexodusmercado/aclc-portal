@@ -1,127 +1,46 @@
 import { IPayload } from "interfaces"
+import { User } from "./interface"
 
-/**
- * TYPED STATES
- */
-export type UserState           = typeof UserInitialState
-export type CreateState         = typeof UserInitialState.created
-export type GetAllUsersState    = typeof UserInitialState.users
-export type GetUserState        = typeof UserInitialState.user
-
-
+export type UserState = typeof UserInitialState
 
 /**
  * STATES
  */
 export const UserInitialState  = {
-    users: {
-        data: [
-            {
-                id: 0,
-                username: "",
-                email: "",
-                first_name: "",
-                last_name: "",
-                birthday: "",
-                image: "",
-                phone: "",
-                type: "",
-                is_active: false,
-                updated_at: "",
-                created_at: "",
-                school_year: 0,
-                course: {
-                    ID: 0,
-                    created_at: "",
-                    description: "",
-                    is_active: false,
-                    name: "",
-                    updated_at: "",
-                },
-                classroom: [
-                    {
-                        body: "",
-                        created_at: "",
-                        id: 0,
-                        subject: {
-                            ID: 0,
-                            CreatedAt: "",
-                            UpdatedAt: "",
-                            DeletedAt: null,
-                            UserID: 0,
-                            name: "",
-                            code: "",
-                            unit: 0,
-                            is_active: false,
-                            Classrooms: null
-                        },
-                        title: "",
-                        updated_at: ""
-                    }
-                ]
-            }
-        ],
-        loading: false
-    },
-    user: {
-        id: 0,
-        username: "",
-        email: "",
-        first_name: "",
-        last_name: "",
-        birthday: "",
-        type: "",
-        is_active: false,
-        updated_at: "",
-        created_at: "",
-        phone:"",
-        school_year: 0,
-        course: {
-            ID: 0,
-            created_at: "",
-            description: "",
-            is_active: false,
-            name: "",
-            updated_at: "",
-        },
-        loading: false
-    },
-    created: {
-        loading: false,
-        success: false
-    },
-    deleted: {
-        loading: false
-    },
-    updated: {
-        loading: false
-    }
+    users: [] as User[],
+    user: {} as User,
 }
 
 /**
  * CONSTANTS
  */
 
+export const GET_USERS              = "GET_USERS"
 export const GET_USERS_REQUEST      = "GET_USERS_REQUEST"
 export const GET_USERS_SUCCESS      = "GET_USERS_SUCCESS"
 export const GET_USERS_FAILED       = "GET_USERS_FAILED"
 
+export const GET_USER               = "GET_USER"
 export const GET_USER_REQUEST       = "GET_USER_REQUEST"
 export const GET_USER_SUCCESS       = "GET_USER_SUCCESS"
 export const GET_USER_FAILED        = "GET_USER_FAILED"
 
+export const SEARCH_USER            = "SEARCH_USER"
 export const SEARCH_USER_REQUEST    = "SEARCH_USER_REQUEST"
 export const SEARCH_USER_SUCCESS    = "SEARCH_USER_SUCCESS"
 export const SEARCH_USER_FAILED     = "SEARCH_USER_FAILED"
 
+export const CREATE_USER            = "CREATE_USER"
 export const CREATE_USER_REQUEST    = "CREATE_USER_REQUEST"
 export const CREATE_USER_SUCCESS    = "CREATE_USER_SUCCESS"
 export const CREATE_USER_FAILED     = "CREATE_USER_FAILED"
 
+export const DELETE_USER            = "DELETE_USER"
 export const DELETE_USER_REQUEST    = "DELETE_USER_REQUEST"
 export const DELETE_USER_SUCCESS    = "DELETE_USER_SUCCESS"
 export const DELETE_USER_FAILED     = "DELETE_USER_FAILED"
 
+export const UPDATE_USER            = "UPDATE_USER"
 export const UPDATE_USER_REQUEST    = "UPDATE_USER_REQUEST"
 export const UPDATE_USER_SUCCESS    = "UPDATE_USER_SUCCESS"
 export const UPDATE_USER_FAILED     = "UPDATE_USER_FAILED"
@@ -183,14 +102,7 @@ export interface UpdateUserPayload extends IPayload, Partial<CreateUserPayload> 
 }
 
 export interface CreateUserPayload extends IPayload {
-    // username        : string
-    // first_name      : string
-    // last_name       : string
-    // birthday        : Date | null
     type            : string
-    // email?          : string
     letter_type     : string
-    // course_id?      : number
-    // schoolyear_id   : number
     formData      : FormData
 }

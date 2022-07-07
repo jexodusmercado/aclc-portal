@@ -1,4 +1,4 @@
-import { StudentUser } from "redux/users/interface";
+import { User } from "redux/users/interface";
 
 export interface Post {
     author:     Author;
@@ -30,7 +30,7 @@ export interface Author {
 export interface Comment {
     id:             number;
     post_id:        number;
-    user:           StudentUser;
+    user:           User;
     message:        string;
     created_at:     string;
     updatedt_at:    string;

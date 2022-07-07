@@ -3,7 +3,7 @@ import * as types from './types';
 
 // Reference: https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6
 
-const loadingReducer = (state: types.LoadingState = types.initialState, action: AnyAction) => {
+const errorReducer = (state: types.ErrorState = types.initialState, action: AnyAction) => {
     const { type } = action;
     const matches = /(.*)_(REQUEST|SUCCESS|FAILED)/.exec(type);
 
@@ -19,8 +19,8 @@ const loadingReducer = (state: types.LoadingState = types.initialState, action: 
         // Store whether a request is happening at the moment or not
         // e.g. will be true when receiving GET_TODOS_REQUEST
         //      and false when receiving GET_TODOS_SUCCESS / GET_TODOS_FAILURE
-        [requestName]: requestState === 'REQUEST',
+        [requestName]: requestState === 'FAILED' ? action.payload : null,
     };
 };
 
-export default loadingReducer;
+export default errorReducer;

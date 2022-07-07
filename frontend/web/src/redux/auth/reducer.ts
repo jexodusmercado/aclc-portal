@@ -1,14 +1,14 @@
 import * as types from "./types";
+import { AuthState, AuthUser } from "./interface";
 import { AnyAction } from "redux";
 
-const authReducer = ( state: types.AuthState = types.initialState, action: AnyAction): types.AuthState => {
+const authReducer = ( state: AuthState = types.initialState, action: AnyAction): AuthState => {
   switch (action.type) {
 
     case types.LOGIN_REQUEST:
         return {
             ...state,
-            user: {} as types.AuthUser,
-            loading: true
+            user: {} as AuthUser,
         }
 
     case types.LOGIN_SUCCESS:
@@ -16,38 +16,26 @@ const authReducer = ( state: types.AuthState = types.initialState, action: AnyAc
             ...state,
             user: action.payload,
             authenticated: true,          
-            loading: false
         }
 
     case types.LOGIN_FAILED:
         return {
             ...state,
-            user: {} as types.AuthUser,
+            user: {} as AuthUser,
             authenticated: false,
-            loading: false,
-            error: {
-                status: action.payload.status,
-                message: action.payload.message
-            }
         }
 
     case types.LOGOUT_REQUEST:
         return {
             ...state,
-            user: {} as types.AuthUser,
-            loading: true,
-            error: {} as types.Error
+            user: {} as AuthUser,
         }
 
     case types.LOGOUT_FAILED:
         return {
             ...state,
-            user: {} as types.AuthUser,
-            loading: false,
-            error:  {
-                status: action.payload.status,
-                message: action.payload.message
-            }
+            user: {} as AuthUser,
+            
         }
     case types.LOGOUT_SUCCESS:
         return {

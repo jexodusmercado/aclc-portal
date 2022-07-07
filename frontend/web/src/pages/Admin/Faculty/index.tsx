@@ -1,17 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { DownloadIcon, PlusCircleIcon } from '@heroicons/react/solid'
-import { useEffectOnce, useGetAllUsers, useIsomorphicLayoutEffect, useUpdateEffect } from 'hooks'
+import { useEffectOnce, useIsomorphicLayoutEffect, useUpdateEffect } from 'hooks'
 import { Link } from 'react-router-dom'
+import { SEARCH_USER } from 'redux/users/types'
 import { List } from 'interfaces'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import FacultyTable from './Components/Tables'
 import CardContainer from 'components/CardContainer'
 import SelectInputText from 'components/SearchInputText'
 import SelectMenu from 'components/SelectMenu'
 import { deleteUserRequest, getAllUsersRequest, searchUsersRequest } from 'redux/users/action'
-import { GetAllUsersState } from 'redux/users/types'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import toast from 'react-hot-toast'
+import { User } from 'redux/users/interface'
+import { getUsers } from 'redux/users/selector'
+import { isLoading } from 'redux/loading/selector'
 
 const list = [
     {id: 1, name:"Department of Business and Accounting"},
@@ -20,22 +23,23 @@ const list = [
 ]
 
 const FacultyIndex = () => {
+    const dispatch                                      = useDispatch()
+    const users                                         = useSelector(getUsers)
+    const loading                                       = useSelector(isLoading([SEARCH_USER]))
+    const checkbox                                      = useRef<HTMLInputElement | null>(null)
     const [search, setSearch]                           = useState<string>('')
     const [checked, setChecked]                         = useState<boolean>(false)
     const [selected, setSelected]                       = useState<number | string | undefined>(undefined)
     const [indeterminate, setIndeterminate]             = useState<boolean>(false)
-    const [selectedFaculty, setSelectedFaculty]         = useState<GetAllUsersState["data"]>([])
+    const [selectedFaculty, setSelectedFaculty]         = useState<User[]>([])
     const [isDelete, setDelete]                         = useState<boolean>(false)
-    const checkbox                                      = useRef<HTMLInputElement | null>(null)
-    const dispatch                                      = useDispatch()
-    const users                                         = useGetAllUsers()
 
     const fetchingData = () => {
         dispatch(searchUsersRequest({keyword: search, type: "faculty"}))
     }
         
     const toggleAll = () => {
-        setSelectedFaculty(checked || indeterminate ? [] : users.data)
+        setSelectedFaculty(checked || indeterminate ? [] : users)
         setChecked(!checked && !indeterminate)
         setIndeterminate(false)
     }
@@ -69,8 +73,8 @@ const FacultyIndex = () => {
     }
     
     useIsomorphicLayoutEffect(() => {
-        const isIndeterminate = selectedFaculty.length > 0 && selectedFaculty.length < users.data.length
-        setChecked(selectedFaculty.length === users.data.length)
+        const isIndeterminate = selectedFaculty.length > 0 && selectedFaculty.length < users.length
+        setChecked(selectedFaculty.length === users.length)
         setIndeterminate(isIndeterminate)
         if(checkbox.current){
             checkbox.current.indeterminate = isIndeterminate
@@ -98,10 +102,6 @@ const FacultyIndex = () => {
                         <PlusCircleIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                         Add Faculty
                     </Link>
-                    {/* <button className='button-primary'>
-                        <DownloadIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
-                        Download CSV
-                    </button> */}
                 </div>
             </div>
 
@@ -120,29 +120,16 @@ const FacultyIndex = () => {
             </CardContainer>
 
             {/* TABLE */}
-            {
-                !users.data.length &&
-                <div className="w-full mt-7">
-                    <div className='flex justify-center align-middle'>
-                        <span> No faculty member(s) found</span>
-                    </div>
-                </div>
-
-                
-            }
-            {
-                users.data.length !== 0 &&
                 <FacultyTable 
                     checkbox={checkbox}
-                    users={users.data} 
+                    users={users} 
                     state={selectedFaculty} 
                     setState={setSelectedFaculty} 
                     checked={checked} 
                     toggleAll={toggleAll}
                     onDelete={handleDeleteModal}
-                    loading={users.loading}    
+                    loading={loading}    
                 />
-            }
             
             <ConfirmModal 
                 setOpen={setDelete} 

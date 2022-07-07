@@ -8,6 +8,7 @@ import Subject      from './subject/reducer'
 import Post         from './post/reducer'
 import Comment      from './comment/reducer'
 import Loading      from './loading/reducer'
+import Error        from './error/reducer'
 import Quiz         from './quiz/reducer'
 
 export const appReducer = combineReducers({
@@ -20,6 +21,7 @@ export const appReducer = combineReducers({
     Post,
     Comment,
     Loading,
+    Error,
     Quiz
 
     //add reducer here

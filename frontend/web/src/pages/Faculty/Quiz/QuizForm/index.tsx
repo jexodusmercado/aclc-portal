@@ -12,12 +12,14 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserRequest } from 'redux/users/action'
 import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
-import { useEffectOnce, useFilteredClassroom, useIsomorphicLayoutEffect, useUpdateEffect, useUserCreated } from 'hooks'
+import { useEffectOnce, useFilteredClassroom, useIsomorphicLayoutEffect, useUpdateEffect } from 'hooks'
 import Title from 'components/Title'
 import { getByTeacherId } from 'redux/classroom/action'
 import { getAuthUser } from 'redux/auth/selector'
 import { GRADE_PREIOD } from 'contants'
 import { createQuiz, updateQuiz } from 'redux/quiz/action'
+import { CREATE_QUIZ } from 'redux/quiz/types'
+import { isLoading } from 'redux/loading/selector'
 
 
 interface IForm {
@@ -37,9 +39,9 @@ const FacultyForm = () => {
     const params                        = useParams()
     const navigate                      = useNavigate()
     const dispatch                      = useDispatch()
-    const createdState                  = useUserCreated()
     const schoolyears                   = useFilteredClassroom()
     const user                          = useSelector(getAuthUser)
+    const loading                       = useSelector(isLoading([CREATE_QUIZ]))
 
     const [selected, setSelected]       = useState<number | string | undefined>()
     const [classroomID, setClassroomID]   = useState<number | string | undefined>(undefined)
@@ -146,7 +148,7 @@ const FacultyForm = () => {
                     description={'Fill out the form to create new quiz.'}
                     footer={true}
                     cancelOnclick={cancelForm} 
-                    loading={createdState.loading}
+                    loading={loading}
                 >
                     <div className="grid grid-cols-4 gap-6">
                         <div className="col-span-2 sm:col-span-2">

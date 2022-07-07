@@ -2,19 +2,27 @@
 import React from 'react'
 import { classNames } from 'utility'
 import { Link } from 'react-router-dom'
-import { GetAllUsersState } from 'redux/users/types'
+import { User } from 'redux/users/interface'
 
 interface Props {
     checked:            boolean
-    state:              GetAllUsersState["data"]
-    users:              GetAllUsersState["data"]
-    setState:           React.Dispatch<React.SetStateAction<GetAllUsersState["data"]>>
+    state:              User[]
+    users:              User[]
+    setState:           React.Dispatch<React.SetStateAction<User[]>>
     checkbox:           React.MutableRefObject<HTMLInputElement | null>
     toggleAll:          () => void
     loading:            boolean
 }
 
 const StudentTable: React.FC<Props> = ({state, setState, users, checkbox, checked, toggleAll, loading}) => {
+
+    if(loading){
+        return <div>Loading...</div>
+    }
+
+    if(!state.length){
+        return <div>No data</div>
+    }
 
     return (
     <div className="mt-5 w-full sm:px-6 ">

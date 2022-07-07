@@ -1,7 +1,4 @@
 import React, { useState } from 'react'
-import ACLCLogo from 'assets/images/aclc.jpeg'
-import Alert from 'components/Alert'
-import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { classNames } from 'utility'
@@ -10,7 +7,12 @@ import { loginRequest } from 'redux/auth/action'
 import { ExclamationCircleIcon } from '@heroicons/react/solid'
 import { useIsomorphicLayoutEffect, useUpdateEffect} from 'hooks'
 import { useNavigate } from 'react-router-dom'
-import { getAuthenticated, getAuthError, getAuthUser } from 'redux/auth/selector'
+import { getAuthenticated, getAuthUser } from 'redux/auth/selector'
+import { LOGIN } from 'redux/auth/types'
+import { isError } from 'redux/error/selector'
+import ACLCLogo from 'assets/images/aclc.jpeg'
+import Alert from 'components/Alert'
+import * as yup from 'yup'
 
 type FormData = {
     username: string
@@ -24,8 +26,8 @@ const loginSchema = yup.object({
 
 const SignIn = () => {
     const [showError, setShowError] = useState<boolean>(false)
-    const error     = useSelector(getAuthError)
     const auth      = useSelector(getAuthenticated)
+    const error     = useSelector(isError(LOGIN))
     const dispatch  = useDispatch()
     const navigate  = useNavigate()
 
@@ -45,10 +47,10 @@ const SignIn = () => {
     },[auth])
 
     useUpdateEffect(() => {
-        if(error.status !== 0){
+        if(error){
             setShowError(true)
         }
-    }, [error])
+    },[error])
 
     return (
         <>

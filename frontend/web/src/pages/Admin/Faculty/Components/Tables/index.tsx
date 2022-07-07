@@ -2,13 +2,13 @@
 import React from 'react'
 import { classNames } from 'utility'
 import { Link } from 'react-router-dom'
-import { GetAllUsersState } from 'redux/users/types'
+import { User } from 'redux/users/interface'
 
 interface Props {
     checked:            boolean
-    state:              GetAllUsersState["data"]
-    users:              GetAllUsersState["data"]
-    setState:           React.Dispatch<React.SetStateAction<GetAllUsersState["data"]>>
+    state:              User[]
+    users:              User[]
+    setState:           React.Dispatch<React.SetStateAction<User[]>>
     checkbox:           React.MutableRefObject<HTMLInputElement | null>
     toggleAll:          () => void
     onDelete:           () => void
@@ -16,6 +16,22 @@ interface Props {
 }
 
 const FacultyTable: React.FC<Props> = ({state, setState, users, checkbox, checked, toggleAll, loading, onDelete}) => {
+
+    if(loading){
+        return (
+            <>
+                Loading....
+            </>
+        )
+    }
+
+    if(!users.length){
+        return(
+            <>
+                No data to show
+            </>
+        )
+    }
 
     return (
     <div className="mt-5 w-full sm:px-6 ">

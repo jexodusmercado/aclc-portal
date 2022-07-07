@@ -1,14 +1,18 @@
 import Badges from 'components/Badge';
 import Greeting from 'components/Greeting';
-import { useEffectOnce, useGetAllUsers } from 'hooks';
-import { useDispatch } from 'react-redux';
+import { useEffectOnce } from 'hooks';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { isLoading } from 'redux/loading/selector';
 import { getAllUsersRequest } from 'redux/users/action';
+import { getUsers } from 'redux/users/selector';
+import { GET_USER } from 'redux/users/types';
 import { classNames } from 'utility';
 
 const HomePage = () => {
     const dispatch  = useDispatch()
-    const students  = useGetAllUsers()
+    const students  = useSelector(getUsers)
+    const loading   = useSelector(isLoading([GET_USER]))
 
     useEffectOnce(() => {
         dispatch(getAllUsersRequest({type: "student"}))
@@ -58,7 +62,7 @@ const HomePage = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {students.data.map((student) => (
+                                    {students.map((student) => (
                                     <tr key={student.id} className="bg-white">
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             <div className="flex">

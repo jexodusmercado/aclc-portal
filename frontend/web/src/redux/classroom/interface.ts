@@ -37,12 +37,6 @@ export interface Classroom {
     updated_at:    Date;
 }
 
-// id: comment.id,
-// message: comment.message,
-// full_name: comment.user.full_name,
-// image: comment.user.email,
-// createdAt: comment.created_at
-
 export interface Subject {
     ID:         number;
     code:       string;

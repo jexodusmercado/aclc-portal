@@ -1,17 +1,20 @@
 import React, { useRef, useState } from 'react'
 import { DownloadIcon, PlusCircleIcon } from '@heroicons/react/solid'
-import { useEffectOnce, useGetAllUsers, useIsomorphicLayoutEffect, useUpdateEffect } from 'hooks'
+import { useEffectOnce, useIsomorphicLayoutEffect, useUpdateEffect } from 'hooks'
 import { Link } from 'react-router-dom'
 import { List } from 'interfaces'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getAllUsersRequest, searchUsersRequest } from 'redux/users/action'
-import { GetAllUsersState } from 'redux/users/types'
 import StudentTable from './Components/Tables'
 import CardContainer from 'components/CardContainer'
 import SelectInputText from 'components/SearchInputText'
 import SelectMenu from 'components/SelectMenu'
 import { useCoursesState } from 'hooks'
 import { getAllCoursesRequest } from 'redux/courses/action'
+import { isLoading } from 'redux/loading/selector'
+import { User } from 'redux/users/interface'
+import { getUsers } from 'redux/users/selector'
+import { GET_USER } from 'redux/users/types'
 
 
 
@@ -20,15 +23,16 @@ const StudentIndex = () => {
     const [checked, setChecked]                         = useState<boolean>(false)
     const [selected, setSelected]                       = useState<number | string | undefined>(undefined)
     const [indeterminate, setIndeterminate]             = useState<boolean>(false)
-    const [selectedFaculty, setSelectedFaculty]         = useState<GetAllUsersState["data"]>([])
+    const [selectedFaculty, setSelectedFaculty]         = useState<User[]>([])
     const [coursesList, setCoursesList]                 = useState<List[]>([])
     const checkbox                                      = useRef<HTMLInputElement | null>(null)
     const dispatch                                      = useDispatch()
-    const users                                         = useGetAllUsers()
+    const users                                         = useSelector(getUsers)
+    const loading                                       = useSelector(isLoading([GET_USER]))
     const courses                                       = useCoursesState()
 
     const toggleAll = () => {
-        setSelectedFaculty(checked || indeterminate ? [] : users.data)
+        setSelectedFaculty(checked || indeterminate ? [] : users)
         setChecked(!checked && !indeterminate)
         setIndeterminate(false)
     }
@@ -39,8 +43,8 @@ const StudentIndex = () => {
     }
     
     useIsomorphicLayoutEffect(() => {
-        const isIndeterminate = selectedFaculty.length > 0 && selectedFaculty.length < users.data.length
-        setChecked(selectedFaculty.length === users.data.length)
+        const isIndeterminate = selectedFaculty.length > 0 && selectedFaculty.length < users.length
+        setChecked(selectedFaculty.length === users.length)
         setIndeterminate(isIndeterminate)
         if(checkbox.current){
             checkbox.current.indeterminate = isIndeterminate
@@ -108,28 +112,15 @@ const StudentIndex = () => {
             </CardContainer>
 
             {/* TABLE */}
-            {
-                !users.data.length &&
-                <div className="w-full mt-7">
-                    <div className='flex justify-center align-middle'>
-                        <span> No student(s) found</span>
-                    </div>
-                </div>
-
-                
-            }
-            {
-                users.data.length !== 0 &&
                 <StudentTable 
                     checkbox={checkbox}
-                    users={users.data} 
+                    users={users} 
                     state={selectedFaculty} 
                     setState={setSelectedFaculty} 
                     checked={checked} 
                     toggleAll={toggleAll}
-                    loading={users.loading}    
+                    loading={loading}    
                 />
-            }
             
 
         </div>

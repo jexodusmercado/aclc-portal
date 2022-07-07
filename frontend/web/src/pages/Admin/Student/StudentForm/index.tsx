@@ -7,8 +7,8 @@ import * as yup from 'yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { classNames } from 'utility'
-import { useCoursesState, useEffectOnce, useIsomorphicLayoutEffect, useUpdateEffect, useUserCreated } from 'hooks'
-import { useDispatch } from 'react-redux'
+import { useCoursesState, useEffectOnce, useIsomorphicLayoutEffect, useUpdateEffect } from 'hooks'
+import { useDispatch, useSelector } from 'react-redux'
 import { createUserRequest } from 'redux/users/action'
 import 'react-datepicker/dist/react-datepicker.css'
 import { List } from 'interfaces'
@@ -17,6 +17,8 @@ import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action
 import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
 import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
+import { isLoading } from 'redux/loading/selector'
+import { CREATE_USER } from 'redux/users/types'
 
 interface IForm {
     username        : string
@@ -45,7 +47,7 @@ const facultySchema = yup.object({
 const StudentForm = () => {
     const navigate                      = useNavigate()
     const dispatch                      = useDispatch()
-    const createdState                  = useUserCreated()
+    const loading                       = useSelector(isLoading([CREATE_USER]));
     const courses                       = useCoursesState()
     const schoolyears                   = useSchoolYears()
     const activeSchoolyear              = useActiveSchoolYear()
@@ -113,10 +115,10 @@ const StudentForm = () => {
     },[selected])
 
     useUpdateEffect(() => {
-        if(createdState.success){
+        if(loading){
             navigate('/dashboard/student')
         }
-    },[createdState])
+    },[loading])
 
     useEffectOnce(() => {
         dispatch(getAllCoursesRequest())
@@ -174,7 +176,7 @@ const StudentForm = () => {
             </div>
      
             <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                <CardContainer padding='' footer={true} cancelOnclick={cancelForm} loading={createdState.loading}>
+                <CardContainer padding='' footer={true} cancelOnclick={cancelForm} loading={loading}>
                     
                     <div className="p-4 sm:px-0">
                         <h1 className="text-lg font-medium text-gray-500 leading-6"> Profile </h1>
