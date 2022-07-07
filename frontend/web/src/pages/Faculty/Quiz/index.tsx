@@ -11,12 +11,15 @@ import { GET_ALL_QUIZ_BY_CREATOR_ID } from 'redux/quiz/types'
 import ConfirmModal from 'components/Modals/ConfirmModal'
 import QuizTable from './Components/Tables'
 import toast from 'react-hot-toast'
+import { classNames } from 'utility'
+import { getClassrooms } from 'redux/classroom/selector'
 
 const Quiz = () => {
     const checkbox                                      = useRef<HTMLInputElement | null>(null)
     const navigate                                      = useNavigate()
     const user                                          = useSelector(getAuthUser)
     const quizzes                                       = useSelector(getQuizzes)
+    const classrooms                                    = useSelector(getClassrooms)
     const dispatch                                      = useDispatch()
     const loading                                       = useSelector(isLoading([GET_ALL_QUIZ_BY_CREATOR_ID]))
     
@@ -81,7 +84,11 @@ const Quiz = () => {
                 </h3>
 
                 <div className='ml-auto space-x-3'>
-                    <Link to="/faculty/quiz/create" className='button-primary'>
+                    <Link 
+                        to="/faculty/quiz/create"
+                        className={classNames(classrooms.length > 0 ? '' : 'pointer-events-none bg-gray-500', 'button-primary')}
+                        
+                    >
                         <PlusCircleIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                         Create
                     </Link>

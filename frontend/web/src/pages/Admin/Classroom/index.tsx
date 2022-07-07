@@ -11,6 +11,7 @@ import { useDispatch,useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { deleteClassroom, getAllClassrooms } from 'redux/classroom/action';
 import { Classroom } from 'redux/classroom/interface';
+import { getClassrooms } from 'redux/classroom/selector';
 import { GET_CLASSROOMS } from 'redux/classroom/types';
 import { isLoading } from 'redux/loading/selector';
 // import UpdateModal from './Components/UpdateModal';
@@ -19,7 +20,7 @@ const ClassroomPage = () => {
     const [search, setSearch]       = useState<string>('')
     const [open, setOpen]           = useState<boolean>(false)
     const [deleteID, setDeleteID]   = useState<string>('')
-    const classrooms                = useGetAllClassroom()
+    const classrooms                = useSelector(getClassrooms)
     const dispatch                  = useDispatch()
     const navigate                  = useNavigate()
     const loading                   = useSelector(isLoading([GET_CLASSROOMS]))

@@ -153,7 +153,7 @@ func (u ClassroomRepository) FindByStudentID(studentId, keyword string) ([]model
 	}
 
 	err := queryBuilder.
-		Where("ID IN (SELECT classroom_id FROM students_classroom WHERE user_id = ?)", "4").
+		Where("ID IN (SELECT classroom_id FROM students_classroom WHERE user_id = ?)", studentId).
 		Find(&classrooms).
 		Count(&totalRows).Error
 

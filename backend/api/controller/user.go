@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -80,6 +81,11 @@ func (u *UserController) CreateUser(c *gin.Context) {
 	user.Password = hashPassword
 	user.Type = constants.USER_TYPE[user.Type]
 	schoolyear.ID = user.SchoolYearID
+
+	fmt.Println("generatedPassword")
+	fmt.Println("----")
+	fmt.Println("")
+	fmt.Println(generatedPassword)
 
 	if user.Type == "" {
 		util.CustomErrorJson(c, http.StatusBadRequest, "No existing role")

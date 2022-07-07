@@ -19,6 +19,7 @@ import {
     CreateClassroomPayload, 
     GetAllClassroomPayload, 
     GetAllStudentsByTeacherIDPayload, 
+    GetByStudentIDPayload, 
     GetByTeacherIDPayload, 
     GetClassroomPayload, 
     UpdateClassroomPayload 
@@ -109,8 +110,8 @@ export const classroomRequest = {
         return apiInstance.get(`${END_POINTS.CLASSROOM}/${END_POINTS.STUDENTS}/${teacherId}`, { params: {...data}})
     },
 
-    getAllClassroomsByStudentID: (param: any) =>
-        apiInstance.get(`${END_POINTS.CLASSROOM}/${END_POINTS.STUDENT}/${param.id}`)
+    getAllClassroomsByStudentID: (param: GetByStudentIDPayload) =>
+        apiInstance.get(`${END_POINTS.CLASSROOM}/${END_POINTS.STUDENT}/${param.studentId}`)
 }
 
 export const subjectRequest = {

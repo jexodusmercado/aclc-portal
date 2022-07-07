@@ -14,9 +14,9 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { createClassroom } from 'redux/classroom/action';
 import toast from 'react-hot-toast';
-import { useFilteredSchoolYears } from 'hooks/schoolyear';
 import { GetAllSchoolYears } from 'redux/school-year/action';
 import { getAuthUser } from 'redux/auth/selector';
+import { getFilteredschoolYears } from 'redux/school-year/selector';
 
 const formSchema = yup.object({
     title           : yup.string().trim().required('*Title is required'),
@@ -42,7 +42,7 @@ const FacultyClassroomForm = () => {
     const [teacherOptions, setTeacherOptions]   = useState<List[]>([])
     const [studentOptions, setStudentOptions]   = useState<ListWithAvatar[]>([])
     const subjects                              = useFilteredSubjects()
-    const listSchoolYear                        = useFilteredSchoolYears()
+    const listSchoolYear                        = useSelector(getFilteredschoolYears)
     const dispatch                              = useDispatch();
     const user                                  = useSelector(getAuthUser);
     const navigate                              = useNavigate();

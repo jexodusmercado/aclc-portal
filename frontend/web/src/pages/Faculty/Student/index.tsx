@@ -43,9 +43,13 @@ const FacultyStudent = () => {
         <div className='containerized'>
             <Title name='Students' />
 
-            <Card >
-                <SelectInputText state={keyword} setState={setKeyword} className='max-w-sm'/>
-            </Card>
+            {
+                students.length > 0 &&
+                <Card>
+                    <SelectInputText state={keyword} setState={setKeyword} className='max-w-sm'/>
+                </Card>
+            }
+            
 
             <Card>
                 <Table students={students}/>

@@ -12,3 +12,10 @@ export const logoutRequest = () : types.LogoutAction => {
         type: types.LOGOUT_REQUEST
     }
 }
+
+export const fetchRequest = (payload: types.FetchUserPayload) : types.FetchUserAction => {
+    return {
+        type: types.FETCH_USER_REQUEST,
+        payload
+    }
+}

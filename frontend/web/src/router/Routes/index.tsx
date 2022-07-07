@@ -72,6 +72,7 @@ const CustomRoute = () => {
                                 <Route path="student">
                                     <Route index element={<StudentIndex/>} />
                                     <Route path="create" element={<StudentForm />} />
+                                    <Route path="update/:id" element={<StudentForm />} />
                                 </Route>
 
                                 {/* Course */}

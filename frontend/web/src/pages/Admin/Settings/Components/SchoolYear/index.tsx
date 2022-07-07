@@ -1,14 +1,13 @@
 import React from 'react'
 import { useEffectOnce } from 'hooks'
-import { useSchoolYears } from 'hooks/schoolyear'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { GetAllSchoolYears } from 'redux/school-year/action'
 import SchoolYearTable from '../Tables'
+import { getSchoolYears } from 'redux/school-year/selector'
 
 const SchoolYearComponent = () => {
 
-
-    const schoolyears = useSchoolYears()
+    const schoolyears = useSelector(getSchoolYears)
     const dispatch = useDispatch()
 
     useEffectOnce(() => {
@@ -27,7 +26,7 @@ const SchoolYearComponent = () => {
                 </button>
             </div>
 
-            <SchoolYearTable schoolyears={schoolyears.data}  />
+            <SchoolYearTable schoolyears={schoolyears}  />
         </>
     )
 }

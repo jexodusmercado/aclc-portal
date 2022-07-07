@@ -91,30 +91,21 @@ const FacultyHomePage = () => {
                 <div className='flex'>
                     <Card>
                         <dt className="text-sm font-medium text-gray-500 truncate">Students</dt>
-                        {/* <dd className="mt-1 text-3xl font-semibold text-gray-900">{numberOfClasroom}</dd> */}
+                        <dd className="mt-1 text-3xl font-semibold text-gray-900">{classrooms.reduce((init, arr) => init + arr.totalStudents, 0)}</dd>
                     </Card>
                 </div>
             </div>
 
             {/* Main classroom */}
-            
-            <CardContainer>
+            {
+                 (classrooms.length > 0) &&
+                 <CardContainer>
                     <div className='flex space-x-3 justify-between items-center'>
                         <SelectInputText state={search} setState={setSearch} className='max-w-sm'/>
-                        {/* <SelectMenu selected={department} setSelected={setDepartment} name="Departments" lists={list} take={handleSelected} className='max-w-sm'/> */}
-                        {/* <div className='self-center'>
-                            <button className='ml-3 text-blue-900 font-extralight' onClick={handleClear}>
-                                Clear All
-                            </button>
-                        </div> */}
-                        {/* <div className='space-x-3'>
-                            <Link to="/faculty/classroom/create" className='button-primary'>
-                                <PlusCircleIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
-                                Add Classroom
-                            </Link>
-                        </div> */}
                     </div>
                 </CardContainer>
+            }
+            
 
                 { loading &&
                         Array.from(Array(3).keys()).map( (k, i) => 

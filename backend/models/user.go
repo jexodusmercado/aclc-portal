@@ -100,6 +100,7 @@ func (user *User) ResponseMap() map[string]interface{} {
 	resp["is_active"] 			= user.IsActive
 	resp["created_at"] 			= user.CreatedAt
 	resp["updated_at"] 			= user.UpdatedAt
+	resp["course"] 				= user.Course.ResponseMap()
 	resp["school_year"]			= activeSchoolYear
 	resp["image"]				= image
 

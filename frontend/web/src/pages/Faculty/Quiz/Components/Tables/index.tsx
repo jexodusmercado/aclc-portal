@@ -18,12 +18,14 @@ interface Props {
 const QuizTable: React.FC<Props> = ({state, setState, quizzes, checkbox, checked, toggleAll, loading, onDelete}) => {
     const navigate = useNavigate();
 
-    if(!quizzes) {
-        <div className="w-full mt-7">
-            <div className='flex justify-center align-middle'>
-                <span> No quizzes found</span>
+    if(!quizzes.length) {
+        return (
+            <div className="w-full mt-7">
+                <div className='flex justify-center align-middle'>
+                    <span> No quizzes found</span>
+                </div>
             </div>
-        </div>
+        )
     }
     
     return (

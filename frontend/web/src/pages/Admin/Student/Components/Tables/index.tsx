@@ -20,7 +20,7 @@ const StudentTable: React.FC<Props> = ({state, setState, users, checkbox, checke
         return <div>Loading...</div>
     }
 
-    if(!state.length){
+    if(!users.length){
         return <div>No data</div>
     }
 
@@ -76,9 +76,9 @@ const StudentTable: React.FC<Props> = ({state, setState, users, checkbox, checke
                                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                         Status
                                     </th>
-                                    {/* <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                    <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                         <span className="sr-only">Edit</span>
-                                    </th> */}
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="border-transparent divide-y divide-gray-200 bg-white">
@@ -156,11 +156,11 @@ const StudentTable: React.FC<Props> = ({state, setState, users, checkbox, checke
                                         <td className="whitespace-pre-wrap px-3 py-4 text-sm space-x-1 space-y-1 text-gray-500">
                                            {user?.is_active ? "Active" : "Inactive"}
                                         </td>
-                                        {/* <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                            <Link to={`/dashboard/faculty/edit/${user.id}`} className="text-blue-600 hover:text-blue-900">
+                                        <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                            <Link to={`/dashboard/student/update/${user.id}`} className="text-blue-600 hover:text-blue-900">
                                                 Edit<span className="sr-only">, {user.first_name + ' ' + user.last_name}</span>
                                             </Link>
-                                        </td> */}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

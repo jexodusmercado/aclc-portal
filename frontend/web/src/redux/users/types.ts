@@ -99,6 +99,7 @@ export interface DeleteUsersPayload extends IPayload {
 
 export interface UpdateUserPayload extends IPayload, Partial<CreateUserPayload> {
     id: string
+    formData: FormData
 }
 
 export interface CreateUserPayload extends IPayload {

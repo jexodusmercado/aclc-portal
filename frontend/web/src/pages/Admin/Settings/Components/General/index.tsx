@@ -1,13 +1,62 @@
 import React, { useState } from 'react'
 import { classNames } from 'utility'
 import { Switch } from '@headlessui/react'
-import { useSelector } from 'react-redux';
-import { getAuthUser } from 'redux/auth/selector';
+import { useDispatch, useSelector } from 'react-redux'
+import { getAuthUser } from 'redux/auth/selector'
+import Modal from 'components/Modal'
+import { useForm } from 'react-hook-form'
+import { getUserRequest, updateUserRequest } from 'redux/users/action'
+import { isLoading } from 'redux/loading/selector'
+import { isError } from 'redux/error/selector'
+import { UPDATE_USER } from 'redux/users/types'
+import { useUpdateEffect } from 'hooks'
+import { fetchRequest } from 'redux/auth/action'
+
+interface IForm {
+    first_name: string
+    last_name: string
+    email: string
+}
+
+const FieldTitle: { [key: string]: string } = {
+    'first_name'    : 'First Name',
+    'last_name'     : 'Last Name',
+    'email'         : 'Email',
+}
 
 const GeneralComponent = () => {
+    const dispatch  = useDispatch()
+    const user      = useSelector(getAuthUser)
 
-    const user                                                      = useSelector(getAuthUser);
-    const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled]   = useState<boolean>(true)
+    const loading   = useSelector(isLoading([UPDATE_USER]))
+    const error     = useSelector(isError(UPDATE_USER))
+
+    const [updateField, setUpdateField] = useState<string>('')
+    const [updateModal, setUpdateModal] = useState<boolean>(false)
+    const [updateValue, setUpdateValue] = useState<string>('')
+
+    const handleUpdate = (field: string, value: string) => {
+        setUpdateField(field)
+        setUpdateValue(value)
+        setUpdateModal(true)
+
+    }
+
+    const onSubmit = () => {
+
+        const fd = new FormData()
+
+        fd.append(updateField, updateValue)
+
+        dispatch(updateUserRequest({id: user.id.toString(), formData: fd}))
+    }
+
+    useUpdateEffect(() => {
+        if(!loading && !error) {
+            setUpdateModal(false)
+            dispatch(fetchRequest({id: user.id.toString()}))
+        }
+    }, [loading, error])
 
     return (
         <>
@@ -28,7 +77,7 @@ const GeneralComponent = () => {
                                     <button
                                         type="button"
                                         className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                    
+                                        onClick={() => handleUpdate('first_name', user.first_name)}
                                     >
                                         Update
                                     </button>
@@ -43,6 +92,7 @@ const GeneralComponent = () => {
                                     <button
                                         type="button"
                                         className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                        onClick={() => handleUpdate('last_name', user.last_name)}
                                     >
                                         Update
                                     </button>
@@ -86,6 +136,7 @@ const GeneralComponent = () => {
                                 <button
                                 type="button"
                                 className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                onClick={() => handleUpdate('email', user.email)}
                                 >
                                 Update
                                 </button>
@@ -104,7 +155,7 @@ const GeneralComponent = () => {
                     Manage how information is displayed on your account.
                     </p>
                 </div>
-                <div className="mt-6">
+                {/* <div className="mt-6">
                     <dl className="divide-y divide-gray-200">
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
                             <dt className="text-sm font-medium text-gray-500">Password</dt>
@@ -114,76 +165,35 @@ const GeneralComponent = () => {
                                     <button
                                     type="button"
                                     className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                    onClick={() => handleUpdate('password')}
                                     >
                                     Change
                                     </button>
                                 </span>
                             </dd>
                         </div>
-                        <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
-                            <dt className="text-sm font-medium text-gray-500">Language</dt>
-                            <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                <span className="flex-grow">English</span>
-                                <span className="ml-4 flex-shrink-0">
-                                    <button
-                                    type="button"
-                                    className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                    >
-                                    Update
-                                    </button>
-                                </span>
-                            </dd>
-                        </div>
-                        <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5">
-                            <dt className="text-sm font-medium text-gray-500">Date format</dt>
-                            <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                <span className="flex-grow">DD-MM-YYYY</span>
-                                <span className="ml-4 flex-shrink-0 flex items-start space-x-4">
-                                    <button
-                                        type="button"
-                                        className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                    >
-                                    Update
-                                    </button>
-                                    <span className="text-gray-300" aria-hidden="true">
-                                        |
-                                    </span>
-                                    <button
-                                        type="button"
-                                        className="bg-white rounded-md font-medium text-blue-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                    >
-                                        Remove
-                                    </button>
-                                </span>
-                            </dd>
-                        </div>
-                        <Switch.Group as="div" className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5">
-                            <Switch.Label as="dt" className="text-sm font-medium text-gray-500" passive>
-                                Automatic timezone
-                            </Switch.Label>
-                            <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                <Switch
-                                    checked={automaticTimezoneEnabled}
-                                    onChange={setAutomaticTimezoneEnabled}
-                                    className={classNames(
-                                    automaticTimezoneEnabled ? 'bg-blue-600' : 'bg-gray-200',
-                                    'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-auto'
-                                    )}
-                                >
-                                    <span
-                                    aria-hidden="true"
-                                    className={classNames(
-                                        automaticTimezoneEnabled ? 'translate-x-5' : 'translate-x-0',
-                                        'inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
-                                    )}
-                                    />
-                                </Switch>
-                            </dd>
-                        </Switch.Group>
                     </dl>
-                </div>
+                </div> */}
             </div>
-        
+                                        
+            <Modal open={updateModal} setOpen={setUpdateModal}>
+                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                    {FieldTitle[updateField]}
+                </label>
+                <div className="mt-1 flex rounded-md shadow">
+                    <input
+                        type="text"
+                        className={"input-text"}
+                        required
+                        
+                        value={updateValue}
+                        onChange={(e) => setUpdateValue(e.target.value)}
+                    />
+                </div>
+                <button className='mt-2 button-primary' onClick={() => onSubmit()}>
+                    Update
+                </button>
+            </Modal>
         </>
     )
 }

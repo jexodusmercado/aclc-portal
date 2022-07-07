@@ -6,13 +6,13 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { classNames } from 'utility'
 import { useCourseCreated, useIsomorphicLayoutEffect, useCourseError, useEffectOnce, useUpdateEffect } from 'hooks'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { createCourseRequest } from 'redux/courses/action'
 import toast from 'react-hot-toast'
-import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
 import { List } from 'interfaces'
 import { GetAllSchoolYears } from 'redux/school-year/action'
 import SelectMenu from 'components/SelectMenu'
+import { getActiveSchoolYear, getSchoolYears } from 'redux/school-year/selector'
 
 interface FormData {
     name            : string
@@ -31,8 +31,8 @@ const CourseForm = () => {
     const dispatch                      = useDispatch()
     const createdState                  = useCourseCreated()
     const error                         = useCourseError()
-    const schoolyears                   = useSchoolYears()
-    const activeSchoolyear              = useActiveSchoolYear()
+    const schoolyears                   = useSelector(getSchoolYears)
+    const activeSchoolyear              = useSelector(getActiveSchoolYear)
     const [schoolYear, setSchoolYear]   = useState<number | string | undefined>(undefined)
     const [yearList, setYearList]       = useState<List[]>([])
 
@@ -73,9 +73,9 @@ const CourseForm = () => {
     },[schoolYear])
 
     useIsomorphicLayoutEffect(() => {
-        if(schoolyears.data){
+        if(schoolyears){
             setValue('schoolyear_id', activeSchoolyear.ID)
-            const list = schoolyears.data.map(year => {
+            const list = schoolyears.map(year => {
                 return {
                     id: year.ID,
                     name: year.school_year+", "+year.semester + " Semester"
@@ -83,7 +83,7 @@ const CourseForm = () => {
             })
             setYearList(list)
         }
-    },[schoolyears.data])
+    },[schoolyears])
 
 
     return (

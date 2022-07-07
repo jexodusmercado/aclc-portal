@@ -16,7 +16,7 @@ function* getClassrooms ({payload}: types.GetClassroomsAction) {
 
         yield put({
             type: types.GET_CLASSROOMS_SUCCESS,
-            payload: 'test'
+            payload: response.data
         })
 
     } catch (error) {
@@ -133,7 +133,7 @@ function* getByTeacherId ({payload}: types.GetByTeacherIDAction) {
         const response : AxiosResponse = yield call(classroomRequest.getByTeacherID, payload)
 
         yield put({
-            type: types.GET_ALL_STUDENTS_BY_TEACHER_ID_SUCCESS,
+            type: types.GET_ALL_CLASSROOM_TEACHER_ID_SUCCESS,
             payload: response.data
         })
 
@@ -142,7 +142,7 @@ function* getByTeacherId ({payload}: types.GetByTeacherIDAction) {
         const payload = handleAxiosError(error as AxiosError)
 
         yield put({
-            type: types.GET_ALL_STUDENTS_BY_TEACHER_ID_FAILED,
+            type: types.GET_ALL_CLASSROOM_TEACHER_ID_FAILED,
             payload
         })
         
@@ -154,6 +154,7 @@ function* getByStudentID ({payload}: types.GetByStudentIDAction) {
 
         const response : AxiosResponse = yield call(classroomRequest.getAllClassroomsByStudentID, payload)
 
+        console.log(response.data)
         yield put({
             type: types.GET_ALL_CLASSROOM_STUDENT_ID_SUCCESS,
             payload: response.data

@@ -26,7 +26,7 @@ const classroomReducer = ( state: types.ClassroomState = types.ClassroomInitialS
         case types.GET_ALL_CLASSROOM_STUDENT_ID_SUCCESS:
             return {
                 ...state,
-                classrooms: action.payload
+                classrooms: action.payload.data.rows
             }
         
         default: 

@@ -5,13 +5,13 @@ import { Link, useLocation } from 'react-router-dom'
 import Avatar from 'components/Avatar'
 import { BASE_URL } from 'services/api'
 import { classNames } from 'utility'
-import { useIsomorphicLayoutEffect } from 'hooks'
-import { useActiveSchoolYear } from 'hooks/schoolyear'
-import { ActiveSchoolYearState } from 'redux/school-year/types'
+import { useEffectOnce, useIsomorphicLayoutEffect } from 'hooks'
 import { logoutRequest } from 'redux/auth/action'
 import { useDispatch, useSelector } from 'react-redux'
-import { GetActiveSchoolYear } from 'redux/school-year/action'
+import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
 import { getAuthUser } from 'redux/auth/selector'
+import { SchoolYear } from 'redux/school-year/interface'
+import { getActiveSchoolYear } from 'redux/school-year/selector'
 
 const userNavigation = [
     { name: 'Your Profile', href: '#' },
@@ -26,9 +26,9 @@ const Topbar: React.FC<IProps> = ({setSidebarOpen}) => {
     const dispatch              = useDispatch()
     const user                  = useSelector(getAuthUser)
     const location              = useLocation()
-    const schoolyear            = useActiveSchoolYear()
+    const schoolyear            = useSelector(getActiveSchoolYear)
 
-    const [school, setSchool]   = useState<ActiveSchoolYearState>(schoolyear)
+    const [school, setSchool]   = useState<SchoolYear>(schoolyear)
 
     const handleLogout = () => {
         dispatch(logoutRequest())
@@ -40,11 +40,14 @@ const Topbar: React.FC<IProps> = ({setSidebarOpen}) => {
 
     useIsomorphicLayoutEffect(() => {
         if(schoolyear.ID === 0){
-            dispatch(
-                GetActiveSchoolYear()
-            )
+            dispatch(GetActiveSchoolYear())
+
         }
     }, [location.pathname])
+
+    useEffectOnce(() => {
+        dispatch(GetAllSchoolYears())
+    })
 
     return (
         <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow">

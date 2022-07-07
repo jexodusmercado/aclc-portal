@@ -4,7 +4,7 @@ import MultipleSelectMenu from 'components/MultipleSelectMenu';
 import { useEffectOnce, useUpdateEffect } from 'hooks';
 import { List, ListWithAvatar } from 'interfaces';
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAllSubjects } from 'redux/subject/action';
 import { usersRequest } from 'services/request';
 import { useFilteredSubjects } from 'hooks';
@@ -14,8 +14,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { createClassroom } from 'redux/classroom/action';
 import toast from 'react-hot-toast';
-import { useFilteredSchoolYears, useSchoolYears } from 'hooks/schoolyear';
 import { GetAllSchoolYears } from 'redux/school-year/action';
+import { getFilteredschoolYears } from 'redux/school-year/selector';
 
 const formSchema = yup.object({
     title           : yup.string().trim().required('*Title is required'),
@@ -41,7 +41,7 @@ const ClassroomForm = () => {
     const [teacherOptions, setTeacherOptions]   = useState<List[]>([])
     const [studentOptions, setStudentOptions]   = useState<ListWithAvatar[]>([])
     const subjects                              = useFilteredSubjects()
-    const listSchoolYear                        = useFilteredSchoolYears()
+    const listSchoolYear                        = useSelector(getFilteredschoolYears)
     const dispatch                              = useDispatch();
     const navigate                              = useNavigate();
     

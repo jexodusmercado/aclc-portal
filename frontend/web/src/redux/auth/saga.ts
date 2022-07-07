@@ -2,7 +2,7 @@ import * as types from './types'
 import * as schoolyear from 'redux/school-year/types'
 import { call, put, takeLatest, ForkEffect } from 'redux-saga/effects'
 import { AxiosResponse, AxiosError } from 'axios'
-import { authRequest } from 'services/request'
+import { authRequest, usersRequest } from 'services/request'
 import { handleAxiosError } from 'utility'
 
 function* LoginActionType({ payload }: types.LoginAction) {
@@ -55,10 +55,31 @@ function* LogoutActionType() {
     }
 }
 
+function* FetchUserAction({payload}: types.FetchUserAction) {
+    try {
+        const response : AxiosResponse = yield call(usersRequest.getUserRequest, payload)
+
+        yield put({
+            type: types.FETCH_USER_SUCCESS,
+            payload: response.data.data
+        })
+
+    } catch (error) {
+        const payload = handleAxiosError(error as AxiosError)
+
+        yield put({
+            type: types.FETCH_USER_FAILED,
+            payload
+        })
+
+    }
+}
+
 
 const AuthSaga: ForkEffect[] = [
     takeLatest(types.LOGIN_REQUEST, LoginActionType),
-    takeLatest(types.LOGOUT_REQUEST, LogoutActionType)
+    takeLatest(types.LOGOUT_REQUEST, LogoutActionType),
+    takeLatest(types.FETCH_USER_REQUEST, FetchUserAction)
 ]
 
 export default AuthSaga

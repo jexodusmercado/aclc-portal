@@ -12,6 +12,7 @@ const authReducer = ( state: AuthState = types.initialState, action: AnyAction):
         }
 
     case types.LOGIN_SUCCESS:
+    case types.FETCH_USER_SUCCESS:
         return {
             ...state,
             user: action.payload,

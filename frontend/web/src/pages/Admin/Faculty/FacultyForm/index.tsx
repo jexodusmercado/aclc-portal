@@ -13,15 +13,15 @@ import { classNames } from 'utility'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useDispatch, useSelector } from 'react-redux'
 import { createUserRequest, getUserRequest, searchUsersRequest, updateUserRequest } from 'redux/users/action'
-import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
 import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
 import { useEffectOnce, useIsomorphicLayoutEffect, useUpdateEffect } from 'hooks'
 import Title from 'components/Title'
 import ImageUploader from 'components/ImageUploader'
 import { isLoading } from 'redux/loading/selector'
 import { getUser } from 'redux/users/selector'
-import { CREATE_USER, GET_USER } from 'redux/users/types'
+import { CREATE_USER, GET_USER, UPDATE_USER } from 'redux/users/types'
 import { isError } from 'redux/error/selector'
+import { getActiveSchoolYear, getSchoolYears } from 'redux/school-year/selector'
 
 interface IForm {
     username        : string
@@ -51,10 +51,11 @@ const FacultyForm = () => {
     const dispatch                      = useDispatch()
     const loading                       = useSelector(isLoading([GET_USER]))
     const error                         = useSelector(isError(GET_USER))
-    const createLoading                 = useSelector(isLoading([CREATE_USER]))
+    const createLoading                 = useSelector(isLoading([CREATE_USER, UPDATE_USER]))
     const createError                   = useSelector(isError(CREATE_USER))
-    const schoolyears                   = useSchoolYears()
-    const activeSchoolyear              = useActiveSchoolYear()
+    const updateError                   = useSelector(isError(UPDATE_USER))
+    const schoolyears                   = useSelector(getSchoolYears)
+    const activeSchoolyear              = useSelector(getActiveSchoolYear)
     const user                          = useSelector(getUser)
 
     const [picture, setPicture]         = useState<File>()
@@ -71,6 +72,7 @@ const FacultyForm = () => {
 
     const fetchingData = () => {
         dispatch(searchUsersRequest({keyword: '', type: "faculty"}))
+        dispatch(GetAllSchoolYears())
     }
 
     const onSuccess = () => {
@@ -103,7 +105,7 @@ const FacultyForm = () => {
             dispatch(
                 updateUserRequest({
                     id: params.id, 
-                    type:'factuly', 
+                    type:'facultly', 
                     letter_type:'f', 
                     formData: fd,
                     onSuccess:onSuccess,
@@ -158,7 +160,6 @@ const FacultyForm = () => {
 
     useUpdateEffect(() => {
         setValue('birthday', startDate)
-        console.log(dayjs(startDate).format("YYYY-MM-DD"))
     },[startDate])
 
     useUpdateEffect(() => {
@@ -168,9 +169,9 @@ const FacultyForm = () => {
     },[schoolYear])
 
     useIsomorphicLayoutEffect(() => {
-        if(schoolyears.data){
+        if(schoolyears){
             setValue('schoolyear_id', activeSchoolyear.ID)
-            const list = schoolyears.data.map(year => {
+            const list = schoolyears.map(year => {
                 return {
                     id: year.ID,
                     name: year.school_year+", "+year.semester + " Semester"
@@ -178,10 +179,11 @@ const FacultyForm = () => {
             })
             setYearList(list)
         }
-    },[schoolyears.data])
+    },[schoolyears])
 
     useUpdateEffect(() => {
-        if(!createLoading && !createError){
+        console.log(createLoading)
+        if(!createLoading && !createError && !updateError){
             navigate('/dashboard/faculty')
         }
     },[createLoading, createError])

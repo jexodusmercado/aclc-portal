@@ -1,11 +1,11 @@
 import React from 'react'
 import { classNames } from 'utility'
-import { ActiveSchoolYearState } from 'redux/school-year/types'
 import { useDispatch } from 'react-redux'
 import { ChangeActiveSchoolYear } from 'redux/school-year/action'
+import { SchoolYear } from 'redux/school-year/interface'
 
 interface Props {
-    schoolyears:        ActiveSchoolYearState[]
+    schoolyears: SchoolYear[]
 }
 
 const SchoolYearTable: React.FC<Props> = ({schoolyears}) => {

@@ -9,6 +9,13 @@ interface IProps {
 }
 
 const Table: React.FC<IProps> = ({students}) => {
+
+    if(!students.length) {
+        return(
+            <div className='text-center'> No data found </div>
+        )
+    }
+
     return (
         <div className="hidden sm:block mt-2">
             <div className="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4">

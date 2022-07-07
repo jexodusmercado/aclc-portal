@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import CardContainer from 'components/CardContainer'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import DatePicker from 'react-datepicker'
 import SelectMenu from 'components/SelectMenu'
 import * as yup from 'yup'
@@ -9,16 +9,18 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { classNames } from 'utility'
 import { useCoursesState, useEffectOnce, useIsomorphicLayoutEffect, useUpdateEffect } from 'hooks'
 import { useDispatch, useSelector } from 'react-redux'
-import { createUserRequest } from 'redux/users/action'
+import { createUserRequest, getUserRequest, updateUserRequest } from 'redux/users/action'
 import 'react-datepicker/dist/react-datepicker.css'
 import { List } from 'interfaces'
 import { getAllCoursesRequest } from 'redux/courses/action'
 import { GetActiveSchoolYear, GetAllSchoolYears } from 'redux/school-year/action'
-import { useActiveSchoolYear, useSchoolYears } from 'hooks/schoolyear'
 import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
 import { isLoading } from 'redux/loading/selector'
-import { CREATE_USER } from 'redux/users/types'
+import { CREATE_USER, UPDATE_USER } from 'redux/users/types'
+import { getActiveSchoolYear, getFilteredschoolYears, getSchoolYears } from 'redux/school-year/selector'
+import { isError } from 'redux/error/selector'
+import { getUser } from 'redux/users/selector'
 
 interface IForm {
     username        : string
@@ -45,12 +47,17 @@ const facultySchema = yup.object({
 }).required()
 
 const StudentForm = () => {
+    const params                        = useParams()
     const navigate                      = useNavigate()
     const dispatch                      = useDispatch()
-    const loading                       = useSelector(isLoading([CREATE_USER]));
     const courses                       = useCoursesState()
-    const schoolyears                   = useSchoolYears()
-    const activeSchoolyear              = useActiveSchoolYear()
+    const loading                       = useSelector(isLoading([CREATE_USER, UPDATE_USER]));
+    const schoolyears                   = useSelector(getFilteredschoolYears)
+    const activeSchoolyear              = useSelector(getActiveSchoolYear)
+    const createError                   = useSelector(isError(CREATE_USER))
+    const updateError                   = useSelector(isError(UPDATE_USER))
+    const user                          = useSelector(getUser)
+    
     const [selected, setSelected]       = useState<number | string | undefined>(undefined)
     const [schoolYear, setSchoolYear]   = useState<number | string | undefined>(undefined)
     const [startDate, setStartDate]     = useState<Date | null>(null)
@@ -62,7 +69,7 @@ const StudentForm = () => {
 
     const cancelForm = () => navigate('/dashboard/faculty');
 
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<IForm>({
+    const { register, handleSubmit, setValue, formState: { errors }, reset } = useForm<IForm>({
         mode: "onChange",
         resolver: yupResolver(facultySchema)
     });
@@ -89,7 +96,26 @@ const StudentForm = () => {
             fd.append('file', picture)
         }
 
-        dispatch(createUserRequest({type:'student', letter_type:'s', formData: fd}))
+        if(params.id){
+            console.log('updating')
+            dispatch(
+                updateUserRequest({
+                    id: params.id, 
+                    type:'student', 
+                    letter_type:'s', 
+                    formData: fd,
+                })
+            )
+        } else {
+            console.log('creating')
+            dispatch(
+                createUserRequest({
+                    type:'student', 
+                    letter_type:'s', 
+                    formData: fd,
+                })
+            )
+        }
     }
 
     const handleAttachement = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,6 +130,19 @@ const StudentForm = () => {
         }
     }
 
+    useIsomorphicLayoutEffect(() => {
+        if(params.id && user){
+            setValue('email', user.email)
+            setValue('phone', user.phone)
+            setValue('username', user.username)
+            setValue('last_name', user.last_name)
+            setValue('first_name', user.first_name)
+            setSelected(user.course.ID)
+            setSchoolYear(user.school_year)
+            setStartDate(dayjs(user.birthday).toDate())
+        }
+    },[user])
+
     useUpdateEffect(() => {
         setValue('birthday', startDate)
     },[startDate])
@@ -115,10 +154,18 @@ const StudentForm = () => {
     },[selected])
 
     useUpdateEffect(() => {
-        if(loading){
+        if(!loading && !createError && !updateError){
             navigate('/dashboard/student')
         }
     },[loading])
+
+    useEffectOnce(() => {
+        if(params.id){
+            reset()
+            dispatch(getUserRequest({ id: params.id}))
+
+        } 
+    })
 
     useEffectOnce(() => {
         dispatch(getAllCoursesRequest())
@@ -137,19 +184,6 @@ const StudentForm = () => {
             setCoursesList(list)
         }
     },[courses.data])
-
-    useIsomorphicLayoutEffect(() => {
-        if(schoolyears.data){
-            setValue('schoolyear_id', activeSchoolyear.ID)
-            const list = schoolyears.data.map(year => {
-                return {
-                    id: year.ID,
-                    name: year.school_year+", "+year.semester + " Semester"
-                }
-            })
-            setYearList(list)
-        }
-    },[schoolyears.data])
 
     useUpdateEffect(() => {
         if(selected){
@@ -306,7 +340,7 @@ const StudentForm = () => {
                                 School Year
                             </label>
                             <div className="mt-1 flex rounded-md shadow">
-                                <SelectMenu selected={schoolYear} setSelected={setSchoolYear} lists={yearList} className='mt-0 pt-0'/>
+                                <SelectMenu selected={schoolYear} setSelected={setSchoolYear} lists={schoolyears} className='mt-0 pt-0'/>
                             </div>
                             {errors.schoolyear_id && <p className='text-sm text-red-400'> {errors.schoolyear_id.message} </p>}
                         </div>
