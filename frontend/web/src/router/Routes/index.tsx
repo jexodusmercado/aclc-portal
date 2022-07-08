@@ -29,10 +29,23 @@ import QuizForm from 'pages/Faculty/Quiz/QuizForm'
 import QuizDetail from 'pages/Faculty/Quiz/QuizDetail'
 import QuizContentForm from 'pages/Faculty/Quiz/QuizDetail/QuizContentForm'
 import QuizContentUpdateForm from 'pages/Faculty/Quiz/QuizDetail/QuizContentUpdateForm'
+
+import StudentQuiz from 'pages/Student/Quiz'
+import StudentQuizForm from 'pages/Faculty/Quiz/QuizForm'
+import StudentQuizDetail from 'pages/Faculty/Quiz/QuizDetail'
+import StudentQuizContentForm from 'pages/Faculty/Quiz/QuizDetail/QuizContentForm'
+import StudentQuizContentUpdateForm from 'pages/Faculty/Quiz/QuizDetail/QuizContentUpdateForm'
+
 import FacultyStudent from 'pages/Faculty/Student'
 import FacultySettings from 'pages/Faculty/Settings'
 import FacultyGeneral from 'pages/Faculty/Settings/Components/General'
 import FacultyGrades from 'pages/Faculty/Student/Grades'
+import ViewGrade from 'pages/Faculty/Student/Grades/ViewGrade'
+import UpdateClassroomForm from 'pages/Admin/Classroom/UpdateClassroomForm'
+import StudentHomePage from 'pages/Student/Home'
+import StudentClassroomDetails from 'pages/Student/Classroom/ClassroomDetails'
+import QuizClassroom from 'pages/Student/Classroom/QuizClassroom'
+import StudentAnswer from 'pages/Student/Classroom/QuizClassroom/StudentAnswer'
 
 const CustomRoute = () => {
     return (
@@ -58,7 +71,7 @@ const CustomRoute = () => {
                                     <Route index element={<ClassroomPage/>} />
                                     <Route path="create" element={<ClassroomForm />} />
                                     <Route path=":id" element={<ClassroomDetails />} />
-                                    <Route path="update/:id" element={<ClassroomForm />} />
+                                    <Route path="update/:id" element={<UpdateClassroomForm />} />
                                 </Route>
 
                                 {/* Faculty */}
@@ -118,6 +131,7 @@ const CustomRoute = () => {
                                     <Route path=":id/questions" element={<QuizContentForm/>} />
                                     <Route path=":id/questions/:content/update" element={<QuizContentUpdateForm/>} />
                                 </Route>
+                                
 
                                 {/* settings */}
                                 <Route path="settings">
@@ -130,8 +144,38 @@ const CustomRoute = () => {
                                     <Route index element={<FacultyStudent />} />
                                     <Route path=":id/profile" element={<FacultyStudent />} />
                                     <Route path=":id/grades" element={<FacultyGrades />} />
+                                    <Route path=":id/grades/:classroomId/view" element={<ViewGrade />} />
                                 </Route>
                             </Route>
+                        </Route>
+
+                        {/* STUDENT */}
+
+                        <Route path="student">
+                            <Route element={<CheckRole type='STUDENT' />} >
+                                <Route path="classroom">
+                                    <Route index element={<StudentHomePage/>} />
+                                    <Route path=":id" element={<StudentClassroomDetails />} />
+                                    <Route path=":id/quiz" element={<QuizClassroom />} />
+                                    <Route path=":id/quiz/:quizId/answer" element={<StudentAnswer />} />
+                                    <Route path="create" element={<FacultyClassroomForm />} />
+                                    <Route path="update/:id" element={<FacultyUpdateClassroomForm />} />
+                                </Route>
+                            </Route>
+                            <Route path="settings">
+                                <Route element={<FacultySettings />}>
+                                    <Route index element={<FacultyGeneral />} />
+                                </ Route>
+                            </Route>
+
+                            <Route path="quiz">
+                                <Route index element={<StudentQuiz />} />
+                                <Route path="create" element={<StudentQuizForm />} />
+                                <Route path=":id" element={<StudentQuizDetail/>} />
+                                <Route path=":id/questions" element={<StudentQuizContentForm/>} />
+                                <Route path=":id/questions/:content/update" element={<StudentQuizContentUpdateForm/>} />
+                            </Route>
+
                         </Route>
 
                     </Route>

@@ -21,10 +21,10 @@ const adminNavigation = [
 ]
 
 const studentNavigation = [
-    { name: 'Classroom', href: '/faculty/classroom', icon: HomeIcon, end: true},
-    { name: 'Quiz', href: '/faculty/quiz', icon: HomeIcon, end: true},
-    { name: 'Student', href: '/faculty/student', icon: HomeIcon, end: true},
-    { name: 'Settings', href: '/dashboard/settings', icon: CogIcon, end: false},
+    { name: 'Classroom', href: '/student/classroom', icon: HomeIcon, end: true},
+    { name: 'Quiz', href: '/student/quiz', icon: HomeIcon, end: true},
+    { name: 'Student', href: '/student/student', icon: HomeIcon, end: true},
+    { name: 'Settings', href: '/student/settings', icon: CogIcon, end: false},
 ]
 
 const facultyNavigation = [

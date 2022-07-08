@@ -5,6 +5,7 @@ export const quiz       = (state: AppState) => state.Quiz.quiz
 export const quizzes    = (state: AppState) => state.Quiz.quizzes
 export const content    = (state: AppState) => state.Quiz.content
 
-export const getQuiz        = createSelector(quiz, (quiz) => quiz)
-export const getQuizzes     = createSelector(quizzes, (quizzes) => quizzes)
-export const getContent = createSelector(content, (content) => content)
+export const getQuiz                = createSelector(quiz, (quiz) => quiz)
+export const getPublishedQuizzes    = createSelector(quizzes, (quizzes) => quizzes.filter(quiz => quiz.is_published === true))
+export const getQuizzes             = createSelector(quizzes, (quizzes) => quizzes)
+export const getContent             = createSelector(content, (content) => content)

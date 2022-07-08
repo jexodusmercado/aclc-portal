@@ -21,13 +21,20 @@ const SelectMenu: React.FC<Props> = ({selected, setSelected, lists, selectName, 
     const [select, setSelect] = useState<ListWithAvatar | undefined>(undefined)
 
     useIsomorphicLayoutEffect(() => {
+
+        if(!selected) {
+            setSelect(undefined)
+            return
+        }
+
         if(selected){
             const selectedList = lists.find((list) => list.id === selected)
             console.log(selectedList)
 
             setSelect(selectedList)
         }
-    },[selected, setSelected])
+       
+    },[selected])
 
     useIsomorphicLayoutEffect(() => {
         if(select) {

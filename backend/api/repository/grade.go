@@ -86,7 +86,12 @@ func (c GradeRepository) Find(grade models.Grade) (models.Grade, error) {
 
 	err := c.db.DB.
 		Debug().
-		Model(&models.GradePeriod{}).
+		Preload("GradePeriods").
+		Preload("Student").
+		Preload("Teacher").
+		Preload("Subject").
+		Preload("SchoolYear").
+		Model(&models.Grade{}).
 		Where(&grade).
 		Take(&gradeModel).Error
 

@@ -19,7 +19,7 @@ const DashboardComponent = () => {
     }
 
     if(type === "STUDENT"){
-        return <> student </>
+        return <Navigate to={'/student/classroom'} />
     }
 
     if(type === "FACULTY"){

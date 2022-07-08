@@ -10,6 +10,7 @@ import Comment      from './comment/reducer'
 import Loading      from './loading/reducer'
 import Error        from './error/reducer'
 import Quiz         from './quiz/reducer'
+import Grade        from './grade/reducer'
 
 export const appReducer = combineReducers({
     Auth,
@@ -22,8 +23,8 @@ export const appReducer = combineReducers({
     Comment,
     Loading,
     Error,
-    Quiz
-
+    Quiz,
+    Grade
     //add reducer here
 })
 

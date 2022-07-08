@@ -19,7 +19,7 @@ import {
 import { order } from 'utility'
 import { useDispatch } from 'react-redux'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { getClassroom } from 'redux/classroom/action'
+import { getClassroomRequest } from 'redux/classroom/action'
 import { FileIcon } from 'react-file-icon';
 import { createCommentRequest } from 'redux/comment/action'
 import Card from 'components/CardContainer'
@@ -52,7 +52,7 @@ const FacultyClassroomDetails = () => {
 
     const fetchData = () => {
         if(params?.id){
-            dispatch(getClassroom({classroomId: params.id}))
+            dispatch(getClassroomRequest({classroomId: params.id}))
         } else {
             navigate('/dashboard/classroom')
         }
@@ -136,10 +136,6 @@ const FacultyClassroomDetails = () => {
                         <Link to={`/dashboard/classroom/update/${params.id}`} className='button-primary'>
                             <PencilAltIcon className='-ml-1 mr-2 h-5 w-5' aria-hidden='true'/>
                             Update
-                        </Link>
-                        <Link to='/dashboard/classroom/' className='button-primary'>
-                            <XCircleIcon className='-ml-1 mr-2 h-5 w-5' aria-hidden='true'/>
-                            View Quiz
                         </Link>
                     </div>
                 </div>

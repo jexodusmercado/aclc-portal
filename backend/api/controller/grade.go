@@ -57,3 +57,30 @@ func (g GradeController) Find(c *gin.Context) {
 
 	util.SuccessJSON(c, http.StatusOK, response)
 }
+
+func (g GradeController) FindByStudentIdAndClassroomId (c *gin.Context) {
+	
+	studentIdParam := c.Param("studentId")
+	studentId, err := strconv.ParseUint(studentIdParam, 10, 64) //type conversion string to int64
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+	classroomIdParam := c.Param("classroomId")
+	classroomId, err := strconv.ParseUint(classroomIdParam, 10, 64) //type conversion string to int64
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+	var gradeModel models.Grade
+	gradeModel.StudentID = uint(studentId)
+	gradeModel.ClassroomID = uint(classroomId)
+	grade, err := g.service.Find(gradeModel)
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+	response := grade.ResponseMap()
+
+	util.SuccessJSON(c, http.StatusOK, response)
+}

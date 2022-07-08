@@ -13,6 +13,7 @@ export interface QuizData {
     students:        CreatedBy[];
     subject:         Subject;
     grade_period:    string;
+    is_answered:     boolean;
 }
 export interface Content {
     answer:        string;

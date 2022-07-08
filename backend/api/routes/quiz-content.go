@@ -26,6 +26,7 @@ func (c QuizContentRoute) Setup() {
 	quizContent := c.Handler.Gin.Group("/quiz/:id")
 	{
 		quizContent.Use(middleware.Authenticate())
+		quizContent.GET("content/random", c.Controller.FindRandomByQuizID)
 		quizContent.GET("content/:contentID", c.Controller.Find)
 		quizContent.POST("", c.Controller.Create)
 		quizContent.PATCH("content/:contentID", c.Controller.UpdateByID)

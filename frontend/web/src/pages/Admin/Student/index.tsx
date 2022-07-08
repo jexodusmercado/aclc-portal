@@ -38,8 +38,11 @@ const StudentIndex = () => {
     }
 
     const handleClear = () => {
-        setSelectedFaculty([]);
-        setSelected(undefined)
+        setSearch('')
+        setSelectedFaculty([])
+        setSelected(0)
+        console.log('tset')
+
     }
     
     useIsomorphicLayoutEffect(() => {
@@ -53,11 +56,7 @@ const StudentIndex = () => {
 
     useUpdateEffect(() => {
         dispatch(searchUsersRequest({keyword: search, type: "student", course_id: selected ? selected.toString() : ''}))
-    },[search])
-
-    useUpdateEffect(() => {
-        dispatch(searchUsersRequest({keyword: search, type: "student", course_id: selected ? selected.toString() : ''}))
-    },[selected])
+    },[search, selected])
 
     useEffectOnce(() => {
         dispatch(getAllCoursesRequest())
@@ -90,10 +89,6 @@ const StudentIndex = () => {
                         <PlusCircleIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                         Add Student
                     </Link>
-                    <button className='button-primary'>
-                        <DownloadIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
-                        Download CSV
-                    </button>
                 </div>
             </div>
 
@@ -103,7 +98,7 @@ const StudentIndex = () => {
                     <SelectInputText state={search} setState={setSearch} className='max-w-sm'/>
                     <SelectMenu selected={selected} setSelected={setSelected} selectName="Courses" lists={coursesList} className='max-w-sm'/>
                     <div className='self-center'>
-                        <button className='ml-3 text-blue-900 text-opacity-50' onClick={handleClear}>
+                        <button className='ml-3 text-blue-900 text-opacity-50' onClick={() => handleClear()}>
                             Clear
                         </button>
                     </div>

@@ -19,6 +19,10 @@ func (u QuizContentService) Find(quiz models.QuizContent) (models.QuizContent, e
 	return u.repo.Find(quiz)
 }
 
+func (u QuizContentService) GetRandomByQuizID(quiz models.QuizContent) (models.QuizContent, error) {
+	return u.repo.GetRandomByQuizID(quiz)
+}
+
 func (u QuizContentService) Create(quiz models.QuizContentCreation) (models.QuizContent, error) {
 	return u.repo.Create(quiz)
 }

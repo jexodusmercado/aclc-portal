@@ -14,7 +14,6 @@ import { SchoolYear } from 'redux/school-year/interface'
 import { getActiveSchoolYear } from 'redux/school-year/selector'
 
 const userNavigation = [
-    { name: 'Your Profile', href: '#' },
     { name: 'Sign out', href: 'logout' },
 ]
 
@@ -39,14 +38,11 @@ const Topbar: React.FC<IProps> = ({setSidebarOpen}) => {
     }, [schoolyear])
 
     useIsomorphicLayoutEffect(() => {
-        if(schoolyear.ID === 0){
-            dispatch(GetActiveSchoolYear())
-
-        }
-    }, [location.pathname])
+        dispatch(GetActiveSchoolYear())
+        dispatch(GetAllSchoolYears())
+    }, [location])
 
     useEffectOnce(() => {
-        dispatch(GetAllSchoolYears())
     })
 
     return (

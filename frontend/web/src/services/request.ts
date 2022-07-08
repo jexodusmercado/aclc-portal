@@ -34,6 +34,7 @@ import {
 } from "redux/users/types";
 
 import { 
+    AnswerQuizContentPayload,
     CreateContentPayload, 
     createQuizPayload, 
     IDPayload, 
@@ -42,6 +43,7 @@ import {
     QuizIDWithContentIDPayload, 
     updateQuizPayload 
 } from "redux/quiz/types";
+import { GetGradePayload } from "redux/grade/type";
 
 
 export const authRequest = {
@@ -211,5 +213,16 @@ export const quizContentRequest = {
         apiInstance.get(`${END_POINTS.QUIZ}/${params.id}/${END_POINTS.CONTENT}/${params.contentID}`),
 
     updateQuizContent: (params: any) =>
-        apiInstance.patch(`${END_POINTS.QUIZ}/${params.id}/${END_POINTS.CONTENT}/${params.content}`, params)
+        apiInstance.patch(`${END_POINTS.QUIZ}/${params.id}/${END_POINTS.CONTENT}/${params.content}`, params),
+    
+    getRandomQuizContent: (params: IDPayload) =>
+        apiInstance.get(`${END_POINTS.QUIZ}/${params.id}/${END_POINTS.CONTENT}/${END_POINTS.RANDOM}`),
+
+    answerQuizContent: (params: AnswerQuizContentPayload) =>
+        apiInstance.post(`${END_POINTS.QUIZ}/${params.quizID}/${END_POINTS.ANSWER}/${params.contentID}`, params)
+}
+
+export const gradeRequest = { 
+    getGradeByStudentAndClassroom: (params: GetGradePayload) =>
+        apiInstance.get(`${END_POINTS.GRADE}/${END_POINTS.STUDENT}/${params.studentId}/${END_POINTS.CLASSROOM}/${params.classroomId}`),
 }

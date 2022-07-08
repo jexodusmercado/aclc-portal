@@ -49,11 +49,14 @@ const SubjectTable: React.FC<Props> = ({state, setState, subjects, checkbox, che
                                                 onChange={toggleAll}
                                             />
                                         </th>
-                                        <th scope="col" className="min-w-[12rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">
+                                        <th scope="col" className="min-w-[2rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900">
                                             Code
                                         </th>
                                         <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                             Name
+                                        </th>
+                                        <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                            Unit
                                         </th>
                                         <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                             Active
@@ -93,6 +96,7 @@ const SubjectTable: React.FC<Props> = ({state, setState, subjects, checkbox, che
                                                 {subject.code}
                                             </td>
                                             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{subject.name}</td>
+                                            <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{subject.unit}</td>
                                             <td className="whitespace-pre-wrap px-3 py-4 text-sm space-x-1 space-y-1 text-gray-500">
                                                {subject.is_active ? 'Active' : 'False'}
                                             </td>

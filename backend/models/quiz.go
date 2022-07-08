@@ -46,12 +46,25 @@ type AnsweredBy struct {
 
 func (u *Quiz) ResponseMap() map[string]interface{} {
     resp := make(map[string]interface{})
+	quizCount := 0
 
 	var quizContent []map[string]interface{}
 	var students	[]map[string]interface{}
 
 	for _, s := range u.QuizContent {
 		quizContent = append(quizContent, s.ResponseMap())
+	}
+
+	for _, s := range u.QuizContent {
+		if(s.UserInput != "") {
+			quizCount = quizCount + 1;
+		}
+
+		if(quizCount == len(quizContent)) {
+			resp["is_answered"] = true
+		} else {
+			resp["is_answered"] = false
+		}
 	}
 
 	for _, s := range u.Students {

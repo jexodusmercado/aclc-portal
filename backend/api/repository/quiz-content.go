@@ -29,6 +29,18 @@ func (p QuizContentRepository) Find(quizContent models.QuizContent) (models.Quiz
 	return quizCont, err
 }
 
+func (p QuizContentRepository) GetRandomByQuizID(quizContent models.QuizContent) (models.QuizContent, error) {
+	var quizCont models.QuizContent
+	err := p.db.DB.
+		Debug().
+		Model(&models.QuizContent{}).
+		Where(&quizContent).
+		Where("user_input IS NULL").
+		Order("RAND()").
+		Take(&quizCont).Error
+	return quizCont, err
+}
+
 func (p QuizContentRepository) Create(quiz models.QuizContentCreation) (models.QuizContent, error) {
 
 	var quizContent models.QuizContent

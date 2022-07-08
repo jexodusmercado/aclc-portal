@@ -28,6 +28,7 @@ func (c GradeRoute) Setup() {
 		grade.Use(middleware.Authenticate())
 		grade.POST("", c.Controller.Create)
 		grade.GET(":id", c.Controller.Find)
+        grade.GET("student/:studentId/classroom/:classroomId", c.Controller.FindByStudentIdAndClassroomId)
     }
 
 }

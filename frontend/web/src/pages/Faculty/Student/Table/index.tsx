@@ -18,7 +18,7 @@ const Table: React.FC<IProps> = ({students}) => {
 
     return (
         <div className="hidden sm:block mt-2">
-            <div className="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4">
+            <div className="mx-auto px-1 sm:px-2 lg:px-4">
                 <div className="flex flex-col"> 
                     <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg">
                         <table className="min-w-full divide-y divide-gray-200">
@@ -113,7 +113,7 @@ const Table: React.FC<IProps> = ({students}) => {
 
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                        <Link to={`/faculty/student/${student.id}/grades`}>
-                                            View Grades
+                                            View
                                        </Link>
                                     </td>
                                 </tr>

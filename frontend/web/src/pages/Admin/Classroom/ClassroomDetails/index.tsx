@@ -19,7 +19,7 @@ import {
 import { order } from 'utility'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { getClassroom } from 'redux/classroom/action'
+import { getClassroomRequest } from 'redux/classroom/action'
 import { FileIcon } from 'react-file-icon';
 import { createCommentRequest } from 'redux/comment/action'
 import Card from 'components/CardContainer'
@@ -52,7 +52,7 @@ const ClassroomDetails = () => {
 
     const fetchData = () => {
         if(params?.id){
-            dispatch(getClassroom({classroomId: params.id}))
+            dispatch(getClassroomRequest({classroomId: params.id}))
         } else {
             navigate('/dashboard/classroom')
         }

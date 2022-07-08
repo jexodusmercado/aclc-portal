@@ -7,7 +7,7 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllSubjects } from 'redux/subject/action';
 import { usersRequest } from 'services/request';
-import { getClassroom, updateClassroom } from 'redux/classroom/action';
+import { getClassroomRequest, updateClassroom } from 'redux/classroom/action';
 import { useNavigate, useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -51,7 +51,7 @@ const FacultyUpdateClassroomForm = () => {
     const fetchInitialData = () => {
         if(id){
             setValue('classroomId', id)
-            dispatch(getClassroom({classroomId: id}))
+            dispatch(getClassroomRequest({classroomId: id}))
             dispatch(getAllSubjects({keyword:""}))
             usersRequest.getAllUsersRequest({type:"FACULTY"}).then(({data}) => {
                 const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {

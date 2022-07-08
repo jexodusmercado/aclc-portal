@@ -262,6 +262,45 @@ function* DeleteQuiz({payload}: types.deleteQuizAction){
     }
 }
 
+function* GetRandomQuizContentByQuizID({payload}: types.getRandomQuizContentByQuizID){
+    try {
+        const reponse: AxiosResponse = yield call(quizContentRequest.getRandomQuizContent, payload)
+
+        yield put({
+            type: types.GET_RANDOM_QUIZ_CONTENT_SUCCESS,
+            payload: reponse.data
+        })
+        
+    } catch (error) {
+        const err = handleAxiosError(error as AxiosError)
+
+        yield put({
+            type: types.GET_RANDOM_QUIZ_CONTENT_FAILED,
+            err
+        })
+    }
+}
+
+function* AnswerQuizContent({payload}: types.AnswerQuizContentAction) {
+    try {
+        yield call(quizContentRequest.answerQuizContent, payload)
+
+        yield put({
+            type: types.ANSWER_QUIZ_CONTENT_SUCCESS,
+        })
+
+    } catch (error) {
+
+        const err = handleAxiosError(error as AxiosError)
+
+        yield put({
+            type: types.ANSWER_QUIZ_CONTENT_FAILED,
+            err
+        })
+        
+    }
+}
+
 
 const QuizSaga: ForkEffect[] = [
     takeLatest(types.GET_ALL_QUIZ_BY_CLASSROOM_ID_REQUEST, GetAllQuizzesByClassroomID),
@@ -273,7 +312,9 @@ const QuizSaga: ForkEffect[] = [
     takeLatest(types.GET_QUIZ_CONTENT_REQUEST, GetQuizContent),
     takeLatest(types.CREATE_QUIZ_CONTENT_REQUEST, CreateQuizContent),
     takeLatest(types.UPDATE_QUIZ_CONTENT_REQUEST, UpdateQuizContent),
-    takeLatest(types.DELETE_QUIZ_REQUEST, DeleteQuiz)
+    takeLatest(types.DELETE_QUIZ_REQUEST, DeleteQuiz),
+    takeLatest(types.GET_RANDOM_QUIZ_CONTENT_REQUEST, GetRandomQuizContentByQuizID),
+    takeLatest(types.ANSWER_QUIZ_CONTENT_REQUEST, AnswerQuizContent)
 ]
 
 export default QuizSaga

@@ -7,7 +7,7 @@ export const getAllClassrooms = (payload: types.GetAllClassroomPayload): types.G
     }
 }
 
-export const getClassroom = (payload: types.GetClassroomPayload): types.GetClassroomAction => {
+export const getClassroomRequest = (payload: types.GetClassroomPayload): types.GetClassroomAction => {
     return {
         type: types.GET_CLASSROOM_REQUEST,
         payload

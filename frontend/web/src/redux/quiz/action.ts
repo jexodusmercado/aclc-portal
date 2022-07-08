@@ -69,3 +69,17 @@ export const deleteQuiz = ( payload: types.IDSPayload): types.deleteQuizAction =
         payload
     }
 }
+
+export const getRandomContent = ( payload: types.IDPayload): types.getRandomQuizContentByQuizID => {
+    return {
+        type: types.GET_RANDOM_QUIZ_CONTENT_REQUEST,
+        payload
+    }
+}
+
+export const answerRandomContent = ( payload: types.AnswerQuizContentPayload): types.AnswerQuizContentAction => {
+    return {
+        type: types.ANSWER_QUIZ_CONTENT_REQUEST,
+        payload
+    }
+}

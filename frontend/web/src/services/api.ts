@@ -25,5 +25,8 @@ export const END_POINTS = {
     DELETE          :   "delete",
     CONTENT         :   "content",
     STUDENTS        :   "students",
-    STUDENT         :   "student"
+    STUDENT         :   "student",
+    GRADE           :   "grade",
+    RANDOM          :   "random",
+    ANSWER          :   "answer"
 }

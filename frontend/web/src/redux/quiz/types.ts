@@ -44,6 +44,11 @@ export const GET_QUIZ_REQUEST                       = "GET_QUIZ_REQUEST"
 export const GET_QUIZ_SUCCESS                       = "GET_QUIZ_SUCCESS"
 export const GET_QUIZ_FAILED                        = "GET_QUIZ_FAILED"
 
+export const GET_RANDOM_QUIZ_CONTENT                = "GET_RANDOM_QUIZ_CONTENT"
+export const GET_RANDOM_QUIZ_CONTENT_REQUEST        = "GET_RANDOM_QUIZ_CONTENT_REQUEST"
+export const GET_RANDOM_QUIZ_CONTENT_SUCCESS        = "GET_RANDOM_QUIZ_CONTENT_SUCCESS"
+export const GET_RANDOM_QUIZ_CONTENT_FAILED         = "GET_RANDOM_QUIZ_CONTENT_FAILED"
+
 export const CREATE_QUIZ                            = "CREATE_QUIZ"
 export const CREATE_QUIZ_REQUEST                    = "CREATE_QUIZ_REQUEST"
 export const CREATE_QUIZ_SUCCESS                    = "CREATE_QUIZ_SUCCESS"
@@ -64,8 +69,23 @@ export const DELETE_QUIZ_REQUEST                    = "DELETE_QUIZ_REQUEST"
 export const DELETE_QUIZ_SUCCESS                    = "DELETE_QUIZ_SUCCESS"
 export const DELETE_QUIZ_FAILED                     = "DELETE_QUIZ_FAILED"
 
+export const ANSWER_QUIZ_CONTENT                            = "ANSWER_QUIZ_CONTENT"
+export const ANSWER_QUIZ_CONTENT_REQUEST                    = "ANSWER_QUIZ_CONTENT_REQUEST"
+export const ANSWER_QUIZ_CONTENT_SUCCESS                    = "ANSWER_QUIZ_CONTENT_SUCCESS"
+export const ANSWER_QUIZ_CONTENT_FAILED                     = "ANSWER_QUIZ_CONTENT_FAILED"
+
+export type AnswerQuizContentAction = {
+    type: typeof ANSWER_QUIZ_CONTENT_REQUEST,
+    payload: AnswerQuizContentPayload
+}
+
 export type getAllQuizzesByClassroomIDAction = {
     type: typeof GET_ALL_QUIZ_BY_CLASSROOM_ID_REQUEST
+    payload: IDPayload
+}
+
+export type getRandomQuizContentByQuizID = {
+    type: typeof GET_RANDOM_QUIZ_CONTENT_REQUEST
     payload: IDPayload
 }
 
@@ -112,6 +132,12 @@ export type deleteQuizContentAction = {
 export type updateQuizContentAction = {
     type: typeof UPDATE_QUIZ_CONTENT_REQUEST
     payload: updateQuizPayload
+}
+
+export interface AnswerQuizContentPayload {
+    quizID: string
+    contentID: string
+    user_input: string
 }
 
 export interface createQuizPayload extends IPayload {

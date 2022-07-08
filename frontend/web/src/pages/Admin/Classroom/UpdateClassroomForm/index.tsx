@@ -4,15 +4,18 @@ import MultipleSelectMenu from 'components/MultipleSelectMenu';
 import { useEffectOnce, useGetClassroom, useIsomorphicLayoutEffect, useUpdateEffect } from 'hooks';
 import { List, ListWithAvatar } from 'interfaces';
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAllSubjects } from 'redux/subject/action';
 import { usersRequest } from 'services/request';
-import { getClassroom, updateClassroom } from 'redux/classroom/action';
+import { getClassroomRequest, updateClassroom } from 'redux/classroom/action';
 import { useNavigate, useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from 'yup'
 import { useFilteredSubjects } from 'hooks/subject';
+import { getFilteredschoolYears } from 'redux/school-year/selector';
+import toast from 'react-hot-toast';
+import { getClassroom } from 'redux/classroom/selector';
 
 const formSchema = yup.object({
     title: yup.string().trim().required('*Title is required'),
@@ -27,16 +30,19 @@ interface IForm {
     teacher_id:     number
     subject_id:     number
     student_id:     Array<number>
+    school_year_id:  number
 }
 
 const UpdateClassroomForm = () => {
     const [subject, setSubject]                 = useState<number | string | undefined>(undefined)
     const [teacher, setTeacher]                 = useState<number | string | undefined>(undefined)
     const [students, setStudents]               = useState<ListWithAvatar[]>([])
+    const [schoolYear, setSchoolYear]           = useState<number | string | undefined>(undefined)
     const [teacherOptions, setTeacherOptions]   = useState<List[]>([])
     const [studentOptions, setStudentOptions]   = useState<ListWithAvatar[]>([])
-    const classroom                             = useGetClassroom()
+    const classroom                             = useSelector(getClassroom)
     const subjects                              = useFilteredSubjects()
+    const listSchoolYear                        = useSelector(getFilteredschoolYears)
     const navigate                              = useNavigate();
     const dispatch                              = useDispatch();
     const { id }                                = useParams();
@@ -47,9 +53,10 @@ const UpdateClassroomForm = () => {
     })
     
     const fetchInitialData = () => {
+
         if(id){
-            setValue('classroomId', id)
-            dispatch(getClassroom({classroomId: id}))
+            console.log('update', classroom)
+            dispatch(getClassroomRequest({classroomId: id}))
             dispatch(getAllSubjects({keyword:""}))
             usersRequest.getAllUsersRequest({type:"FACULTY"}).then(({data}) => {
                 const filtered = data.data.rows.map((row: {id:string, first_name: string, last_name: string}) => {
@@ -72,22 +79,25 @@ const UpdateClassroomForm = () => {
                 setStudentOptions(filtered)
             })
 
-            setValue('title', classroom.title)
         } else {
             navigate('/dashboard/classroom')
         }
     }
 
     const success = () => {
-        navigate(`/dashboard/classroom/${id}`)
+        navigate(`/dashboard/classroom`)
+        toast.success('Update classroom successfully!')
     }
 
     const onSubmit : SubmitHandler<IForm> = (data) => {
-        const params = {
-            ...data,
-            onSuccess: success
+        if(id){
+            const params = {
+                ...data,
+                classroomId: id,
+                onSuccess: success
+            }
+            dispatch(updateClassroom(params))
         }
-        dispatch(updateClassroom(params))
     }
 
     useEffectOnce(() => {
@@ -99,18 +109,14 @@ const UpdateClassroomForm = () => {
     })
 
     useIsomorphicLayoutEffect(() => {
-        setValue('title', classroom.title)
-        
-        if(classroom.subject_id){
+        setValue('classroomId', classroom?.id.toString());
+        setValue('title', classroom?.title)
+
+        if(classroom?.subject_id){
             setValue('subject_id', classroom.subject_id)
             setSubject(classroom.subject.ID)
         }
         
-        if(classroom.teacher_id){
-            setValue('teacher_id', classroom.teacher_id)
-            setTeacher(classroom.teacher.id)
-        }
-
         if(classroom.student){
             setValue('student_id', classroom.student?.map(user => user.id))
             const filtered = classroom.student?.map(user => {
@@ -124,6 +130,14 @@ const UpdateClassroomForm = () => {
         }
     }, [classroom])
 
+    useIsomorphicLayoutEffect(() => {
+        if(classroom.teacher.id){
+            setValue('teacher_id', classroom.teacher.id)
+            setTeacher(classroom.teacher.id)
+            console.log(classroom.teacher.id)
+        }
+    },[classroom.teacher])
+
     useUpdateEffect(() => {
         if(subject){
             setValue('subject_id', Number(subject))
@@ -131,6 +145,7 @@ const UpdateClassroomForm = () => {
     },[subject])
 
     useUpdateEffect(() => {
+        console.log(teacher, 'teacher')
         if(teacher){
             setValue('teacher_id', Number(teacher))
         }
@@ -143,6 +158,12 @@ const UpdateClassroomForm = () => {
             setValue('student_id', [])
         }
     },[students])
+
+    useUpdateEffect(() => {
+        if(schoolYear) {
+            setValue('school_year_id', Number(schoolYear))
+        }
+    }, [schoolYear])
 
     return (
         <div className='containerized'>
@@ -158,7 +179,7 @@ const UpdateClassroomForm = () => {
                                 </h3>
                             </div>
                         </div>
-                        <form onSubmit={handleSubmit(onSubmit)} >
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                             <div>
                                 <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                                     Title
@@ -200,6 +221,16 @@ const UpdateClassroomForm = () => {
                                     <MultipleSelectMenu selectedAvatars={students} setSelectedAvatars={setStudents} list={studentOptions}/>
                                 </div>
                                 {errors.student_id && <p className='text-sm text-red-400'> {errors.student_id?.[0]?.message} </p>}
+                            </div>
+
+                            <div>
+                                <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">
+                                    School Year
+                                </label>
+                                <div className="mt-1 flex rounded-md shadow">
+                                    <SelectMenu selected={schoolYear} setSelected={setSchoolYear} lists={listSchoolYear} className='mt-0 pt-0'/>
+                                </div>
+                                {errors.school_year_id && <p className='text-sm text-red-400'> {errors.school_year_id.message} </p>}
                             </div>
 
                             <div className='flex border-t justify-end pt-5 space-x-3'>

@@ -28,6 +28,12 @@ const quizReducer = ( state: types.quizInitialType = types.quizInitialState, act
             content: action.payload
         }
 
+    case types.GET_RANDOM_QUIZ_CONTENT_SUCCESS:
+        return {
+            ...state,
+            content: action.payload
+        }
+
     default:
         return state
   }

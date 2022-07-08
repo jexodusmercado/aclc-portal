@@ -21,8 +21,12 @@ const HomePage = () => {
     return (
         <>
             <Greeting />
+            {
+                students.length > 0 ??
+                <div>no data </div>
+            }
             <div className="hidden sm:block mt-5">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col mt-2"> 
                         <h1 className='leading-6 text-xl my-8'>Active Students</h1>
                         <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg">

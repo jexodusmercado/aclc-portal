@@ -42,6 +42,24 @@ func (g QuizContentController) Find(c *gin.Context) {
 	util.SuccessJSON(c, http.StatusOK, result.ResponseMap())
 }
 
+func (g QuizContentController) FindRandomByQuizID(c *gin.Context){
+	var quiz models.QuizContent
+	idParam := c.Param("id")
+	id, err := strconv.ParseUint(idParam, 10, 64) //type conversion string to int64
+	if err != nil {
+		util.ErrorJSON(c, http.StatusBadRequest, err)
+		return
+	}
+	quiz.QuizID = uint(id)
+
+	result, err := g.service.GetRandomByQuizID(quiz)
+	if err != nil {
+		util.CustomErrorJson(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	util.SuccessJSON(c, http.StatusOK, result.ResponseMap())
+}
+
 func (g QuizContentController) Create(c *gin.Context) {
 
 	var quiz models.QuizContentCreation
