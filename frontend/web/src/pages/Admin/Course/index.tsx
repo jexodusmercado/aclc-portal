@@ -52,10 +52,6 @@ const CourseIndex = () => {
                         <PlusCircleIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                         Add Course
                     </Link>
-                    <button className='button-primary'>
-                        <DownloadIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
-                        Download CSV
-                    </button>
                 </div>
             </div>
 
