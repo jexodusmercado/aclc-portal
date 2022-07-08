@@ -20,7 +20,7 @@ func NewGinRouter() GinRouter {
 
 	config := cors.DefaultConfig()
 	// config.AllowAllOrigins = true
-	config.AllowOrigins = []string{"http://localhost:3001", "http://localhost:3001/", "http://localhost:3000", "http://http://aclc-bucket.s3-website-ap-southeast-1.amazonaws.com/"}
+	config.AllowOrigins = []string{"http://localhost:3001", "http://localhost:3001/", "http://localhost:3000", "http://aclc-bucket.s3-website-ap-southeast-1.amazonaws.com/"}
 	// config.AllowCredentials = true
 	config.AddAllowMethods("OPTIONS")
 	config.AllowHeaders = []string{
