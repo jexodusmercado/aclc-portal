@@ -42,6 +42,9 @@ const StudentAnswer = () => {
         console.log('loaders')
         console.log(answerError)
         console.log(contentError)
+        if(contentError?.status === 400){
+            navigate(-1)
+        }
     }, [answerError, contentError])
 
     const onSubmit = (contentId: number) => {

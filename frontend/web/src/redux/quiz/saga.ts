@@ -86,7 +86,7 @@ function* CreateQuiz({payload}: types.createQuizAction) {
 
         yield put({
             type: types.CREATE_QUIZ_FAILED,
-            err
+            payload: err
         })
 
         if(payload.onFailed){
@@ -115,7 +115,7 @@ function* UpdateQuiz({payload} : types.updateQuizAction) {
 
         yield put({
             type: types.UPDATE_QUIZ_FAILED,
-            err
+            payload: err
         })
 
         if(payload.onFailed){
@@ -145,7 +145,7 @@ function* DeleteContent({payload} : types.deleteQuizContentAction) {
 
         yield put({
             type: types.DELETE_QUIZ_CONTENT_FAILED,
-            err
+            payload: err
         })
 
         if(onFailed){
@@ -173,7 +173,7 @@ function* CreateQuizContent({payload}: types.createQuizContentAction) {
 
         yield put({
             type: types.CREATE_QUIZ_CONTENT_FAILED,
-            err
+            payload: err
         })
 
         if(payload.onFailed){
@@ -199,7 +199,7 @@ function* UpdateQuizContent({payload}: types.updateQuizAction) {
 
         yield put({
             type: types.UPDATE_QUIZ_CONTENT_FAILED,
-            err
+            payload: err
         })
 
         if(payload.onFailed){
@@ -226,7 +226,7 @@ function* GetQuizContent({payload}: types.getQuizContentAction){
 
         yield put({
             type: types.GET_QUIZ_CONTENT_FAILED,
-            err
+            payload: err
         })
 
         if(payload.onFailed){
@@ -253,7 +253,7 @@ function* DeleteQuiz({payload}: types.deleteQuizAction){
 
         yield put({
             type: types.DELETE_QUIZ_FAILED,
-            err
+            payload: err
         })
 
         if(payload.onFailed){
@@ -276,7 +276,7 @@ function* GetRandomQuizContentByQuizID({payload}: types.getRandomQuizContentByQu
 
         yield put({
             type: types.GET_RANDOM_QUIZ_CONTENT_FAILED,
-            err
+            payload: err
         })
     }
 }

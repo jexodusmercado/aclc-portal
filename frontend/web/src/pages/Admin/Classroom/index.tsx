@@ -110,13 +110,14 @@ const ClassroomPage = () => {
                         )
                 }
 
-                {(!loading && !classrooms.length) &&
+                {
+                    (!loading && !classrooms.length) &&
                     <div className='text-center'>
                         <span> No classroom found. </span>
                     </div>
                 }
 
-                {!loading && classrooms.map((classroom, index ) => 
+                {(!loading && classrooms.length) && classrooms.map((classroom, index ) => 
                     <CardContainer key={index} className='space-y-2 divide-y divide-gray-200' >
                             <div className='flex justify-between'>
                                 <div>

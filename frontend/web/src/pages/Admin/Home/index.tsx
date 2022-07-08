@@ -14,17 +14,22 @@ const HomePage = () => {
     const students  = useSelector(getUsers)
     const loading   = useSelector(isLoading([GET_USER]))
 
+
+
     useEffectOnce(() => {
         dispatch(getAllUsersRequest({type: "student"}))
     })
 
+    if(!students || students.length < 0){
+
+        return (
+            <> no data</>
+        )
+    }
+
     return (
         <>
             <Greeting />
-            {
-                students.length > 0 ??
-                <div>no data </div>
-            }
             <div className="hidden sm:block mt-5">
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col mt-2"> 
@@ -66,19 +71,14 @@ const HomePage = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {students.map((student) => (
+                                    {students.length > 0 &&students?.map((student) => (
                                     <tr key={student.id} className="bg-white">
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             <div className="flex">
-                                                {/* <a href={transaction.href} className="group inline-flex space-x-2 truncate text-sm"> */}
-                                                {/* <CashIcon
-                                                    className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                                                    aria-hidden="true"
-                                                /> */}
+                                               
                                                 <p className="text-gray-500 truncate group-hover:text-gray-900">
                                                     {student?.first_name + ' ' + student?.last_name}
                                                 </p>
-                                                {/* </a> */}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-left whitespace-nowrap text-sm text-gray-500">
