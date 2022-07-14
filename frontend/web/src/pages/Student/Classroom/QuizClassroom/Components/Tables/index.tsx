@@ -18,6 +18,12 @@ interface Props {
 const QuizTable: React.FC<Props> = ({state, setState, quizzes, checkbox, checked, toggleAll, loading, onDelete}) => {
     const navigate = useNavigate();
 
+    if(loading) {
+        return(
+            <>loading...</>
+        )
+    }
+
     if(!quizzes.length) {
         return (
             <div className="w-full mt-7">
